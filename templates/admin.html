@@ -23,9 +23,10 @@
   --purple:#6A35A0;--purple-bg:rgba(106,53,160,0.07);--purple-border:rgba(106,53,160,0.22);
   --teal:#1A8080;--teal-bg:rgba(26,128,128,0.07);--teal-border:rgba(26,128,128,0.22);
   --orange:#B85000;--orange-bg:rgba(184,80,0,0.08);--orange-border:rgba(184,80,0,0.25);
+  --archive:#5A3E8A;--archive-bg:rgba(90,62,138,0.07);--archive-border:rgba(90,62,138,0.22);
   --shadow:0 20px 60px rgba(0,80,120,0.11),0 4px 20px rgba(0,80,120,0.06);
   --shadow-sm:0 4px 16px rgba(0,80,120,0.07);
-  --input-bg:rgba(255,255,255,0.85);--overlay:rgba(6,22,28,0.48);--sidebar-w:272px;
+  --input-bg:rgba(255,255,255,0.85);--overlay:rgba(6,22,28,0.48);--sidebar-w:280px;
 }
 [data-theme="dark"]{
   --bg:#06161C;--bg2:#0C2330;--bg3:#122C3D;
@@ -40,9 +41,10 @@
   --purple:#A878E0;--purple-bg:rgba(168,120,224,0.1);--purple-border:rgba(168,120,224,0.28);
   --teal:#40C0C0;--teal-bg:rgba(64,192,192,0.1);--teal-border:rgba(64,192,192,0.28);
   --orange:#F4A460;--orange-bg:rgba(244,164,96,0.1);--orange-border:rgba(244,164,96,0.28);
+  --archive:#C8A8F8;--archive-bg:rgba(200,168,248,0.08);--archive-border:rgba(200,168,248,0.25);
   --shadow:0 20px 60px rgba(0,0,0,0.6),0 4px 20px rgba(0,0,0,0.35);
   --shadow-sm:0 4px 16px rgba(0,0,0,0.4);
-  --input-bg:rgba(0,0,0,0.3);--overlay:rgba(0,0,0,0.7);--sidebar-w:272px;
+  --input-bg:rgba(0,0,0,0.3);--overlay:rgba(0,0,0,0.7);--sidebar-w:280px;
 }
 html{scroll-behavior:smooth;font-size:16px}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;transition:background .4s,color .4s;padding-bottom:48px;font-size:1rem;line-height:1.6}
@@ -67,6 +69,8 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opa
 .nav-link{display:flex;align-items:center;gap:11px;padding:10px 11px;border-radius:11px;font-size:.95rem;font-weight:500;color:var(--text2);border:1px solid transparent;text-decoration:none;min-height:44px;cursor:pointer;transition:background .18s,color .18s,border-color .18s}
 .nav-link:hover{background:var(--surface);color:var(--text)}
 .nav-link.active{background:rgba(0,180,216,.08);color:var(--accent);border-color:var(--border-acc)}
+.nav-link.archive-link:hover{background:var(--archive-bg);color:var(--archive)}
+.nav-link.archive-link.active{background:var(--archive-bg);color:var(--archive);border-color:var(--archive-border)}
 .nav-icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .18s}
 .nav-icon svg{width:15px;height:15px}
 .nav-link.active .nav-icon{background:rgba(0,180,216,.12)}
@@ -100,9 +104,11 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opa
 .section.active{display:block;animation:fadeUp .38s var(--ease)}
 .page-head{margin-bottom:clamp(16px,3vw,24px)}
 .live-tag{display:inline-flex;align-items:center;gap:6px;padding:5px 11px 5px 9px;background:var(--accent);color:#fff;border-radius:4px;font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;margin-bottom:10px}
+.live-tag.archive{background:var(--archive)}
 .live-dot{width:7px;height:7px;background:rgba(255,255,255,.8);border-radius:50%;animation:livePulse 1.8s ease-in-out infinite}
 .page-title{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:clamp(1.9rem,5.5vw,3.2rem);letter-spacing:-.02em;color:var(--text);line-height:.92}
 .page-title em{display:block;font-style:italic;font-weight:400;color:var(--accent)}
+.page-title em.archive-em{color:var(--archive)}
 .page-sub{font-size:.95rem;color:var(--text3);margin-top:7px;font-weight:300}
 .divider{display:flex;align-items:center;gap:11px;margin:clamp(14px,3vw,20px) 0}
 .divider .rule{flex:1;height:1px;background:var(--border)}
@@ -132,6 +138,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opa
 .pill.acc{background:rgba(0,180,216,.08);color:var(--accent);border:1px solid var(--border-acc)}
 .pill.purple{background:var(--purple-bg);color:var(--purple);border:1px solid var(--purple-border)}
 .pill.teal{background:var(--teal-bg);color:var(--teal);border:1px solid var(--teal-border)}
+.pill.archive{background:var(--archive-bg);color:var(--archive);border:1px solid var(--archive-border)}
 .pill-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;background:currentColor}
 .pill.green .pill-dot{animation:livePulse 2s ease-in-out infinite}
 .mono-cell{font-family:'DM Mono',monospace;font-size:.9rem;color:var(--text3);letter-spacing:.05em}
@@ -144,6 +151,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opa
 .table-hdr{display:flex;align-items:center;justify-content:space-between;padding:15px 20px 12px;border-bottom:1px solid var(--border)}
 .table-lbl{font-family:'DM Mono',monospace;font-size:.9rem;letter-spacing:.2em;text-transform:uppercase;color:var(--text3);display:flex;align-items:center;gap:8px}
 .count-pill{padding:3px 9px;border-radius:20px;background:rgba(0,180,216,.08);border:1px solid var(--border-acc);color:var(--accent);font-size:.48rem;letter-spacing:.1em}
+.count-pill.archive{background:var(--archive-bg);border-color:var(--archive-border);color:var(--archive)}
 .table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
 table{width:100%;border-collapse:collapse;min-width:520px}
 thead th{font-family:'DM Mono',monospace;font-size:.85rem;letter-spacing:.18em;text-transform:uppercase;color:var(--text3);padding:11px 16px;text-align:left;white-space:nowrap;font-weight:400;border-bottom:1px solid var(--border)}
@@ -155,11 +163,13 @@ td{padding:12px 16px;vertical-align:middle;font-size:.95rem}
 .p-avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:1rem;color:#fff;flex-shrink:0}
 .p-name{font-size:.95rem;font-weight:600;color:var(--text)}
 .p-email{font-family:'DM Mono',monospace;font-size:.8rem;color:var(--text3);letter-spacing:.04em;margin-top:1px}
-.action-group{display:flex;align-items:center;gap:5px}
+.action-group{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
 .act-btn{width:30px;height:30px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .2s,color .2s,background .2s}
 .act-btn svg{width:13px;height:13px}
 .act-btn:hover{border-color:var(--border-acc);color:var(--accent);background:rgba(0,180,216,.05)}
 .act-btn.del:hover{border-color:var(--danger-border);color:var(--danger);background:var(--danger-bg)}
+.act-btn.archive-btn:hover{border-color:var(--archive-border);color:var(--archive);background:var(--archive-bg)}
+.act-btn.restore:hover{border-color:var(--success-border);color:var(--success);background:var(--success-bg)}
 .act-btn.block:hover{border-color:var(--warn-border);color:var(--warn);background:var(--warn-bg)}
 .act-btn.unlock:hover{border-color:var(--success-border);color:var(--success);background:var(--success-bg)}
 .prog-row{display:flex;align-items:center;gap:9px;margin-bottom:10px}
@@ -181,15 +191,6 @@ td{padding:12px 16px;vertical-align:middle;font-size:.95rem}
 .btn-add:hover{opacity:.88;transform:translateY(-1px);box-shadow:0 6px 18px var(--accent-glow)}
 .btn-export{height:38px;padding:0 16px;border-radius:22px;border:1px solid var(--border-acc);background:rgba(0,180,216,.06);color:var(--accent);font-family:'DM Mono',monospace;font-size:.52rem;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;gap:7px;transition:opacity .2s,transform .15s}
 .btn-export:hover{opacity:.88;transform:translateY(-1px)}
-.price-item{display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--border)}
-.price-item:last-child{border-bottom:none}
-.price-name{font-size:.95rem;font-weight:500;color:var(--text)}
-.price-type{font-family:'DM Mono',monospace;font-size:.8rem;color:var(--text3);margin-top:2px}
-.price-edit-wrap{display:flex;align-items:center;gap:8px}
-.price-input{width:82px;height:34px;border-radius:9px;border:1px solid var(--border);background:var(--input-bg);color:var(--text);font-family:'DM Mono',monospace;font-size:.9rem;text-align:center;outline:none;transition:border-color .2s}
-.price-input:focus{border-color:var(--border-acc)}
-.btn-save-price{height:34px;padding:0 13px;border-radius:9px;background:var(--accent);color:#fff;border:none;font-family:'DM Mono',monospace;font-size:.48rem;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:opacity .2s}
-.btn-save-price:hover{opacity:.85}
 .promo-item{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)}
 .promo-item:last-child{border-bottom:none}
 .promo-code{font-family:'DM Mono',monospace;font-size:.9rem;font-weight:500;color:var(--accent);letter-spacing:.1em}
@@ -199,7 +200,17 @@ td{padding:12px 16px;vertical-align:middle;font-size:.95rem}
 .ikey{font-family:'DM Mono',monospace;font-size:.9rem;color:var(--text3);letter-spacing:.06em}
 .ival{font-family:'DM Mono',monospace;font-size:.9rem;color:var(--text);font-weight:500}
 .view-only-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:20px;background:var(--blue-bg);border:1px solid var(--blue-border);font-family:'DM Mono',monospace;font-size:.48rem;letter-spacing:.1em;text-transform:uppercase;color:var(--blue)}
-/* ── MODALS ── */
+/* ARCHIVE BANNER */
+.archive-banner{background:var(--archive-bg);border:1px solid var(--archive-border);border-radius:14px;padding:16px 18px;display:flex;align-items:flex-start;gap:12px;margin-bottom:16px}
+.archive-banner-ico{font-size:1.2rem;flex-shrink:0}
+.archive-banner-text{font-size:.88rem;color:var(--text2);line-height:1.6}
+/* PROFILE */
+.profile-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin-bottom:14px}
+.profile-avatar-wrap{display:flex;flex-direction:column;align-items:center;gap:14px;padding:26px 0 18px}
+.profile-avatar-big{width:88px;height:88px;border-radius:50%;background:rgba(0,180,216,.12);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:2.6rem;color:var(--accent);border:2px solid var(--border-acc)}
+.profile-name-big{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:1.5rem;color:var(--text);text-align:center}
+.profile-role-tag{font-family:'DM Mono',monospace;font-size:.54rem;letter-spacing:.18em;text-transform:uppercase;color:var(--accent)}
+/* MODALS */
 .modal-overlay{position:fixed;inset:0;background:var(--overlay);backdrop-filter:blur(5px);z-index:60;display:none;align-items:center;justify-content:center;padding:20px;overflow-y:auto}
 .modal-overlay.open{display:flex}
 .modal{background:var(--surface2);border:1px solid var(--border-acc);border-radius:20px;padding:28px;width:100%;max-width:690px;box-shadow:var(--shadow);animation:fadeUp .3s var(--ease);margin:auto}
@@ -209,8 +220,10 @@ td{padding:12px 16px;vertical-align:middle;font-size:.95rem}
 .modal-close:hover{border-color:var(--accent);color:var(--accent)}
 .mfield{margin-bottom:14px}
 .mfield label{display:block;font-family:'DM Mono',monospace;font-size:.66rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text3);margin-bottom:7px}
-.mfield input,.mfield select{width:100%;height:44px;border-radius:10px;border:1px solid var(--border);background:var(--input-bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:.95rem;padding:0 13px;outline:none;transition:border-color .2s,box-shadow .2s}
-.mfield input:focus,.mfield select:focus{border-color:var(--border-acc);box-shadow:0 0 0 3px var(--accent-glow)}
+.mfield input,.mfield select,.mfield textarea{width:100%;border-radius:10px;border:1px solid var(--border);background:var(--input-bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:.95rem;padding:0 13px;outline:none;transition:border-color .2s,box-shadow .2s}
+.mfield input,.mfield select{height:44px}
+.mfield textarea{padding:11px 13px;resize:vertical;min-height:80px}
+.mfield input:focus,.mfield select:focus,.mfield textarea:focus{border-color:var(--border-acc);box-shadow:0 0 0 3px var(--accent-glow)}
 .mfield select option{background:var(--bg2);color:var(--text)}
 .mfield-hint{font-family:'DM Mono',monospace;font-size:.75rem;color:var(--text3);margin-top:5px}
 .modal-btns{display:flex;gap:8px;margin-top:18px;justify-content:flex-end}
@@ -219,37 +232,55 @@ td{padding:12px 16px;vertical-align:middle;font-size:.95rem}
 .btn-primary:disabled{opacity:.45;cursor:not-allowed;transform:none}
 .btn-ghost{height:38px;padding:0 20px;border-radius:22px;background:transparent;color:var(--text2);border:1px solid var(--border);font-family:'DM Mono',monospace;font-size:.54rem;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;transition:border-color .2s,color .2s}
 .btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
-/* ── CHARTS ── */
+.btn-danger-solid{height:38px;padding:0 20px;border-radius:22px;background:var(--danger);color:#fff;border:none;font-family:'DM Mono',monospace;font-size:.54rem;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;transition:opacity .2s}
+.btn-danger-solid:hover{opacity:.88}
+/* CHARTS */
 .chart-grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-bottom:14px}
 .chart-block{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 18px}
 .chart-lbl{font-family:'DM Mono',monospace;font-size:.85rem;letter-spacing:.18em;text-transform:uppercase;color:var(--text3);margin-bottom:10px}
 .chart-legend{display:flex;align-items:center;gap:14px;margin-top:9px;flex-wrap:wrap}
 .chart-legend-item{display:flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:.78rem;color:var(--text3)}
 .chart-legend-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
-/* ── LOADING / EMPTY ── */
+/* LOADING / EMPTY */
 .spinner{display:inline-block;width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
 .loading-row td{text-align:center;padding:32px;color:var(--text3);font-family:'DM Mono',monospace;font-size:.9rem}
 .empty-state{text-align:center;padding:36px;color:var(--text3);font-family:'DM Mono',monospace;font-size:.9rem}
-/* ── EXPORT ── */
+/* EXPORT */
 .export-group{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
 .btn-dl{height:38px;padding:0 16px;border-radius:10px;border:1px solid var(--border);background:var(--input-bg);color:var(--text2);font-family:'DM Mono',monospace;font-size:.9rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;gap:7px;transition:border-color .2s,color .2s,transform .15s}
 .btn-dl:hover{border-color:var(--border-acc);color:var(--accent);transform:translateY(-1px)}
 .btn-dl.pdf:hover{border-color:var(--danger-border);color:var(--danger)}
 .btn-dl.csv:hover{border-color:var(--success-border);color:var(--success)}
-/* ── TOAST ── */
+/* FEEDBACK */
+.fb-item{padding:14px 0;border-bottom:1px solid var(--border)}
+.fb-item:last-child{border-bottom:none}
+.fb-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;flex-wrap:wrap;gap:6px}
+.fb-name{font-size:.92rem;font-weight:600;color:var(--text)}
+.fb-tracking{font-family:'DM Mono',monospace;font-size:.58rem;color:var(--accent)}
+.fb-stars{color:var(--warn);font-size:1rem;letter-spacing:1px}
+.fb-comment{font-size:.88rem;color:var(--text2);margin-top:4px;line-height:1.5}
+.fb-date{font-family:'DM Mono',monospace;font-size:.5rem;color:var(--text3);margin-top:5px}
+/* TOAST */
 .toast{position:fixed;bottom:52px;left:50%;transform:translateX(-50%) translateY(12px);padding:10px 20px;border-radius:30px;font-family:'DM Mono',monospace;font-size:.9rem;letter-spacing:.1em;z-index:100;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;white-space:nowrap;max-width:90vw}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .toast.success{background:var(--success);color:#fff}
 .toast.error{background:var(--danger);color:#fff}
 .toast.info{background:var(--text);color:var(--bg)}
-/* ── TICKER ── */
+/* PW STRENGTH */
+.pw-strength-bar{height:4px;border-radius:20px;background:var(--bg3);overflow:hidden;margin-top:6px}
+.pw-strength-fill{height:100%;border-radius:20px;transition:width .4s,background .4s}
+.pw-strength-label{font-family:'DM Mono',monospace;font-size:.46rem;letter-spacing:.1em;text-transform:uppercase;margin-top:4px}
+/* TICKER */
 .ticker-wrap{position:fixed;bottom:0;left:0;width:100%;background:var(--accent);overflow:hidden;padding:5px 0;z-index:50}
 .ticker-inner{display:flex;white-space:nowrap;animation:ticker 30s linear infinite}
 .ticker-item{font-family:'DM Mono',monospace;font-size:.52rem;letter-spacing:.2em;text-transform:uppercase;padding:0 24px;color:rgba(255,255,255,.9)}
 .ticker-dot{display:inline-block;width:3px;height:3px;background:rgba(255,255,255,.4);border-radius:50%;vertical-align:middle;margin:0 8px}
+/* BUBBLES */
+#bubblesCanvas{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
 </style>
 </head>
 <body>
+<canvas id="bubblesCanvas" aria-hidden="true"></canvas>
 <div class="deco-bg" aria-hidden="true">
   <div class="deco-word w1">ADMIN</div>
   <div class="deco-word w2">Panel</div>
@@ -287,27 +318,42 @@ td{padding:12px 16px;vertical-align:middle;font-size:.95rem}
     <nav style="display:flex;flex-direction:column;gap:3px">
       <a class="nav-link" onclick="showSection('orders',this)">
         <span class="nav-icon"><svg viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M5 6h6M5 9h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></span>
-        View Service Status
+        Service Status
       </a>
       <a class="nav-link" onclick="showSection('staff',this)">
         <span class="nav-icon"><svg viewBox="0 0 16 16" fill="none"><circle cx="6" cy="5" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M1.5 13c0-2.5 2-3.5 4.5-3.5s4.5 1 4.5 3.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M11 2l1.5 1.5L15 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
         Staff
       </a>
+      <a class="nav-link archive-link" onclick="showSection('staff-archive',this)" style="padding-left:20px;font-size:.88rem">
+        <span class="nav-icon" style="font-size:.75rem">📦</span>
+        Staff Archive
+      </a>
       <a class="nav-link" onclick="showSection('customers',this)">
         <span class="nav-icon"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="6" r="3" stroke="currentColor" stroke-width="1.2"/><path d="M2 14c0-3 2.5-5 6-5s6 2 6 5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></span>
         Customers
       </a>
-      <a class="nav-link" onclick="showSection('pricing',this)">
-        <span class="nav-icon"><svg viewBox="0 0 16 16" fill="none"><rect x="1.5" y="5" width="13" height="8" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M5 5V3.5a3 3 0 016 0V5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></span>
-        Pricing
+      <a class="nav-link archive-link" onclick="showSection('customers-archive',this)" style="padding-left:20px;font-size:.88rem">
+        <span class="nav-icon" style="font-size:.75rem">📦</span>
+        Customer Archive
       </a>
       <a class="nav-link" onclick="showSection('promos',this)">
         <span class="nav-icon"><svg viewBox="0 0 16 16" fill="none"><path d="M2 9L9 2h5v5l-7 7-5-5z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><circle cx="11.5" cy="4.5" r="1" fill="currentColor"/></svg></span>
         Promos
       </a>
+      <a class="nav-link" onclick="showSection('feedback',this)">
+        <span class="nav-icon"><svg viewBox="0 0 16 16" fill="none"><path d="M8 2l1.5 3 3.5.5-2.5 2.5.6 3.5L8 10l-3.1 1.5.6-3.5L3 5.5 6.5 5z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg></span>
+        Customer Feedback
+      </a>
       <a class="nav-link" onclick="showSection('reports',this)">
         <span class="nav-icon"><svg viewBox="0 0 16 16" fill="none"><rect x="2.5" y="1.5" width="11" height="13" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M5 5.5h6M5 8h6M5 10.5h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></span>
         Reports
+      </a>
+    </nav>
+    <p class="nav-sec">Account</p>
+    <nav style="display:flex;flex-direction:column;gap:3px">
+      <a class="nav-link" onclick="showSection('profile',this)">
+        <span class="nav-icon"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5.5" r="3" stroke="currentColor" stroke-width="1.2"/><path d="M2 14c0-2.2 2.7-4 6-4s6 1.8 6 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></span>
+        My Profile
       </a>
     </nav>
   </div>
@@ -342,10 +388,9 @@ td{padding:12px 16px;vertical-align:middle;font-size:.95rem}
   </div>
 </header>
 
-<div id="layout">
-<div id="main">
+<div id="layout"><div id="main">
 
-<!-- DASHBOARD -->
+<!-- ═══════════ DASHBOARD ═══════════ -->
 <div id="sec-dashboard" class="section active">
   <div class="page-head">
     <div class="live-tag"><div class="live-dot"></div>Live · Admin Dashboard</div>
@@ -359,30 +404,15 @@ td{padding:12px 16px;vertical-align:middle;font-size:.95rem}
     <div class="glass stat-card"><div class="corner"></div><div class="stat-icon">🎁</div><div class="stat-lbl">Active Promos</div><div class="stat-val" id="d-promos">—</div><div class="stat-tag acc">Running</div></div>
   </div>
   <div class="divider"><div class="rule"></div><div class="dia"></div><div class="rule"></div></div>
-  <!-- Daily Revenue Line Chart -->
   <div class="gstatic card" style="margin-bottom:14px">
-    <div class="card-lbl">Daily Revenue — This Month (Per Day) <span style="font-family:'DM Mono',monospace;font-size:.78rem;color:var(--success);background:var(--success-bg);padding:3px 9px;border-radius:10px;border:1px solid var(--success-border)">● Live</span></div>
-    <div style="position:relative;width:100%;height:200px">
-      <canvas id="dash-daily-line" role="img" aria-label="Line chart showing daily revenue this month"></canvas>
-    </div>
-    <div class="chart-legend">
-      <div class="chart-legend-item"><div class="chart-legend-dot" style="background:#00B4D8"></div>Daily Revenue (₱)</div>
-    </div>
+    <div class="card-lbl">Daily Revenue — This Month <span style="font-family:'DM Mono',monospace;font-size:.78rem;color:var(--success);background:var(--success-bg);padding:3px 9px;border-radius:10px;border:1px solid var(--success-border)">● Live</span></div>
+    <div style="position:relative;width:100%;height:200px"><canvas id="dash-daily-line"></canvas></div>
   </div>
   <div class="chart-grid-2">
-    <!-- Weekly Revenue Bar -->
+    <div class="chart-block"><div class="chart-lbl">Weekly Revenue</div><div style="position:relative;width:100%;height:180px"><canvas id="dash-weekly-bar"></canvas></div></div>
     <div class="chart-block">
-      <div class="chart-lbl">Weekly Revenue</div>
-      <div style="position:relative;width:100%;height:180px">
-        <canvas id="dash-weekly-bar" role="img" aria-label="Bar chart showing weekly revenue"></canvas>
-      </div>
-    </div>
-    <!-- Service Mix Pie -->
-    <div class="chart-block">
-      <div class="chart-lbl">Service Mix <span style="font-family:'DM Mono',monospace;font-size:.75rem;color:var(--text3)">(All Time)</span></div>
-      <div style="position:relative;width:100%;height:180px">
-        <canvas id="dash-pie" role="img" aria-label="Pie chart showing service type breakdown"></canvas>
-      </div>
+      <div class="chart-lbl">Service Mix</div>
+      <div style="position:relative;width:100%;height:180px"><canvas id="dash-pie"></canvas></div>
       <div class="chart-legend" id="dash-pie-legend"></div>
     </div>
   </div>
@@ -400,7 +430,7 @@ td{padding:12px 16px;vertical-align:middle;font-size:.95rem}
   </div>
 </div>
 
-<!-- ANALYTICS -->
+<!-- ═══════════ ANALYTICS ═══════════ -->
 <div id="sec-analytics" class="section">
   <div class="page-head">
     <div class="live-tag"><div class="live-dot"></div>Analytics</div>
@@ -414,27 +444,16 @@ td{padding:12px 16px;vertical-align:middle;font-size:.95rem}
   </div>
   <div class="divider"><div class="rule"></div><div class="dia"></div><div class="rule"></div></div>
   <div class="gstatic card" style="margin-bottom:14px">
-    <div class="card-lbl">Services Per Day — This Week <span style="font-family:'DM Mono',monospace;font-size:.78rem;color:var(--success);background:var(--success-bg);padding:3px 9px;border-radius:10px;border:1px solid var(--success-border)">● Live</span></div>
-    <div style="position:relative;width:100%;height:200px">
-      <canvas id="an-services-bar" role="img" aria-label="Bar chart showing services per day this week"></canvas>
-    </div>
+    <div class="card-lbl">Services Per Day — This Week</div>
+    <div style="position:relative;width:100%;height:200px"><canvas id="an-services-bar"></canvas></div>
   </div>
   <div class="chart-grid-2">
-    <div class="chart-block">
-      <div class="chart-lbl">Service Type Breakdown</div>
-      <div style="position:relative;width:100%;height:200px">
-        <canvas id="an-pie" role="img" aria-label="Pie chart of service type breakdown"></canvas>
-      </div>
-      <div class="chart-legend" id="an-pie-legend"></div>
-    </div>
-    <div class="gstatic card" style="border-radius:14px;border:1px solid var(--border)">
-      <div class="card-lbl">Top Service</div>
-      <div id="an-top-svc" style="margin-top:5px"><div class="empty-state"><span class="spinner"></span>Loading…</div></div>
-    </div>
+    <div class="chart-block"><div class="chart-lbl">Service Type Breakdown</div><div style="position:relative;width:100%;height:200px"><canvas id="an-pie"></canvas></div><div class="chart-legend" id="an-pie-legend"></div></div>
+    <div class="gstatic card" style="border-radius:14px;border:1px solid var(--border)"><div class="card-lbl">Top Service</div><div id="an-top-svc" style="margin-top:5px"><div class="empty-state"><span class="spinner"></span>Loading…</div></div></div>
   </div>
 </div>
 
-<!-- REVENUE -->
+<!-- ═══════════ REVENUE ═══════════ -->
 <div id="sec-revenue" class="section">
   <div class="page-head">
     <div class="live-tag"><div class="live-dot"></div>Revenue</div>
@@ -447,33 +466,17 @@ td{padding:12px 16px;vertical-align:middle;font-size:.95rem}
     <div class="rev-item"><div class="rev-lbl">Est. Profit</div><div class="rev-val">₱<span id="rv-profit">—</span></div><div class="pill blue" style="margin-top:5px">~60%</div></div>
   </div>
   <div class="divider"><div class="rule"></div><div class="dia"></div><div class="rule"></div></div>
-  <!-- Daily Revenue per Day Line -->
   <div class="gstatic card" style="margin-bottom:14px">
-    <div class="card-lbl">Daily Revenue — This Month (Per Day) <span style="font-family:'DM Mono',monospace;font-size:.78rem;color:var(--success);background:var(--success-bg);padding:3px 9px;border-radius:10px;border:1px solid var(--success-border)">● Live</span></div>
-    <div style="position:relative;width:100%;height:220px">
-      <canvas id="rv-daily-line" role="img" aria-label="Line chart of daily revenue per day this month"></canvas>
-    </div>
-    <div class="chart-legend">
-      <div class="chart-legend-item"><div class="chart-legend-dot" style="background:#00B4D8"></div>Revenue per day</div>
-    </div>
+    <div class="card-lbl">Daily Revenue — This Month</div>
+    <div style="position:relative;width:100%;height:220px"><canvas id="rv-daily-line"></canvas></div>
   </div>
   <div class="chart-grid-2">
-    <div class="chart-block">
-      <div class="chart-lbl">Weekly Revenue</div>
-      <div style="position:relative;width:100%;height:200px">
-        <canvas id="rv-weekly-bar" role="img" aria-label="Bar chart of weekly revenue"></canvas>
-      </div>
-    </div>
-    <div class="chart-block">
-      <div class="chart-lbl">Monthly Revenue (6 Months)</div>
-      <div style="position:relative;width:100%;height:200px">
-        <canvas id="rv-monthly-bar" role="img" aria-label="Bar chart of monthly revenue last 6 months"></canvas>
-      </div>
-    </div>
+    <div class="chart-block"><div class="chart-lbl">Weekly Revenue</div><div style="position:relative;width:100%;height:200px"><canvas id="rv-weekly-bar"></canvas></div></div>
+    <div class="chart-block"><div class="chart-lbl">Monthly Revenue (6 Months)</div><div style="position:relative;width:100%;height:200px"><canvas id="rv-monthly-bar"></canvas></div></div>
   </div>
 </div>
 
-<!-- VIEW SERVICE STATUS -->
+<!-- ═══════════ ORDERS ═══════════ -->
 <div id="sec-orders" class="section">
   <div class="page-head">
     <div class="live-tag"><div class="live-dot"></div>Service Status</div>
@@ -497,10 +500,7 @@ td{padding:12px 16px;vertical-align:middle;font-size:.95rem}
         <option value="completed">Completed</option>
         <option value="cancelled">Cancelled</option>
       </select>
-      <span class="view-only-badge">
-        <svg width="10" height="10" viewBox="0 0 16 16" fill="none"><path d="M1 8s3-5 7-5 7 5 7 5-3 5-7 5-7-5-7-5z" stroke="currentColor" stroke-width="1.4"/><circle cx="8" cy="8" r="2.5" stroke="currentColor" stroke-width="1.4"/></svg>
-        View Only
-      </span>
+      <span class="view-only-badge"><svg width="10" height="10" viewBox="0 0 16 16" fill="none"><path d="M1 8s3-5 7-5 7 5 7 5-3 5-7 5-7-5-7-5z" stroke="currentColor" stroke-width="1.4"/><circle cx="8" cy="8" r="2.5" stroke="currentColor" stroke-width="1.4"/></svg>View Only</span>
     </div>
     <a href="/api/admin/export" class="btn-export" target="_blank">
       <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M8 2v9M5 8l3 3 3-3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 12h10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
@@ -508,24 +508,20 @@ td{padding:12px 16px;vertical-align:middle;font-size:.95rem}
     </a>
   </div>
   <div class="gstatic table-card">
-    <div class="table-hdr">
-      <div class="table-lbl">All Orders <span class="count-pill" id="ord-count">0 total</span></div>
-    </div>
+    <div class="table-hdr"><div class="table-lbl">All Orders <span class="count-pill" id="ord-count">0 total</span></div></div>
     <div class="table-scroll">
-      <table>
-        <thead><tr><th>#</th><th>Tracking</th><th>Customer</th><th>Service</th><th>Weight</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead>
-        <tbody id="ord-tbody"><tr class="loading-row"><td colspan="8"><span class="spinner"></span>Loading…</td></tr></tbody>
-      </table>
+      <table><thead><tr><th>#</th><th>Tracking</th><th>Customer</th><th>Service</th><th>Weight</th><th>Amount</th><th>Discount</th><th>Status</th><th>Date</th></tr></thead>
+      <tbody id="ord-tbody"><tr class="loading-row"><td colspan="9"><span class="spinner"></span>Loading…</td></tr></tbody></table>
     </div>
   </div>
 </div>
 
-<!-- STAFF -->
+<!-- ═══════════ STAFF ═══════════ -->
 <div id="sec-staff" class="section">
   <div class="page-head">
     <div class="live-tag"><div class="live-dot"></div>Staff</div>
     <div class="page-title">Staff <em>Management</em></div>
-    <div class="page-sub">Create, edit, activate or deactivate staff accounts.</div>
+    <div class="page-sub">Create, edit, and manage staff accounts. Archive to remove from active roster.</div>
   </div>
   <div class="divider"><div class="rule"></div><div class="dia"></div><div class="rule"></div></div>
   <div class="toolbar">
@@ -534,10 +530,8 @@ td{padding:12px 16px;vertical-align:middle;font-size:.95rem}
         <svg viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.3"/><path d="M10 10l3 3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
         <input class="search-input" id="st-search" type="text" placeholder="Search staff…" oninput="filterTableRows('st-tbody',this.value)">
       </div>
-      <select class="filter-select" id="st-filter" onchange="filterTableByStatus('st-tbody',this.value)">
-        <option value="">All</option>
-        <option value="active">Active</option>
-        <option value="inactive">Inactive</option>
+      <select class="filter-select" onchange="filterTableByStatus('st-tbody',this.value)">
+        <option value="">All</option><option value="active">Active</option><option value="inactive">Inactive</option>
       </select>
     </div>
     <button class="btn-add" onclick="openModal('add-staff')">
@@ -546,14 +540,10 @@ td{padding:12px 16px;vertical-align:middle;font-size:.95rem}
     </button>
   </div>
   <div class="gstatic table-card">
-    <div class="table-hdr">
-      <div class="table-lbl">Staff Accounts <span class="count-pill" id="st-count">0 total</span></div>
-    </div>
+    <div class="table-hdr"><div class="table-lbl">Staff Accounts <span class="count-pill" id="st-count">0 total</span></div></div>
     <div class="table-scroll">
-      <table>
-        <thead><tr><th>Staff Member</th><th>Status</th><th>Services (30d)</th><th>Revenue (30d)</th><th>Efficiency</th><th>Actions</th></tr></thead>
-        <tbody id="st-tbody"><tr class="loading-row"><td colspan="6"><span class="spinner"></span>Loading…</td></tr></tbody>
-      </table>
+      <table><thead><tr><th>Staff Member</th><th>Status</th><th>Services (30d)</th><th>Revenue (30d)</th><th>Efficiency</th><th>Actions</th></tr></thead>
+      <tbody id="st-tbody"><tr class="loading-row"><td colspan="6"><span class="spinner"></span>Loading…</td></tr></tbody></table>
     </div>
   </div>
   <div class="divider"><div class="rule"></div><div class="dia"></div><div class="rule"></div></div>
@@ -563,12 +553,42 @@ td{padding:12px 16px;vertical-align:middle;font-size:.95rem}
   </div>
 </div>
 
-<!-- CUSTOMERS -->
+<!-- ═══════════ STAFF ARCHIVE ═══════════ -->
+<div id="sec-staff-archive" class="section">
+  <div class="page-head">
+    <div class="live-tag archive">📦 Staff Archive</div>
+    <div class="page-title">Staff <em class="archive-em">Archive</em></div>
+    <div class="page-sub">Archived staff members are removed from the active roster. Restore or permanently delete here.</div>
+  </div>
+  <div class="archive-banner">
+    <div class="archive-banner-ico">📦</div>
+    <div class="archive-banner-text">
+      Archived staff cannot log in and will not appear in staff lists. You can <strong>restore</strong> them to active status or <strong>permanently delete</strong> them — deletion is irreversible and removes all associated data.
+    </div>
+  </div>
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <div class="search-wrap">
+        <svg viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.3"/><path d="M10 10l3 3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        <input class="search-input" id="sta-search" type="text" placeholder="Search archived…" oninput="filterTableRows('sta-tbody',this.value)">
+      </div>
+    </div>
+  </div>
+  <div class="gstatic table-card">
+    <div class="table-hdr"><div class="table-lbl">Archived Staff <span class="count-pill archive" id="sta-count">0 archived</span></div></div>
+    <div class="table-scroll">
+      <table><thead><tr><th>Staff Member</th><th>Email</th><th>Archived On</th><th>Actions</th></tr></thead>
+      <tbody id="sta-tbody"><tr class="loading-row"><td colspan="4"><span class="spinner"></span>Loading…</td></tr></tbody></table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ CUSTOMERS ═══════════ -->
 <div id="sec-customers" class="section">
   <div class="page-head">
     <div class="live-tag"><div class="live-dot"></div>Customers</div>
     <div class="page-title">Customer <em>Management</em></div>
-    <div class="page-sub">View activity, block or unblock customer accounts.</div>
+    <div class="page-sub">View activity, block/unblock, or archive customer accounts.</div>
   </div>
   <div class="divider"><div class="rule"></div><div class="dia"></div><div class="rule"></div></div>
   <div class="toolbar">
@@ -577,53 +597,69 @@ td{padding:12px 16px;vertical-align:middle;font-size:.95rem}
         <svg viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.3"/><path d="M10 10l3 3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
         <input class="search-input" id="cu-search" type="text" placeholder="Search customers…" oninput="filterTableRows('cu-tbody',this.value)">
       </div>
-      <select class="filter-select" id="cu-filter" onchange="filterTableByStatus('cu-tbody',this.value)">
-        <option value="">All Status</option>
-        <option value="active">Active</option>
-        <option value="blocked">Blocked</option>
+      <select class="filter-select" onchange="filterTableByStatus('cu-tbody',this.value)">
+        <option value="">All Status</option><option value="active">Active</option><option value="blocked">Blocked</option>
       </select>
     </div>
   </div>
   <div class="gstatic table-card">
-    <div class="table-hdr">
-      <div class="table-lbl">Customers <span class="count-pill" id="cu-count">0 total</span></div>
-    </div>
+    <div class="table-hdr"><div class="table-lbl">Customers <span class="count-pill" id="cu-count">0 total</span></div></div>
     <div class="table-scroll">
-      <table>
-        <thead><tr><th>Customer</th><th>Phone</th><th>Status</th><th>Joined</th><th>Actions</th></tr></thead>
-        <tbody id="cu-tbody"><tr class="loading-row"><td colspan="5"><span class="spinner"></span>Loading…</td></tr></tbody>
-      </table>
+      <table><thead><tr><th>Customer</th><th>Phone</th><th>Status</th><th>Joined</th><th>Actions</th></tr></thead>
+      <tbody id="cu-tbody"><tr class="loading-row"><td colspan="5"><span class="spinner"></span>Loading…</td></tr></tbody></table>
     </div>
   </div>
 </div>
 
-<!-- PRICING -->
-<div id="sec-pricing" class="section">
+<!-- ═══════════ CUSTOMERS ARCHIVE ═══════════ -->
+<div id="sec-customers-archive" class="section">
   <div class="page-head">
-    <div class="live-tag"><div class="live-dot"></div>Pricing</div>
-    <div class="page-title">Service <em>Pricing</em></div>
-    <div class="page-sub">Set and update service prices. Changes take effect immediately.</div>
+    <div class="live-tag archive">📦 Customer Archive</div>
+    <div class="page-title">Customer <em class="archive-em">Archive</em></div>
+    <div class="page-sub">Archived customers cannot log in and are hidden from main listings.</div>
   </div>
-  <div class="divider"><div class="rule"></div><div class="dia"></div><div class="rule"></div></div>
-  <div class="gstatic card">
-    <div class="card-lbl">Service Prices</div>
-    <div id="pricing-list"><div class="empty-state"><span class="spinner"></span>Loading…</div></div>
+  <div class="archive-banner">
+    <div class="archive-banner-ico">📦</div>
+    <div class="archive-banner-text">
+      Archived customers are hidden from the main customer list and cannot log in. You can <strong>restore</strong> them to active status or <strong>permanently delete</strong> them. Permanent deletion is irreversible.
+    </div>
+  </div>
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <div class="search-wrap">
+        <svg viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.3"/><path d="M10 10l3 3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        <input class="search-input" id="cua-search" type="text" placeholder="Search archived…" oninput="filterTableRows('cua-tbody',this.value)">
+      </div>
+    </div>
+  </div>
+  <div class="gstatic table-card">
+    <div class="table-hdr"><div class="table-lbl">Archived Customers <span class="count-pill archive" id="cua-count">0 archived</span></div></div>
+    <div class="table-scroll">
+      <table><thead><tr><th>Customer</th><th>Email</th><th>Phone</th><th>Archived On</th><th>Actions</th></tr></thead>
+      <tbody id="cua-tbody"><tr class="loading-row"><td colspan="5"><span class="spinner"></span>Loading…</td></tr></tbody></table>
+    </div>
   </div>
 </div>
 
-<!-- PROMOS -->
+<!-- ═══════════ PROMOS ═══════════ -->
 <div id="sec-promos" class="section">
   <div class="page-head">
     <div class="live-tag"><div class="live-dot"></div>Promos</div>
     <div class="page-title">Promo <em>Codes</em></div>
-    <div class="page-sub">Create discounts and loyalty rewards for customers.</div>
+    <div class="page-sub">Create discount codes for use during service encoding.</div>
   </div>
   <div class="divider"><div class="rule"></div><div class="dia"></div><div class="rule"></div></div>
+  <div style="background:var(--blue-bg);border:1px solid var(--blue-border);border-radius:12px;padding:14px 16px;margin-bottom:16px;display:flex;align-items:flex-start;gap:10px">
+    <span style="font-size:1rem">ℹ️</span>
+    <div style="font-size:.88rem;color:var(--text2);line-height:1.6">
+      Promo codes created here are available for staff during order encoding. When a valid code is applied, the discount is automatically deducted from the service charge.
+    </div>
+  </div>
   <div class="toolbar">
     <div class="toolbar-left"></div>
     <button class="btn-add" onclick="openModal('add-promo')">
       <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M8 2v12M2 8h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-      Add Promo
+      Add Promo Code
     </button>
   </div>
   <div class="gstatic card">
@@ -632,7 +668,39 @@ td{padding:12px 16px;vertical-align:middle;font-size:.95rem}
   </div>
 </div>
 
-<!-- REPORTS -->
+<!-- ═══════════ FEEDBACK ═══════════ -->
+<div id="sec-feedback" class="section">
+  <div class="page-head">
+    <div class="live-tag"><div class="live-dot"></div>Feedback</div>
+    <div class="page-title">Customer <em>Feedback</em></div>
+    <div class="page-sub">Reviews and ratings submitted by customers after service completion.</div>
+  </div>
+  <div class="divider"><div class="rule"></div><div class="dia"></div><div class="rule"></div></div>
+  <div class="stats-row">
+    <div class="glass stat-card"><div class="corner"></div><div class="stat-icon">⭐</div><div class="stat-lbl">Total Reviews</div><div class="stat-val" id="fb-total">—</div><div class="stat-tag acc">All Time</div></div>
+    <div class="glass stat-card"><div class="corner"></div><div class="stat-icon">📊</div><div class="stat-lbl">Avg Rating</div><div class="stat-val" id="fb-avg">—</div><div class="stat-tag up">/ 5</div></div>
+    <div class="glass stat-card"><div class="corner"></div><div class="stat-icon">🌟</div><div class="stat-lbl">5-Star Reviews</div><div class="stat-val" id="fb-5star">—</div><div class="stat-tag up">Top</div></div>
+  </div>
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <div class="search-wrap">
+        <svg viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.3"/><path d="M10 10l3 3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        <input class="search-input" id="fb-search" type="text" placeholder="Search feedback…" oninput="filterFeedback(this.value)">
+      </div>
+      <select class="filter-select" id="fb-filter-rating" onchange="filterFeedback(document.getElementById('fb-search').value)">
+        <option value="">All Ratings</option>
+        <option value="5">5 Stars</option><option value="4">4 Stars</option><option value="3">3 Stars</option>
+        <option value="2">2 Stars</option><option value="1">1 Star</option>
+      </select>
+    </div>
+  </div>
+  <div class="gstatic card">
+    <div class="card-lbl">All Reviews <span class="count-pill" id="fb-count">0</span></div>
+    <div id="fb-list"><div class="empty-state"><span class="spinner"></span>Loading…</div></div>
+  </div>
+</div>
+
+<!-- ═══════════ REPORTS ═══════════ -->
 <div id="sec-reports" class="section">
   <div class="page-head">
     <div class="live-tag"><div class="live-dot"></div>Reports</div>
@@ -645,15 +713,12 @@ td{padding:12px 16px;vertical-align:middle;font-size:.95rem}
       <div class="card-lbl">Orders Report</div>
       <div class="inline-row"><span class="ikey">Format</span><span class="ival">CSV</span></div>
       <div class="inline-row"><span class="ikey">Contents</span><span class="ival">ID, Service, Amount, Status, Date</span></div>
-      <div class="inline-row"><span class="ikey">Endpoint</span><span class="ival">/api/admin/export</span></div>
       <div class="export-group">
         <a href="/api/admin/export" class="btn-dl csv" target="_blank">
-          <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M8 2v9M5 8l3 3 3-3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 12h10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
-          Download CSV
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M8 2v9M5 8l3 3 3-3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 12h10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>Download CSV
         </a>
         <button class="btn-dl pdf" onclick="exportPDF()">
-          <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><rect x="2.5" y="1.5" width="11" height="13" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M5 5.5h6M5 8h6M5 10.5h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
-          Print as PDF
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><rect x="2.5" y="1.5" width="11" height="13" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M5 5.5h6M5 8h6M5 10.5h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Print as PDF
         </button>
       </div>
     </div>
@@ -667,15 +732,67 @@ td{padding:12px 16px;vertical-align:middle;font-size:.95rem}
   </div>
 </div>
 
+<!-- ═══════════ PROFILE ═══════════ -->
+<div id="sec-profile" class="section">
+  <div class="page-head">
+    <div class="live-tag"><div class="live-dot"></div>My Profile</div>
+    <div class="page-title">Admin <em>Profile</em></div>
+    <div class="page-sub">Manage your account details and security settings.</div>
+  </div>
+  <div class="divider"><div class="rule"></div><div class="dia"></div><div class="rule"></div></div>
+  <div class="profile-grid">
+    <div class="gstatic card">
+      <div class="card-lbl">Account Overview</div>
+      <div class="profile-avatar-wrap">
+        <div class="profile-avatar-big" id="profile-av-big">A</div>
+        <div class="profile-name-big" id="profile-fullname">—</div>
+        <div class="profile-role-tag">🛠 Admin</div>
+      </div>
+      <div style="border-top:1px solid var(--border);padding-top:16px">
+        <div class="inline-row"><span class="ikey">Email</span><span class="ival" id="profile-email-disp">—</span></div>
+        <div class="inline-row"><span class="ikey">Phone</span><span class="ival" id="profile-phone-disp">—</span></div>
+        <div class="inline-row"><span class="ikey">Status</span><span class="pill green"><span class="pill-dot"></span>Active</span></div>
+        <div class="inline-row"><span class="ikey">Member Since</span><span class="ival" id="profile-since">—</span></div>
+      </div>
+    </div>
+    <div class="gstatic card">
+      <div class="card-lbl">Edit Information</div>
+      <div class="mfield"><label>Full Name</label><input type="text" id="p-fullname" placeholder="Your full name"></div>
+      <div class="mfield"><label>Phone Number</label><input type="tel" id="p-phone" placeholder="+63 9XX XXX XXXX"></div>
+      <div class="mfield">
+        <label>Email Address</label>
+        <input type="email" id="p-email" placeholder="your@email.com" disabled style="opacity:.55;cursor:not-allowed">
+        <div class="mfield-hint">Email cannot be changed here. Contact superadmin if needed.</div>
+      </div>
+      <div style="display:flex;justify-content:flex-end;margin-top:8px">
+        <button class="btn-primary" onclick="saveAdminProfile()">Save Changes</button>
+      </div>
+    </div>
+  </div>
+  <div class="gstatic card">
+    <div class="card-lbl">Change Password</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px">
+      <div class="mfield" style="margin-bottom:0"><label>Current Password</label><input type="password" id="p-cur-pw" placeholder="Enter current password"></div>
+      <div class="mfield" style="margin-bottom:0">
+        <label>New Password</label>
+        <input type="password" id="p-new-pw" placeholder="Min. 8 characters" oninput="checkPwStrength(this.value)">
+        <div class="pw-strength-bar"><div class="pw-strength-fill" id="pw-strength-fill" style="width:0%;background:var(--danger)"></div></div>
+        <div class="pw-strength-label" id="pw-strength-label" style="color:var(--text3)">Enter a new password</div>
+      </div>
+      <div class="mfield" style="margin-bottom:0"><label>Confirm New Password</label><input type="password" id="p-confirm-pw" placeholder="Re-enter new password"></div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;margin-top:18px">
+      <button class="btn-primary" onclick="changeAdminPassword()">Update Password</button>
+    </div>
+  </div>
+</div>
+
 </div></div>
 
-<!-- MODALS -->
+<!-- ═══════════ MODALS ═══════════ -->
 <div class="modal-overlay" id="modal-add-staff">
   <div class="modal">
-    <div class="modal-hdr">
-      <div class="modal-ttl">Add Staff Member</div>
-      <button class="modal-close" onclick="closeModal('add-staff')">✕</button>
-    </div>
+    <div class="modal-hdr"><div class="modal-ttl">Add Staff Member</div><button class="modal-close" onclick="closeModal('add-staff')">✕</button></div>
     <div class="mfield"><label>Full Name</label><input type="text" id="sf-name" placeholder="e.g. Juan dela Cruz"></div>
     <div class="mfield"><label>Email Address</label><input type="email" id="sf-email" placeholder="staff@laundry.com"></div>
     <div class="mfield"><label>Password (min. 8 characters)</label><input type="password" id="sf-pass" placeholder="Secure password"></div>
@@ -688,20 +805,15 @@ td{padding:12px 16px;vertical-align:middle;font-size:.95rem}
 
 <div class="modal-overlay" id="modal-edit-staff">
   <div class="modal">
-    <div class="modal-hdr">
-      <div class="modal-ttl">Edit Staff Member</div>
-      <button class="modal-close" onclick="closeModal('edit-staff')">✕</button>
-    </div>
+    <div class="modal-hdr"><div class="modal-ttl">Edit Staff Member</div><button class="modal-close" onclick="closeModal('edit-staff')">✕</button></div>
     <input type="hidden" id="ef-id">
     <div class="mfield"><label>Full Name</label><input type="text" id="ef-name"></div>
     <div class="mfield"><label>Email Address</label><input type="email" id="ef-email"></div>
-    <div class="mfield"><label>Status</label>
-      <select id="ef-status"><option value="active">Active</option><option value="inactive">Inactive</option></select>
-    </div>
+    <div class="mfield"><label>Status</label><select id="ef-status"><option value="active">Active</option><option value="inactive">Inactive</option></select></div>
     <div class="mfield">
       <label>New Password <span style="font-size:.75rem;opacity:.7;text-transform:none;letter-spacing:0">(leave blank to keep current)</span></label>
       <input type="password" id="ef-pass" placeholder="Enter new password…" autocomplete="new-password">
-      <div class="mfield-hint">Minimum 8 characters. Leave empty to keep existing password.</div>
+      <div class="mfield-hint">Minimum 8 characters.</div>
     </div>
     <div class="modal-btns">
       <button class="btn-ghost" onclick="closeModal('edit-staff')">Cancel</button>
@@ -712,15 +824,29 @@ td{padding:12px 16px;vertical-align:middle;font-size:.95rem}
 
 <div class="modal-overlay" id="modal-add-promo">
   <div class="modal" style="max-width:480px">
-    <div class="modal-hdr">
-      <div class="modal-ttl">Add Promo Code</div>
-      <button class="modal-close" onclick="closeModal('add-promo')">✕</button>
-    </div>
+    <div class="modal-hdr"><div class="modal-ttl">Add Promo Code</div><button class="modal-close" onclick="closeModal('add-promo')">✕</button></div>
     <div class="mfield"><label>Promo Code (uppercase)</label><input type="text" id="pr-code" placeholder="e.g. LOYAL20" style="text-transform:uppercase"></div>
     <div class="mfield"><label>Discount % (1–100)</label><input type="number" id="pr-disc" placeholder="e.g. 20" min="1" max="100"></div>
     <div class="modal-btns">
       <button class="btn-ghost" onclick="closeModal('add-promo')">Cancel</button>
       <button class="btn-primary" id="btn-add-promo" onclick="addPromoSubmit()">Add Promo</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM DELETE MODAL -->
+<div class="modal-overlay" id="modal-confirm-delete">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-hdr"><div class="modal-ttl" style="color:var(--danger)">⚠️ Permanent Delete</div><button class="modal-close" onclick="closeModal('confirm-delete')">✕</button></div>
+    <div style="background:var(--danger-bg);border:1px solid var(--danger-border);border-radius:12px;padding:16px;margin-bottom:16px">
+      <div style="font-size:.9rem;color:var(--text2);line-height:1.6">
+        This action is <strong>irreversible</strong>. The record and all associated data will be permanently deleted from the system.<br><br>
+        Are you sure you want to delete <strong id="del-target-name"></strong>?
+      </div>
+    </div>
+    <div class="modal-btns">
+      <button class="btn-ghost" onclick="closeModal('confirm-delete')">Cancel</button>
+      <button class="btn-danger-solid" id="btn-confirm-delete" onclick="confirmDeleteAction()">Delete Permanently</button>
     </div>
   </div>
 </div>
@@ -731,28 +857,21 @@ td{padding:12px 16px;vertical-align:middle;font-size:.95rem}
   <div class="ticker-inner">
     <span class="ticker-item">Admin Dashboard</span><span class="ticker-dot"></span>
     <span class="ticker-item">Laundry Lounge</span><span class="ticker-dot"></span>
-    <span class="ticker-item">Revenue · Analytics · Staff · Orders · Reports</span><span class="ticker-dot"></span>
+    <span class="ticker-item">Revenue · Analytics · Staff · Orders · Feedback</span><span class="ticker-dot"></span>
     <span class="ticker-item">Est. 2026</span><span class="ticker-dot"></span>
     <span class="ticker-item">Admin Dashboard</span><span class="ticker-dot"></span>
     <span class="ticker-item">Laundry Lounge</span><span class="ticker-dot"></span>
-    <span class="ticker-item">Revenue · Analytics · Staff · Orders · Reports</span><span class="ticker-dot"></span>
+    <span class="ticker-item">Revenue · Analytics · Staff · Orders · Feedback</span><span class="ticker-dot"></span>
     <span class="ticker-item">Est. 2026</span><span class="ticker-dot"></span>
   </div>
 </div>
 
 <script>
+'use strict';
+
 // ── THEME ──
-function toggleTheme(){
-  const h=document.documentElement,isDark=h.getAttribute('data-theme')==='dark';
-  h.setAttribute('data-theme',isDark?'light':'dark');
-  document.getElementById('themeBtn').textContent=isDark?'☀':'☾';
-  localStorage.setItem('adm-theme',isDark?'light':'dark');
-  setTimeout(()=>rebuildAllCharts(),60);
-}
-(function(){
-  const t=localStorage.getItem('adm-theme');
-  if(t){document.documentElement.setAttribute('data-theme',t);document.getElementById('themeBtn').textContent=t==='dark'?'☾':'☀';}
-})();
+function toggleTheme(){const h=document.documentElement,isDark=h.getAttribute('data-theme')==='dark';h.setAttribute('data-theme',isDark?'light':'dark');document.getElementById('themeBtn').textContent=isDark?'☀':'☾';localStorage.setItem('adm-theme',isDark?'light':'dark');setTimeout(()=>rebuildAllCharts(),60);}
+(function(){const t=localStorage.getItem('adm-theme');if(t){document.documentElement.setAttribute('data-theme',t);document.getElementById('themeBtn').textContent=t==='dark'?'☾':'☀';}})();
 
 // ── SIDEBAR ──
 const sidebar=document.getElementById('sidebar'),overlay=document.getElementById('overlay');
@@ -768,17 +887,18 @@ function showSection(id,el){
   document.getElementById('sec-'+id).classList.add('active');
   if(el)el.classList.add('active');
   if(window.innerWidth<900)closeSidebar();
-  const map={dashboard:loadDashboard,analytics:loadAnalytics,revenue:loadRevenue,orders:loadOrders,staff:loadStaff,customers:loadCustomers,pricing:loadPricing,promos:loadPromos,reports:loadReports};
+  const map={
+    dashboard:loadDashboard,analytics:loadAnalytics,revenue:loadRevenue,
+    orders:loadOrders,staff:loadStaff,'staff-archive':loadStaffArchive,
+    customers:loadCustomers,'customers-archive':loadCustomersArchive,
+    promos:loadPromos,feedback:loadFeedback,reports:loadReports,profile:loadAdminProfile
+  };
   if(map[id])map[id]();
 }
 
 // ── TOAST ──
 let _toastTimer;
-function showToast(msg,type='info'){
-  const t=document.getElementById('toast');
-  t.textContent=msg;t.className='toast '+type+' show';
-  clearTimeout(_toastTimer);_toastTimer=setTimeout(()=>t.classList.remove('show'),3200);
-}
+function showToast(msg,type='info'){const t=document.getElementById('toast');t.textContent=msg;t.className='toast '+type+' show';clearTimeout(_toastTimer);_toastTimer=setTimeout(()=>t.classList.remove('show'),3200);}
 
 // ── MODALS ──
 function openModal(id){document.getElementById('modal-'+id).classList.add('open')}
@@ -798,18 +918,8 @@ async function api(url,opts={}){
 }
 
 // ── FILTERS ──
-function filterTableRows(tbodyId,query){
-  const q=query.toLowerCase();
-  document.querySelectorAll('#'+tbodyId+' tr').forEach(r=>{
-    r.style.display=!q||r.innerText.toLowerCase().includes(q)?'':'none';
-  });
-}
-function filterTableByStatus(tbodyId,val){
-  document.querySelectorAll('#'+tbodyId+' tr').forEach(r=>{
-    if(!val){r.style.display='';return;}
-    r.style.display=r.innerText.toLowerCase().includes(val)?'':'none';
-  });
-}
+function filterTableRows(tbodyId,query){const q=query.toLowerCase();document.querySelectorAll('#'+tbodyId+' tr').forEach(r=>{r.style.display=!q||r.innerText.toLowerCase().includes(q)?'':'none';});}
+function filterTableByStatus(tbodyId,val){document.querySelectorAll('#'+tbodyId+' tr').forEach(r=>{if(!val){r.style.display='';return;}r.style.display=r.innerText.toLowerCase().includes(val)?'':'none';});}
 
 // ── HELPERS ──
 const avBg=['linear-gradient(135deg,#00B4D8,#007A9E)','linear-gradient(135deg,#2A5BAA,#1A3A7A)','linear-gradient(135deg,#0077A8,#004E70)','linear-gradient(135deg,#1A8080,#0D5050)','linear-gradient(135deg,#6A35A0,#4A1A80)'];
@@ -822,319 +932,56 @@ function isDark(){return document.documentElement.getAttribute('data-theme')==='
 function accentColor(){return isDark()?'#00D4F5':'#00B4D8'}
 function gridColor(){return isDark()?'rgba(255,255,255,0.06)':'rgba(0,0,0,0.06)'}
 function textColor(){return isDark()?'rgba(128,200,220,0.7)':'rgba(27,94,114,0.6)'}
-
 const PIE_COLORS=['#00B4D8','#0077A8','#1A8080','#6A35A0','#A07010','#B85000'];
 const PIE_COLORS_DARK=['#00D4F5','#0099CC','#40C0C0','#A878E0','#D4A030','#F4A460'];
-
-function buildChartDefaults(){
-  return{
-    responsive:true,maintainAspectRatio:false,
-    plugins:{legend:{display:false},tooltip:{titleFont:{size:13},bodyFont:{size:12}}},
-    scales:{
-      x:{ticks:{color:textColor(),font:{size:12},autoSkip:false,maxRotation:0},grid:{color:gridColor()},border:{display:false}},
-      y:{ticks:{color:textColor(),font:{size:12}},grid:{color:gridColor()},border:{display:false}}
-    }
-  };
-}
-
-function makeOrDestroy(id,type,data,options){
-  if(_charts[id]){_charts[id].destroy();delete _charts[id];}
-  const canvas=document.getElementById(id);
-  if(!canvas)return;
-  _charts[id]=new Chart(canvas,{type,data,options});
-}
-
-function rebuildAllCharts(){
-  const active=id=>document.getElementById(id)?.classList.contains('active');
-  if(active('sec-dashboard'))buildDashboardCharts(_lastData.dash);
-  if(active('sec-analytics'))buildAnalyticsCharts(_lastData.analytics);
-  if(active('sec-revenue'))buildRevenueCharts(_lastData.rev);
-}
+function buildChartDefaults(){return{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{titleFont:{size:13},bodyFont:{size:12}}},scales:{x:{ticks:{color:textColor(),font:{size:12},autoSkip:false,maxRotation:0},grid:{color:gridColor()},border:{display:false}},y:{ticks:{color:textColor(),font:{size:12}},grid:{color:gridColor()},border:{display:false}}}};}
+function makeOrDestroy(id,type,data,options){if(_charts[id]){_charts[id].destroy();delete _charts[id];}const canvas=document.getElementById(id);if(!canvas)return;_charts[id]=new Chart(canvas,{type,data,options});}
+function rebuildAllCharts(){const active=id=>document.getElementById(id)?.classList.contains('active');if(active('sec-dashboard'))buildDashboardCharts(_lastData.dash);if(active('sec-analytics'))buildAnalyticsCharts(_lastData.analytics);if(active('sec-revenue'))buildRevenueCharts(_lastData.rev);}
 window.addEventListener('resize',()=>rebuildAllCharts());
-
-// ── DATA STORE for re-render ──
 const _lastData={dash:null,analytics:null,rev:null};
 
-// ── SHARED DATA FETCH ──
-async function fetchWeeklyRevenue(){
-  const res=await api('/api/admin/orders');
-  if(!res.ok)return new Array(7).fill(0);
-  const orders=res.data||[];
-  const today=new Date();
-  const dayRevenue=new Array(7).fill(0);
-  orders.forEach(o=>{
-    if(!o.created_at||['cancelled'].includes(o.status))return;
-    const d=new Date(o.created_at);
-    for(let i=6;i>=0;i--){
-      const ref=new Date(today);ref.setDate(ref.getDate()-i);
-      if(d.toDateString()===ref.toDateString())dayRevenue[6-i]+=Number(o.amount||0);
-    }
-  });
-  return dayRevenue;
-}
-
-async function fetchMonthlyRevenue(){
-  const res=await api('/api/admin/orders');
-  if(!res.ok)return new Array(6).fill(0);
-  const orders=res.data||[];
-  const today=new Date();
-  const monthRevenue=new Array(6).fill(0);
-  orders.forEach(o=>{
-    if(!o.created_at||['cancelled'].includes(o.status))return;
-    const d=new Date(o.created_at);
-    for(let i=5;i>=0;i--){
-      const ref=new Date(today.getFullYear(),today.getMonth()-i,1);
-      if(d.getFullYear()===ref.getFullYear()&&d.getMonth()===ref.getMonth())monthRevenue[5-i]+=Number(o.amount||0);
-    }
-  });
-  return monthRevenue;
-}
-
-async function fetchDailyRevenueThisMonth(){
-  const res=await api('/api/admin/orders');
-  if(!res.ok)return{labels:[],values:[]};
-  const orders=res.data||[];
-  const today=new Date();
-  const daysInMonth=new Date(today.getFullYear(),today.getMonth()+1,0).getDate();
-  const curDay=today.getDate();
-  const values=new Array(curDay).fill(0);
-  const labels=[];
-  for(let i=1;i<=curDay;i++)labels.push(String(i));
-  orders.forEach(o=>{
-    if(!o.created_at||['cancelled'].includes(o.status))return;
-    const d=new Date(o.created_at);
-    if(d.getFullYear()===today.getFullYear()&&d.getMonth()===today.getMonth()){
-      const day=d.getDate();
-      if(day>=1&&day<=curDay)values[day-1]+=Number(o.amount||0);
-    }
-  });
-  return{labels,values};
-}
-
-async function fetchServiceMix(){
-  const res=await api('/api/admin/orders');
-  if(!res.ok)return[];
-  const orders=res.data||[];
-  const map={};
-  orders.forEach(o=>{
-    if(['cancelled'].includes(o.status))return;
-    const k=o.service_type_label||o.service_type||'Unknown';
-    map[k]=(map[k]||0)+1;
-  });
-  return Object.entries(map).map(([label,value])=>({label,value}));
-}
-
-async function fetchWeeklyServices(){
-  const res=await api('/api/admin/orders');
-  if(!res.ok)return new Array(7).fill(0);
-  const orders=res.data||[];
-  const today=new Date();
-  const dayCounts=new Array(7).fill(0);
-  orders.forEach(o=>{
-    if(!o.created_at)return;
-    const d=new Date(o.created_at);
-    for(let i=6;i>=0;i--){
-      const ref=new Date(today);ref.setDate(ref.getDate()-i);
-      if(d.toDateString()===ref.toDateString())dayCounts[6-i]++;
-    }
-  });
-  return dayCounts;
-}
-
-function buildWeekLabels(){
-  const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],out=[],today=new Date();
-  for(let i=6;i>=0;i--){const d=new Date(today);d.setDate(d.getDate()-i);out.push(days[d.getDay()]);}
-  return out;
-}
-function buildMonthLabels(){
-  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],out=[],today=new Date();
-  for(let i=5;i>=0;i--){const d=new Date(today.getFullYear(),today.getMonth()-i,1);out.push(months[d.getMonth()]);}
-  return out;
-}
-
-// ── CHART BUILDERS ──
-function buildLineChart(id,labels,values){
-  const ac=accentColor();
-  makeOrDestroy(id,'line',{
-    labels,
-    datasets:[{
-      label:'Revenue',data:values,
-      borderColor:ac,borderWidth:2.5,
-      pointBackgroundColor:ac,pointRadius:3,pointHoverRadius:5,
-      backgroundColor:isDark()?'rgba(0,212,245,0.10)':'rgba(0,180,216,0.10)',
-      fill:true,tension:0.35,
-    }]
-  },{
-    ...buildChartDefaults(),
-    plugins:{...buildChartDefaults().plugins,tooltip:{callbacks:{label:c=>'₱'+Number(c.raw).toLocaleString()}}},
-  });
-}
-
-function buildBarChart(id,labels,values){
-  const ac=accentColor();
-  makeOrDestroy(id,'bar',{
-    labels,
-    datasets:[{
-      label:'Revenue',data:values,
-      backgroundColor:isDark()?'rgba(0,212,245,0.55)':'rgba(0,180,216,0.55)',
-      borderColor:ac,borderWidth:1.5,borderRadius:6,
-    }]
-  },{
-    ...buildChartDefaults(),
-    plugins:{...buildChartDefaults().plugins,tooltip:{callbacks:{label:c=>'₱'+Number(c.raw).toLocaleString()}}},
-  });
-}
-
-function buildServicesBarChart(id,labels,values){
-  const ac=accentColor();
-  makeOrDestroy(id,'bar',{
-    labels,
-    datasets:[{
-      label:'Services',data:values,
-      backgroundColor:isDark()?'rgba(0,212,245,0.55)':'rgba(0,180,216,0.55)',
-      borderColor:ac,borderWidth:1.5,borderRadius:6,
-    }]
-  },{...buildChartDefaults()});
-}
-
-function buildPieChart(id,mix,legendId){
-  if(!mix||!mix.length)return;
-  const colors=isDark()?PIE_COLORS_DARK:PIE_COLORS;
-  makeOrDestroy(id,'doughnut',{
-    labels:mix.map(m=>m.label),
-    datasets:[{
-      data:mix.map(m=>m.value),
-      backgroundColor:mix.map((_,i)=>colors[i%colors.length]),
-      borderWidth:2,
-      borderColor:isDark()?'rgba(0,0,0,0.4)':'rgba(255,255,255,0.6)',
-    }]
-  },{
-    responsive:true,maintainAspectRatio:false,
-    cutout:'52%',
-    plugins:{
-      legend:{display:false},
-      tooltip:{callbacks:{label:c=>`${c.label}: ${c.raw} orders`}},
-    }
-  });
-  if(legendId){
-    const total=mix.reduce((s,m)=>s+m.value,0);
-    document.getElementById(legendId).innerHTML=mix.map((m,i)=>
-      `<div class="chart-legend-item">
-        <div class="chart-legend-dot" style="background:${colors[i%colors.length]}"></div>
-        ${m.label} ${total?Math.round(m.value/total*100)+'%':''}
-      </div>`
-    ).join('');
-  }
-}
+async function fetchWeeklyRevenue(){const res=await api('/api/admin/orders');if(!res.ok)return new Array(7).fill(0);const orders=res.data||[];const today=new Date();const dayRevenue=new Array(7).fill(0);orders.forEach(o=>{if(!o.created_at||['cancelled'].includes(o.status))return;const d=new Date(o.created_at);for(let i=6;i>=0;i--){const ref=new Date(today);ref.setDate(ref.getDate()-i);if(d.toDateString()===ref.toDateString())dayRevenue[6-i]+=Number(o.amount||0);}});return dayRevenue;}
+async function fetchMonthlyRevenue(){const res=await api('/api/admin/orders');if(!res.ok)return new Array(6).fill(0);const orders=res.data||[];const today=new Date();const monthRevenue=new Array(6).fill(0);orders.forEach(o=>{if(!o.created_at||['cancelled'].includes(o.status))return;const d=new Date(o.created_at);for(let i=5;i>=0;i--){const ref=new Date(today.getFullYear(),today.getMonth()-i,1);if(d.getFullYear()===ref.getFullYear()&&d.getMonth()===ref.getMonth())monthRevenue[5-i]+=Number(o.amount||0);}});return monthRevenue;}
+async function fetchDailyRevenueThisMonth(){const res=await api('/api/admin/orders');if(!res.ok)return{labels:[],values:[]};const orders=res.data||[];const today=new Date();const curDay=today.getDate();const values=new Array(curDay).fill(0);const labels=[];for(let i=1;i<=curDay;i++)labels.push(String(i));orders.forEach(o=>{if(!o.created_at||['cancelled'].includes(o.status))return;const d=new Date(o.created_at);if(d.getFullYear()===today.getFullYear()&&d.getMonth()===today.getMonth()){const day=d.getDate();if(day>=1&&day<=curDay)values[day-1]+=Number(o.amount||0);}});return{labels,values};}
+async function fetchServiceMix(){const res=await api('/api/admin/orders');if(!res.ok)return[];const orders=res.data||[];const map={};orders.forEach(o=>{if(['cancelled'].includes(o.status))return;const k=o.service_type_label||o.service_type||'Unknown';map[k]=(map[k]||0)+1;});return Object.entries(map).map(([label,value])=>({label,value}));}
+async function fetchWeeklyServices(){const res=await api('/api/admin/orders');if(!res.ok)return new Array(7).fill(0);const orders=res.data||[];const today=new Date();const dayCounts=new Array(7).fill(0);orders.forEach(o=>{if(!o.created_at)return;const d=new Date(o.created_at);for(let i=6;i>=0;i--){const ref=new Date(today);ref.setDate(ref.getDate()-i);if(d.toDateString()===ref.toDateString())dayCounts[6-i]++;}});return dayCounts;}
+function buildWeekLabels(){const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],out=[],today=new Date();for(let i=6;i>=0;i--){const d=new Date(today);d.setDate(d.getDate()-i);out.push(days[d.getDay()]);}return out;}
+function buildMonthLabels(){const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],out=[],today=new Date();for(let i=5;i>=0;i--){const d=new Date(today.getFullYear(),today.getMonth()-i,1);out.push(months[d.getMonth()]);}return out;}
+function buildLineChart(id,labels,values){const ac=accentColor();makeOrDestroy(id,'line',{labels,datasets:[{label:'Revenue',data:values,borderColor:ac,borderWidth:2.5,pointBackgroundColor:ac,pointRadius:3,pointHoverRadius:5,backgroundColor:isDark()?'rgba(0,212,245,0.10)':'rgba(0,180,216,0.10)',fill:true,tension:0.35}]},{...buildChartDefaults(),plugins:{...buildChartDefaults().plugins,tooltip:{callbacks:{label:c=>'₱'+Number(c.raw).toLocaleString()}}}});}
+function buildBarChart(id,labels,values){const ac=accentColor();makeOrDestroy(id,'bar',{labels,datasets:[{label:'Revenue',data:values,backgroundColor:isDark()?'rgba(0,212,245,0.55)':'rgba(0,180,216,0.55)',borderColor:ac,borderWidth:1.5,borderRadius:6}]},{...buildChartDefaults(),plugins:{...buildChartDefaults().plugins,tooltip:{callbacks:{label:c=>'₱'+Number(c.raw).toLocaleString()}}}});}
+function buildServicesBarChart(id,labels,values){const ac=accentColor();makeOrDestroy(id,'bar',{labels,datasets:[{label:'Services',data:values,backgroundColor:isDark()?'rgba(0,212,245,0.55)':'rgba(0,180,216,0.55)',borderColor:ac,borderWidth:1.5,borderRadius:6}]},{...buildChartDefaults()});}
+function buildPieChart(id,mix,legendId){if(!mix||!mix.length)return;const colors=isDark()?PIE_COLORS_DARK:PIE_COLORS;makeOrDestroy(id,'doughnut',{labels:mix.map(m=>m.label),datasets:[{data:mix.map(m=>m.value),backgroundColor:mix.map((_,i)=>colors[i%colors.length]),borderWidth:2,borderColor:isDark()?'rgba(0,0,0,0.4)':'rgba(255,255,255,0.6)'}]},{responsive:true,maintainAspectRatio:false,cutout:'52%',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.label}: ${c.raw} orders`}}}});if(legendId){const total=mix.reduce((s,m)=>s+m.value,0);document.getElementById(legendId).innerHTML=mix.map((m,i)=>`<div class="chart-legend-item"><div class="chart-legend-dot" style="background:${colors[i%colors.length]}"></div>${m.label} ${total?Math.round(m.value/total*100)+'%':''}</div>`).join('');}}
 
 // ── DASHBOARD ──
-function buildDashboardCharts(data){
-  if(!data)return;
-  buildLineChart('dash-daily-line',data.dailyMonth.labels,data.dailyMonth.values);
-  buildBarChart('dash-weekly-bar',data.weekLabels,data.weeklyRev);
-  buildPieChart('dash-pie',data.mix,'dash-pie-legend');
-}
-
+function buildDashboardCharts(data){if(!data)return;buildLineChart('dash-daily-line',data.dailyMonth.labels,data.dailyMonth.values);buildBarChart('dash-weekly-bar',data.weekLabels,data.weeklyRev);buildPieChart('dash-pie',data.mix,'dash-pie-legend');}
 async function loadDashboard(){
-  const [ana,rev,perf,promos,staff,weeklyRev,dailyMonth,mix]=await Promise.all([
-    api('/api/admin/analytics'),api('/api/admin/revenue'),api('/api/admin/staff-performance'),
-    api('/api/promos'),api('/api/staff'),
-    fetchWeeklyRevenue(),fetchDailyRevenueThisMonth(),fetchServiceMix(),
-  ]);
-
-  if(ana.ok){
-    document.getElementById('d-today').textContent=ana.data.today_services??'—';
-    if(ana.data.top_service){
-      document.getElementById('top-svc-name').textContent=ana.data.top_service.service_type||'—';
-      document.getElementById('top-svc-count').textContent=`${ana.data.top_service.total} orders total`;
-      document.getElementById('top-svc-badge').textContent=ana.data.top_service.service_type||'—';
-    }
-  }
-  if(rev.ok){
-    document.getElementById('d-daily').textContent='₱'+(Number(rev.data.daily_income)||0).toLocaleString();
-  }
+  const [ana,rev,perf,promos,staff,weeklyRev,dailyMonth,mix]=await Promise.all([api('/api/admin/analytics'),api('/api/admin/revenue'),api('/api/admin/staff-performance'),api('/api/promos'),api('/api/staff'),fetchWeeklyRevenue(),fetchDailyRevenueThisMonth(),fetchServiceMix()]);
+  if(ana.ok){document.getElementById('d-today').textContent=ana.data.today_services??'—';if(ana.data.top_service){document.getElementById('top-svc-name').textContent=ana.data.top_service.service_type||'—';document.getElementById('top-svc-count').textContent=`${ana.data.top_service.total} orders total`;document.getElementById('top-svc-badge').textContent=ana.data.top_service.service_type||'—';}}
+  if(rev.ok)document.getElementById('d-daily').textContent='₱'+(Number(rev.data.daily_income)||0).toLocaleString();
   if(promos.ok)document.getElementById('d-promos').textContent=(promos.data||[]).length;
   if(staff.ok)document.getElementById('d-staff').textContent=(staff.data||[]).filter(s=>s.status==='active').length;
-  if(perf.ok){
-    const p=perf.data||[];
-    const max=Math.max(...p.map(x=>x.total_services||0))||1;
-    document.getElementById('d-perf-list').innerHTML=p.length?p.slice(0,4).map(x=>`
-      <div class="prog-row">
-        <span class="prog-name">${x.full_name}</span>
-        <div class="prog-bg"><div class="prog-fill" style="width:${Math.round((x.total_services||0)/max*100)}%"></div></div>
-        <span class="prog-val">${x.total_services||0}</span>
-      </div>`).join('')
-    :'<div class="empty-state">No staff data.</div>';
-  }
-
+  if(perf.ok){const p=perf.data||[];const max=Math.max(...p.map(x=>x.total_services||0))||1;document.getElementById('d-perf-list').innerHTML=p.length?p.slice(0,4).map(x=>`<div class="prog-row"><span class="prog-name">${x.full_name}</span><div class="prog-bg"><div class="prog-fill" style="width:${Math.round((x.total_services||0)/max*100)}%"></div></div><span class="prog-val">${x.total_services||0}</span></div>`).join(''):'<div class="empty-state">No staff data.</div>';}
   const weekLabels=buildWeekLabels();
   _lastData.dash={dailyMonth,weekLabels,weeklyRev,mix};
   buildDashboardCharts(_lastData.dash);
 }
 
 // ── ANALYTICS ──
-function buildAnalyticsCharts(data){
-  if(!data)return;
-  buildServicesBarChart('an-services-bar',data.weekLabels,data.weeklyServices);
-  buildPieChart('an-pie',data.mix,'an-pie-legend');
-}
-
+function buildAnalyticsCharts(data){if(!data)return;buildServicesBarChart('an-services-bar',data.weekLabels,data.weeklyServices);buildPieChart('an-pie',data.mix,'an-pie-legend');}
 async function loadAnalytics(){
-  const [ana,weeklyServices,mix]=await Promise.all([
-    api('/api/admin/analytics'),fetchWeeklyServices(),fetchServiceMix(),
-  ]);
-
-  if(ana.ok){
-    document.getElementById('an-today').textContent=ana.data.today_services||0;
-    const ordRes=await api('/api/admin/orders');
-    if(ordRes.ok){
-      const today=new Date();
-      const startOfWeek=new Date(today);startOfWeek.setDate(today.getDate()-6);startOfWeek.setHours(0,0,0,0);
-      const startOfMonth=new Date(today.getFullYear(),today.getMonth(),1);
-      let weekCount=0,monthCount=0;
-      (ordRes.data||[]).forEach(o=>{
-        if(!o.created_at)return;
-        const d=new Date(o.created_at);
-        if(d>=startOfWeek)weekCount++;
-        if(d>=startOfMonth)monthCount++;
-      });
-      document.getElementById('an-week').textContent=weekCount;
-      document.getElementById('an-month').textContent=monthCount;
-    }
-    if(ana.data.top_service){
-      document.getElementById('an-top-svc').innerHTML=`
-        <div class="inline-row"><span class="ikey">Top Service</span><span class="ival">${ana.data.top_service.service_type||'—'}</span></div>
-        <div class="inline-row"><span class="ikey">Total Orders</span><span class="ival">${ana.data.top_service.total||0}</span></div>`;
-    }
-  }
-
+  const [ana,weeklyServices,mix]=await Promise.all([api('/api/admin/analytics'),fetchWeeklyServices(),fetchServiceMix()]);
+  if(ana.ok){document.getElementById('an-today').textContent=ana.data.today_services||0;const ordRes=await api('/api/admin/orders');if(ordRes.ok){const today=new Date();const startOfWeek=new Date(today);startOfWeek.setDate(today.getDate()-6);startOfWeek.setHours(0,0,0,0);const startOfMonth=new Date(today.getFullYear(),today.getMonth(),1);let weekCount=0,monthCount=0;(ordRes.data||[]).forEach(o=>{if(!o.created_at)return;const d=new Date(o.created_at);if(d>=startOfWeek)weekCount++;if(d>=startOfMonth)monthCount++;});document.getElementById('an-week').textContent=weekCount;document.getElementById('an-month').textContent=monthCount;}if(ana.data.top_service){document.getElementById('an-top-svc').innerHTML=`<div class="inline-row"><span class="ikey">Top Service</span><span class="ival">${ana.data.top_service.service_type||'—'}</span></div><div class="inline-row"><span class="ikey">Total Orders</span><span class="ival">${ana.data.top_service.total||0}</span></div>`;}}
   const weekLabels=buildWeekLabels();
   _lastData.analytics={weekLabels,weeklyServices,mix};
   buildAnalyticsCharts(_lastData.analytics);
 }
 
 // ── REVENUE ──
-function buildRevenueCharts(data){
-  if(!data)return;
-  buildLineChart('rv-daily-line',data.dailyMonth.labels,data.dailyMonth.values);
-  buildBarChart('rv-weekly-bar',data.weekLabels,data.weeklyRev);
-  buildBarChart('rv-monthly-bar',data.monthLabels,data.monthlyRev);
-}
-
+function buildRevenueCharts(data){if(!data)return;buildLineChart('rv-daily-line',data.dailyMonth.labels,data.dailyMonth.values);buildBarChart('rv-weekly-bar',data.weekLabels,data.weeklyRev);buildBarChart('rv-monthly-bar',data.monthLabels,data.monthlyRev);}
 async function loadRevenue(){
-  const [rev,weeklyRev,monthlyRev,dailyMonth]=await Promise.all([
-    api('/api/admin/revenue'),fetchWeeklyRevenue(),fetchMonthlyRevenue(),fetchDailyRevenueThisMonth(),
-  ]);
-
-  if(rev.ok){
-    const daily=Number(rev.data.daily_income)||0,monthly=Number(rev.data.monthly_income)||0;
-    document.getElementById('rv-daily').textContent=daily.toLocaleString();
-    document.getElementById('rv-monthly').textContent=monthly.toLocaleString();
-    document.getElementById('rv-profit').textContent=Math.round(monthly*.6).toLocaleString();
-  }
-
-  const weekLabels=buildWeekLabels();
-  const monthLabels=buildMonthLabels();
+  const [rev,weeklyRev,monthlyRev,dailyMonth]=await Promise.all([api('/api/admin/revenue'),fetchWeeklyRevenue(),fetchMonthlyRevenue(),fetchDailyRevenueThisMonth()]);
+  if(rev.ok){const daily=Number(rev.data.daily_income)||0,monthly=Number(rev.data.monthly_income)||0;document.getElementById('rv-daily').textContent=daily.toLocaleString();document.getElementById('rv-monthly').textContent=monthly.toLocaleString();document.getElementById('rv-profit').textContent=Math.round(monthly*.6).toLocaleString();}
+  const weekLabels=buildWeekLabels();const monthLabels=buildMonthLabels();
   _lastData.rev={dailyMonth,weekLabels,weeklyRev,monthLabels,monthlyRev};
   buildRevenueCharts(_lastData.rev);
 }
@@ -1153,18 +1000,18 @@ async function loadOrders(){
       <td><span class="mono-cell">${o.service_type_label||o.service_type||'—'}</span></td>
       <td><span class="mono-cell">${o.weight_kg||'—'} kg</span></td>
       <td><span class="mono-cell">₱${Number(o.amount||0).toLocaleString()}</span></td>
+      <td>${o.discount_pct&&Number(o.discount_pct)>0?`<span class="pill amber">${Number(o.discount_pct)}% off${o.promo_code?' ('+o.promo_code+')':''}</span>`:'<span class="mono-cell">—</span>'}</td>
       <td><span class="pill ${STATUS_PILL[o.status]||'amber'}">${STATUS_LABEL[o.status]||o.status}</span></td>
       <td><span class="mono-cell">${o.created_at?new Date(o.created_at).toLocaleDateString('en-PH'):'—'}</span></td>
     </tr>`).join('')
-  :'<tr><td colspan="8" class="loading-row">No orders found</td></tr>';
+  :'<tr><td colspan="9" class="loading-row">No orders found</td></tr>';
 }
 
 // ── STAFF ──
 async function loadStaff(){
   const [staffRes,perfRes]=await Promise.all([api('/api/staff'),api('/api/admin/staff-performance')]);
   if(!staffRes.ok){showToast('Failed to load staff','error');return;}
-  const staff=staffRes.data||[];
-  const perf=perfRes.ok?(perfRes.data||[]):[];
+  const staff=staffRes.data||[];const perf=perfRes.ok?(perfRes.data||[]):[];
   const perfMap={};perf.forEach(p=>{perfMap[p.full_name]={services:p.total_services||0,revenue:Number(p.total_revenue)||0};});
   const max=perf.length?Math.max(...perf.map(p=>p.total_services||0))||1:1;
   document.getElementById('st-count').textContent=`${staff.length} total`;
@@ -1178,81 +1025,54 @@ async function loadStaff(){
       <td><span class="mono-cell">₱${pm.revenue.toLocaleString()}</span></td>
       <td><div style="display:flex;align-items:center;gap:7px"><div class="prog-bg" style="flex:1"><div class="prog-fill" style="width:${eff}%"></div></div><span class="prog-val">${eff}%</span></div></td>
       <td><div class="action-group">
-        <button class="act-btn" title="Edit" onclick="openEditStaff(${s.staff_id},'${(s.full_name||'').replace(/'/g,"\\'")}','${s.email||''}','${s.status||'active'}')">
+        <button class="act-btn" title="Edit" onclick="openEditStaff(${s.staff_id},'${esc(s.full_name)}','${s.email||''}','${s.status||'active'}')">
           <svg viewBox="0 0 16 16" fill="none"><path d="M2 11.5V14h2.5l7-7-2.5-2.5-7 7z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M11.5 2L14 4.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
         </button>
         ${s.status==='active'
           ?`<button class="act-btn block" title="Deactivate" onclick="toggleStaff(${s.staff_id},'inactive')"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.2"/><path d="M3 8h10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></button>`
-          :`<button class="act-btn unlock" title="Activate" onclick="toggleStaff(${s.staff_id},'active')"><svg viewBox="0 0 16 16" fill="none"><path d="M3 8l4 4 6-7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>`
-        }
-        <button class="act-btn del" title="Remove" onclick="deleteStaff(${s.staff_id},'${(s.full_name||'').replace(/'/g,"\\'")}')">
-          <svg viewBox="0 0 16 16" fill="none"><path d="M2.5 4.5h11M6 4.5V3h4v1.5M5 4.5l.5 9h5l.5-9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          :`<button class="act-btn unlock" title="Activate" onclick="toggleStaff(${s.staff_id},'active')"><svg viewBox="0 0 16 16" fill="none"><path d="M3 8l4 4 6-7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>`}
+        <button class="act-btn archive-btn" title="Archive" onclick="archiveStaff(${s.staff_id},'${esc(s.full_name)}')">
+          <svg viewBox="0 0 16 16" fill="none"><rect x="1.5" y="4.5" width="13" height="2.5" rx="1" stroke="currentColor" stroke-width="1.2"/><path d="M3 7v6.5a1 1 0 001 1h8a1 1 0 001-1V7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M6 10h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
         </button>
       </div></td>
     </tr>`;
   }).join(''):'<tr><td colspan="6" class="loading-row">No staff found</td></tr>';
-  if(perf.length)document.getElementById('st-perf-bars').innerHTML=perf.map(p=>`
-    <div class="prog-row"><span class="prog-name">${p.full_name}</span><div class="prog-bg"><div class="prog-fill" style="width:${Math.round((p.total_services||0)/max*100)}%"></div></div><span class="prog-val">${p.total_services||0}</span></div>`).join('');
+  if(perf.length)document.getElementById('st-perf-bars').innerHTML=perf.map(p=>`<div class="prog-row"><span class="prog-name">${p.full_name}</span><div class="prog-bg"><div class="prog-fill" style="width:${Math.round((p.total_services||0)/max*100)}%"></div></div><span class="prog-val">${p.total_services||0}</span></div>`).join('');
 }
 
-function openEditStaff(id,name,email,status){
-  document.getElementById('ef-id').value=id;
-  document.getElementById('ef-name').value=name;
-  document.getElementById('ef-email').value=email;
-  document.getElementById('ef-status').value=status;
-  document.getElementById('ef-pass').value='';
-  openModal('edit-staff');
+// ── STAFF ARCHIVE ──
+async function loadStaffArchive(){
+  const res=await api('/api/staff/archived');
+  if(!res.ok){showToast('Failed to load archived staff','error');return;}
+  const data=res.data||[];
+  document.getElementById('sta-count').textContent=`${data.length} archived`;
+  document.getElementById('sta-tbody').innerHTML=data.length?data.map((s,i)=>`
+    <tr>
+      <td><div class="person-cell"><div class="p-avatar" style="background:${avBg[i%5]};opacity:.6">${(s.full_name||'?')[0]}</div><div><div class="p-name" style="opacity:.75">${s.full_name||'—'}</div></div></div></td>
+      <td><span class="mono-cell">${s.email||'—'}</span></td>
+      <td><span class="mono-cell">${s.archived_at?new Date(s.archived_at).toLocaleDateString('en-PH'):'—'}</span></td>
+      <td><div class="action-group">
+        <button class="act-btn restore" title="Restore" onclick="restoreStaff(${s.staff_id},'${esc(s.full_name)}')">
+          <svg viewBox="0 0 16 16" fill="none"><path d="M3 8l4 4 6-7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="act-btn del" title="Delete Permanently" onclick="showDeleteConfirm('staff',${s.staff_id},'${esc(s.full_name)}')">
+          <svg viewBox="0 0 16 16" fill="none"><path d="M2.5 4.5h11M6 4.5V3h4v1.5M5 4.5l.5 9h5l.5-9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div></td>
+    </tr>`).join(''):'<tr><td colspan="4" class="loading-row">No archived staff</td></tr>';
 }
 
-async function addStaffSubmit(){
-  const name=document.getElementById('sf-name').value.trim();
-  const email=document.getElementById('sf-email').value.trim();
-  const password=document.getElementById('sf-pass').value;
-  if(!name||!email||!password){showToast('⚠️ Fill all fields','error');return;}
-  if(password.length<8){showToast('Password must be at least 8 characters','error');return;}
-  const btn=document.getElementById('btn-add-staff');
-  btn.textContent='Adding…';btn.disabled=true;
-  const res=await api('/api/staff/add',{method:'POST',body:{name,email,password}});
-  btn.textContent='Add Staff';btn.disabled=false;
-  if(res.ok){showToast('✅ Staff member added','success');closeModal('add-staff');document.getElementById('sf-name').value='';document.getElementById('sf-email').value='';document.getElementById('sf-pass').value='';loadStaff();}
-  else{showToast('❌ '+res.error,'error');}
-}
-
-async function editStaffSubmit(){
-  const id=document.getElementById('ef-id').value;
-  const name=document.getElementById('ef-name').value.trim();
-  const email=document.getElementById('ef-email').value.trim();
-  const status=document.getElementById('ef-status').value;
-  const newPass=document.getElementById('ef-pass').value;
-  if(!name||!email){showToast('⚠️ Name and email are required','error');return;}
-  if(newPass&&newPass.length<8){showToast('Password must be at least 8 characters','error');return;}
-  const btn=document.getElementById('btn-edit-staff');btn.textContent='Saving…';btn.disabled=true;
-  const payload={name,email,status};if(newPass)payload.password=newPass;
-  const res=await api(`/api/staff/update/${id}`,{method:'PUT',body:payload});
-  btn.textContent='Save Changes';btn.disabled=false;
-  if(res.ok){showToast('✅ Staff updated','success');closeModal('edit-staff');loadStaff();}
-  else{showToast('❌ '+res.error,'error');}
-}
-
-async function toggleStaff(id,status){
-  const res=await api(`/api/staff/toggle/${id}`,{method:'PUT',body:{status}});
-  if(res.ok){showToast(status==='active'?'✅ Staff activated':'Staff deactivated','success');loadStaff();}
-  else{showToast('❌ '+res.error,'error');}
-}
-
-async function deleteStaff(id,name){
-  if(!confirm(`Remove staff member "${name}"?`))return;
-  const res=await api(`/api/staff/remove/${id}`,{method:'DELETE'});
-  if(res.ok){showToast('🗑️ Staff removed','success');loadStaff();}
-  else{showToast('❌ '+res.error,'error');}
-}
+function openEditStaff(id,name,email,status){document.getElementById('ef-id').value=id;document.getElementById('ef-name').value=name;document.getElementById('ef-email').value=email;document.getElementById('ef-status').value=status;document.getElementById('ef-pass').value='';openModal('edit-staff');}
+async function addStaffSubmit(){const name=document.getElementById('sf-name').value.trim();const email=document.getElementById('sf-email').value.trim();const password=document.getElementById('sf-pass').value;if(!name||!email||!password){showToast('⚠️ Fill all fields','error');return;}if(password.length<8){showToast('Password must be at least 8 characters','error');return;}const btn=document.getElementById('btn-add-staff');btn.textContent='Adding…';btn.disabled=true;const res=await api('/api/staff/add',{method:'POST',body:{name,email,password}});btn.textContent='Add Staff';btn.disabled=false;if(res.ok){showToast('✅ Staff member added','success');closeModal('add-staff');document.getElementById('sf-name').value='';document.getElementById('sf-email').value='';document.getElementById('sf-pass').value='';loadStaff();}else{showToast('❌ '+res.error,'error');}}
+async function editStaffSubmit(){const id=document.getElementById('ef-id').value;const name=document.getElementById('ef-name').value.trim();const email=document.getElementById('ef-email').value.trim();const status=document.getElementById('ef-status').value;const newPass=document.getElementById('ef-pass').value;if(!name||!email){showToast('⚠️ Name and email are required','error');return;}if(newPass&&newPass.length<8){showToast('Password must be at least 8 characters','error');return;}const btn=document.getElementById('btn-edit-staff');btn.textContent='Saving…';btn.disabled=true;const payload={name,email,status};if(newPass)payload.password=newPass;const res=await api(`/api/staff/update/${id}`,{method:'PUT',body:payload});btn.textContent='Save Changes';btn.disabled=false;if(res.ok){showToast('✅ Staff updated','success');closeModal('edit-staff');loadStaff();}else{showToast('❌ '+res.error,'error');}}
+async function toggleStaff(id,status){const res=await api(`/api/staff/toggle/${id}`,{method:'PUT',body:{status}});if(res.ok){showToast(status==='active'?'✅ Staff activated':'Staff deactivated','success');loadStaff();}else{showToast('❌ '+res.error,'error');}}
+async function archiveStaff(id,name){if(!confirm(`Archive staff member "${name}"?\n\nThey will be moved to the Staff Archive and cannot log in.`))return;const res=await api(`/api/staff/archive/${id}`,{method:'PUT'});if(res.ok){showToast('📦 Staff archived','success');loadStaff();}else{showToast('❌ '+res.error,'error');}}
+async function restoreStaff(id,name){const res=await api(`/api/staff/unarchive/${id}`,{method:'PUT'});if(res.ok){showToast('✅ Staff restored','success');loadStaffArchive();}else{showToast('❌ '+res.error,'error');}}
 
 // ── CUSTOMERS ──
 async function loadCustomers(){
-  const res=await api('/api/customers');
-  if(!res.ok){showToast('Failed to load customers','error');return;}
-  const data=res.data||[];
-  document.getElementById('cu-count').textContent=`${data.length} total`;
+  const res=await api('/api/customers');if(!res.ok){showToast('Failed to load customers','error');return;}
+  const data=res.data||[];document.getElementById('cu-count').textContent=`${data.length} total`;
   document.getElementById('cu-tbody').innerHTML=data.length?data.map((c,i)=>`
     <tr>
       <td><div class="person-cell"><div class="p-avatar" style="background:${avBg[i%5]}">${(c.full_name||'?')[0]}</div><div><div class="p-name">${c.full_name||'—'}</div><div class="p-email">${c.email||'—'}</div></div></div></td>
@@ -1262,125 +1082,244 @@ async function loadCustomers(){
       <td><div class="action-group">
         ${c.status!=='blocked'
           ?`<button class="act-btn block" title="Block" onclick="toggleCustomer(${c.user_id},'block')"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.2"/><path d="M3 8h10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></button>`
-          :`<button class="act-btn unlock" title="Unblock" onclick="toggleCustomer(${c.user_id},'unblock')"><svg viewBox="0 0 16 16" fill="none"><path d="M3 8l4 4 6-7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>`
-        }
+          :`<button class="act-btn unlock" title="Unblock" onclick="toggleCustomer(${c.user_id},'unblock')"><svg viewBox="0 0 16 16" fill="none"><path d="M3 8l4 4 6-7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>`}
+        <button class="act-btn archive-btn" title="Archive" onclick="archiveCustomer(${c.user_id},'${esc(c.full_name)}')">
+          <svg viewBox="0 0 16 16" fill="none"><rect x="1.5" y="4.5" width="13" height="2.5" rx="1" stroke="currentColor" stroke-width="1.2"/><path d="M3 7v6.5a1 1 0 001 1h8a1 1 0 001-1V7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M6 10h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+        </button>
       </div></td>
-    </tr>`).join('')
-  :'<tr><td colspan="5" class="loading-row">No customers found</td></tr>';
+    </tr>`).join(''):'<tr><td colspan="5" class="loading-row">No customers found</td></tr>';
 }
 
-async function toggleCustomer(id,action){
-  const res=await api(`/api/customers/${action}/${id}`,{method:'PUT'});
-  if(res.ok){showToast(action==='block'?'🚫 Customer blocked':'✅ Customer unblocked','success');loadCustomers();}
-  else{showToast('❌ '+res.error,'error');}
-}
-
-// ── PRICING ──
-async function loadPricing(){
-  const res=await api('/api/pricing');
-  if(!res.ok){showToast('Failed to load pricing','error');return;}
+// ── CUSTOMERS ARCHIVE ──
+async function loadCustomersArchive(){
+  const res=await api('/api/customers/archived');
+  if(!res.ok){showToast('Failed to load archived customers','error');return;}
   const data=res.data||[];
-  document.getElementById('pricing-list').innerHTML=data.length?data.map(s=>`
-    <div class="price-item">
-      <div><div class="price-name">${s.name||'Service'}</div><div class="price-type">Key: ${s.service_key||'—'}</div></div>
-      <div class="price-edit-wrap">
-        <input class="price-input" id="price-${s.id}" type="number" value="${s.price||0}" min="0" step="0.5">
-        <button class="btn-save-price" onclick="savePrice(${s.id})">Save</button>
-      </div>
-    </div>`).join('')
-  :'<div class="empty-state">No services configured.</div>';
+  document.getElementById('cua-count').textContent=`${data.length} archived`;
+  document.getElementById('cua-tbody').innerHTML=data.length?data.map((c,i)=>`
+    <tr>
+      <td><div class="person-cell"><div class="p-avatar" style="background:${avBg[i%5]};opacity:.6">${(c.full_name||'?')[0]}</div><div><div class="p-name" style="opacity:.75">${c.full_name||'—'}</div></div></div></td>
+      <td><span class="mono-cell">${c.email||'—'}</span></td>
+      <td><span class="mono-cell">${c.phone||'—'}</span></td>
+      <td><span class="mono-cell">${c.archived_at?new Date(c.archived_at).toLocaleDateString('en-PH'):'—'}</span></td>
+      <td><div class="action-group">
+        <button class="act-btn restore" title="Restore" onclick="restoreCustomer(${c.user_id},'${esc(c.full_name)}')">
+          <svg viewBox="0 0 16 16" fill="none"><path d="M3 8l4 4 6-7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="act-btn del" title="Delete Permanently" onclick="showDeleteConfirm('customer',${c.user_id},'${esc(c.full_name)}')">
+          <svg viewBox="0 0 16 16" fill="none"><path d="M2.5 4.5h11M6 4.5V3h4v1.5M5 4.5l.5 9h5l.5-9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div></td>
+    </tr>`).join(''):'<tr><td colspan="5" class="loading-row">No archived customers</td></tr>';
 }
 
-async function savePrice(id){
-  const val=document.getElementById('price-'+id).value;
-  if(!val||isNaN(val)){showToast('Invalid price','error');return;}
-  const res=await api(`/api/pricing/update/${id}`,{method:'PUT',body:{price:Number(val)}});
-  if(res.ok)showToast('✅ Price updated','success');
-  else showToast('❌ '+res.error,'error');
+async function toggleCustomer(id,action){const res=await api(`/api/customers/${action}/${id}`,{method:'PUT'});if(res.ok){showToast(action==='block'?'🚫 Customer blocked':'✅ Customer unblocked','success');loadCustomers();}else{showToast('❌ '+res.error,'error');}}
+async function archiveCustomer(id,name){if(!confirm(`Archive customer "${name}"?\n\nThey will be moved to the Customer Archive and cannot log in.`))return;const res=await api(`/api/customers/archive/${id}`,{method:'PUT'});if(res.ok){showToast('📦 Customer archived','success');loadCustomers();}else{showToast('❌ '+res.error,'error');}}
+async function restoreCustomer(id,name){const res=await api(`/api/customers/unarchive/${id}`,{method:'PUT'});if(res.ok){showToast('✅ Customer restored','success');loadCustomersArchive();}else{showToast('❌ '+res.error,'error');}}
+
+// ── DELETE CONFIRM ──
+let _pendingDelete={type:null,id:null};
+function showDeleteConfirm(type,id,name){
+  _pendingDelete={type,id};
+  document.getElementById('del-target-name').textContent=name;
+  openModal('confirm-delete');
+}
+async function confirmDeleteAction(){
+  const{type,id}=_pendingDelete;
+  if(!type||!id)return;
+  let url='';
+  if(type==='staff')url=`/api/staff/delete/${id}`;
+  else if(type==='customer')url=`/api/customers/delete/${id}`;
+  const res=await api(url,{method:'DELETE'});
+  if(res.ok){
+    showToast('🗑️ Permanently deleted','success');
+    closeModal('confirm-delete');
+    if(type==='staff')loadStaffArchive();
+    else if(type==='customer')loadCustomersArchive();
+  }else{showToast('❌ '+res.error,'error');}
 }
 
 // ── PROMOS ──
 async function loadPromos(){
-  const res=await api('/api/promos');
-  const data=res.ok?(res.data||[]):[];
+  const res=await api('/api/promos');const data=res.ok?(res.data||[]):[];
   document.getElementById('d-promos').textContent=data.length;
   document.getElementById('promo-count').textContent=data.length;
   document.getElementById('promos-list').innerHTML=data.length?data.map(p=>`
     <div class="promo-item">
-      <div><div class="promo-code">${p.code}</div><div class="promo-disc">${p.discount}% discount off service charges</div></div>
+      <div>
+        <div class="promo-code">${p.code}</div>
+        <div class="promo-disc">${p.discount}% discount off service charges</div>
+      </div>
       <div style="display:flex;align-items:center;gap:8px">
         <span class="pill green"><span class="pill-dot"></span>Active</span>
         <button class="act-btn del" title="Delete" onclick="deletePromo(${p.promo_id},'${p.code}')">
           <svg viewBox="0 0 16 16" fill="none"><path d="M2.5 4.5h11M6 4.5V3h4v1.5M5 4.5l.5 9h5l.5-9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
       </div>
-    </div>`).join('')
-  :'<div class="empty-state">No active promo codes.</div>';
+    </div>`).join(''):'<div class="empty-state">No active promo codes.</div>';
 }
-
 async function addPromoSubmit(){
-  const code=document.getElementById('pr-code').value.trim().toUpperCase();
-  const discount=parseInt(document.getElementById('pr-disc').value);
-  if(!code){showToast('Enter a promo code','error');return;}
-  if(!discount||discount<1||discount>100){showToast('Discount must be 1–100%','error');return;}
+  const code=document.getElementById('pr-code').value.trim().toUpperCase();const discount=parseInt(document.getElementById('pr-disc').value);
+  if(!code){showToast('Enter a promo code','error');return;}if(!discount||discount<1||discount>100){showToast('Discount must be 1–100%','error');return;}
   const btn=document.getElementById('btn-add-promo');btn.textContent='Adding…';btn.disabled=true;
-  const res=await api('/api/promos/add',{method:'POST',body:{code,discount}});
-  btn.textContent='Add Promo';btn.disabled=false;
+  const res=await api('/api/promos/add',{method:'POST',body:{code,discount}});btn.textContent='Add Promo';btn.disabled=false;
   if(res.ok){showToast('🎁 Promo code added','success');closeModal('add-promo');document.getElementById('pr-code').value='';document.getElementById('pr-disc').value='';loadPromos();}
   else{showToast('❌ '+res.error,'error');}
 }
+async function deletePromo(id,code){if(!confirm(`Delete promo code "${code}"?`))return;const res=await api(`/api/promos/delete/${id}`,{method:'DELETE'});if(res.ok){showToast('🗑️ Promo removed','success');loadPromos();}else{showToast('❌ '+res.error,'error');}}
 
-async function deletePromo(id,code){
-  if(!confirm(`Delete promo code "${code}"?`))return;
-  const res=await api(`/api/promos/delete/${id}`,{method:'DELETE'});
-  if(res.ok){showToast('🗑️ Promo removed','success');loadPromos();}
-  else{showToast('❌ '+res.error,'error');}
+// ── FEEDBACK ──
+let _allFeedback=[];
+async function loadFeedback(){
+  const res=await api('/api/admin/feedbacks');
+  if(!res.ok){
+    document.getElementById('fb-list').innerHTML='<div class="empty-state">Could not load feedback. Ensure the /api/admin/feedbacks endpoint is registered in app.py.</div>';
+    return;
+  }
+  _allFeedback=res.data||[];
+  const total=_allFeedback.length;
+  const avg=total?(_allFeedback.reduce((s,f)=>s+(f.rating||0),0)/total).toFixed(1):'—';
+  const fiveStar=_allFeedback.filter(f=>f.rating===5).length;
+  document.getElementById('fb-total').textContent=total;
+  document.getElementById('fb-avg').textContent=avg;
+  document.getElementById('fb-5star').textContent=fiveStar;
+  document.getElementById('fb-count').textContent=total;
+  renderFeedback(_allFeedback);
+}
+function filterFeedback(q){
+  const rating=document.getElementById('fb-filter-rating').value;
+  const query=(q||'').toLowerCase();
+  const filtered=_allFeedback.filter(f=>{
+    const matchQ=!query||(f.customer_name||'').toLowerCase().includes(query)||(f.comment||'').toLowerCase().includes(query)||(f.tracking_id||'').toLowerCase().includes(query);
+    const matchR=!rating||String(f.rating)===rating;
+    return matchQ&&matchR;
+  });
+  document.getElementById('fb-count').textContent=filtered.length;
+  renderFeedback(filtered);
+}
+function renderFeedback(data){
+  if(!data.length){document.getElementById('fb-list').innerHTML='<div class="empty-state">No feedback found.</div>';return;}
+  document.getElementById('fb-list').innerHTML=data.map(f=>`
+    <div class="fb-item">
+      <div class="fb-header">
+        <div>
+          <div class="fb-name">${f.customer_name||'Customer'}</div>
+          <div class="fb-tracking">${f.tracking_id||'—'} · ${f.service_type_label||f.service_type||'—'}</div>
+        </div>
+        <div class="fb-stars">${'★'.repeat(f.rating||0)}<span style="opacity:.2">${'★'.repeat(5-(f.rating||0))}</span></div>
+      </div>
+      <div class="fb-comment">${f.comment||'<em style="opacity:.5">No comment</em>'}</div>
+      <div class="fb-date">${f.created_at?new Date(f.created_at).toLocaleString('en-PH'):'—'}</div>
+    </div>`).join('');
 }
 
 // ── REPORTS ──
 async function loadReports(){
   const [rev,ana]=await Promise.all([api('/api/admin/revenue'),api('/api/admin/analytics')]);
-  if(rev.ok){
-    const daily=Number(rev.data.daily_income)||0,monthly=Number(rev.data.monthly_income)||0;
-    document.getElementById('rp-daily').textContent=daily.toLocaleString();
-    document.getElementById('rp-monthly').textContent=monthly.toLocaleString();
-    document.getElementById('rp-profit').textContent=Math.round(monthly*.6).toLocaleString();
-  }
+  if(rev.ok){const daily=Number(rev.data.daily_income)||0,monthly=Number(rev.data.monthly_income)||0;document.getElementById('rp-daily').textContent=daily.toLocaleString();document.getElementById('rp-monthly').textContent=monthly.toLocaleString();document.getElementById('rp-profit').textContent=Math.round(monthly*.6).toLocaleString();}
   if(ana.ok)document.getElementById('rp-today').textContent=ana.data.today_services??'—';
 }
-
 async function exportPDF(){
-  showToast('📄 Preparing PDF…','info');
-  const res=await api('/api/admin/orders');
+  showToast('📄 Preparing PDF…','info');const res=await api('/api/admin/orders');
   if(!res.ok){showToast('❌ Failed to load orders','error');return;}
   const orders=res.data||[];
   let html=`<html><head><title>Laundry Lounge — Orders Report</title><style>body{font-family:sans-serif;padding:20px;color:#111}h1{margin-bottom:4px}p{margin-bottom:16px;color:#666;font-size:13px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ddd;padding:8px 10px;text-align:left;font-size:12px}th{background:#E8F8FB}</style></head><body>`;
   html+=`<h1>Laundry Lounge — Orders Report</h1><p>Exported: ${new Date().toLocaleString()} · ${orders.length} records</p><table>`;
-  html+=`<tr><th>Order ID</th><th>Tracking ID</th><th>Customer</th><th>Service</th><th>Weight</th><th>Amount</th><th>Status</th><th>Date</th></tr>`;
-  orders.forEach(o=>{html+=`<tr><td>#${o.order_id}</td><td>${o.tracking_id||'—'}</td><td>${o.customer_name||'Walk-in'}</td><td>${o.service_type_label||o.service_type||'—'}</td><td>${o.weight_kg||'—'}kg</td><td>₱${Number(o.amount||0).toLocaleString()}</td><td>${o.status||'—'}</td><td>${o.created_at?new Date(o.created_at).toLocaleDateString('en-PH'):'—'}</td></tr>`;});
+  html+=`<tr><th>Order ID</th><th>Tracking ID</th><th>Customer</th><th>Service</th><th>Weight</th><th>Amount</th><th>Discount</th><th>Status</th><th>Date</th></tr>`;
+  orders.forEach(o=>{html+=`<tr><td>#${o.order_id}</td><td>${o.tracking_id||'—'}</td><td>${o.customer_name||'Walk-in'}</td><td>${o.service_type_label||o.service_type||'—'}</td><td>${o.weight_kg||'—'}kg</td><td>₱${Number(o.amount||0).toLocaleString()}</td><td>${o.discount_pct&&Number(o.discount_pct)>0?Number(o.discount_pct)+'%':'-'}</td><td>${o.status||'—'}</td><td>${o.created_at?new Date(o.created_at).toLocaleDateString('en-PH'):'—'}</td></tr>`;});
   html+=`</table></body></html>`;
-  const w=window.open('','_blank');
-  if(w){w.document.write(html);w.document.close();w.print();}
-  else showToast('Popup blocked. Please allow popups.','error');
+  const w=window.open('','_blank');if(w){w.document.write(html);w.document.close();w.print();}else showToast('Popup blocked. Please allow popups.','error');
 }
 
-// ── ME ──
-async function loadMe(){
+// ── ADMIN PROFILE ──
+async function loadAdminProfile(){
   const res=await api('/api/me');
-  if(res.ok&&res.data.full_name){
-    document.getElementById('sb-name').textContent=res.data.full_name;
-    document.getElementById('sb-av').textContent=(res.data.full_name||'A')[0];
-  }
+  if(!res.ok)return;
+  const d=res.data;
+  const initial=(d.full_name||'A')[0].toUpperCase();
+  document.getElementById('profile-av-big').textContent=initial;
+  document.getElementById('profile-fullname').textContent=d.full_name||'—';
+  document.getElementById('profile-email-disp').textContent=d.email||'—';
+  document.getElementById('profile-phone-disp').textContent=d.phone||'Not set';
+  document.getElementById('p-fullname').value=d.full_name||'';
+  document.getElementById('p-phone').value=d.phone||'';
+  document.getElementById('p-email').value=d.email||'';
+  if(d.created_at){const dt=new Date(d.created_at);document.getElementById('profile-since').textContent=dt.toLocaleDateString('en-PH',{year:'numeric',month:'long',day:'numeric'});}
 }
+async function saveAdminProfile(){
+  const fullName=document.getElementById('p-fullname').value.trim();
+  const phone=document.getElementById('p-phone').value.trim();
+  if(!fullName){showToast('⚠️ Name is required','error');return;}
+  const res=await api('/api/me/update',{method:'PUT',body:{full_name:fullName,phone}});
+  if(res.ok){
+    showToast('✅ Profile updated!','success');
+    document.getElementById('sb-name').textContent=fullName;
+    document.getElementById('sb-av').textContent=fullName[0].toUpperCase();
+    document.getElementById('profile-fullname').textContent=fullName;
+    document.getElementById('profile-phone-disp').textContent=phone||'Not set';
+    document.getElementById('profile-av-big').textContent=fullName[0].toUpperCase();
+  }else{showToast('❌ '+(res.error||'Could not update profile'),'error');}
+}
+function checkPwStrength(pw){
+  const fill=document.getElementById('pw-strength-fill');const lbl=document.getElementById('pw-strength-label');
+  if(!pw){fill.style.width='0%';lbl.textContent='Enter a new password';lbl.style.color='var(--text3)';return;}
+  let score=0;if(pw.length>=8)score++;if(pw.length>=12)score++;if(/[A-Z]/.test(pw))score++;if(/[0-9]/.test(pw))score++;if(/[^A-Za-z0-9]/.test(pw))score++;
+  const configs=[{w:'20%',bg:'var(--danger)',label:'Very weak'},{w:'40%',bg:'var(--danger)',label:'Weak'},{w:'60%',bg:'var(--warn)',label:'Fair'},{w:'80%',bg:'var(--accent)',label:'Good'},{w:'100%',bg:'var(--success)',label:'Strong'}];
+  const c=configs[Math.min(score,4)];fill.style.width=c.w;fill.style.background=c.bg;lbl.textContent=c.label;lbl.style.color=c.bg;
+}
+async function changeAdminPassword(){
+  const curPw=document.getElementById('p-cur-pw').value;
+  const newPw=document.getElementById('p-new-pw').value;
+  const confirmPw=document.getElementById('p-confirm-pw').value;
+  if(!curPw||!newPw||!confirmPw){showToast('⚠️ All password fields are required','error');return;}
+  if(newPw!==confirmPw){showToast('⚠️ New passwords do not match','error');return;}
+  if(newPw.length<8){showToast('⚠️ Password must be at least 8 characters','error');return;}
+  const res=await api('/api/me/change-password',{method:'PUT',body:{current_password:curPw,new_password:newPw,confirm_password:confirmPw}});
+  if(res.ok){
+    showToast('🔒 Password updated!','success');
+    ['p-cur-pw','p-new-pw','p-confirm-pw'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('pw-strength-fill').style.width='0%';
+    document.getElementById('pw-strength-label').textContent='Enter a new password';
+    document.getElementById('pw-strength-label').style.color='var(--text3)';
+  }else{showToast('❌ '+(res.error||'Could not change password'),'error');}
+}
+
+// ── UTILITY ──
+function esc(s){return(s||'').replace(/'/g,"\\'").replace(/"/g,'&quot;')}
+
+// ── ME ──
+async function loadMe(){const res=await api('/api/me');if(res.ok&&res.data.full_name){document.getElementById('sb-name').textContent=res.data.full_name;document.getElementById('sb-av').textContent=(res.data.full_name||'A')[0];}}
 
 // ── AUTO-REFRESH ──
 setInterval(()=>{
-  const active=document.querySelector('.section.active');
-  if(!active)return;  
+  const active=document.querySelector('.section.active');if(!active)return;
   const id=active.id.replace('sec-','');
-  const map={dashboard:loadDashboard,analytics:loadAnalytics,revenue:loadRevenue,orders:loadOrders,staff:loadStaff,customers:loadCustomers,pricing:loadPricing,promos:loadPromos,reports:loadReports};
+  const map={dashboard:loadDashboard,analytics:loadAnalytics,revenue:loadRevenue,orders:loadOrders,staff:loadStaff,customers:loadCustomers,promos:loadPromos,feedback:loadFeedback,reports:loadReports};
   if(map[id])map[id]();
 },60000);
+
+// ── BUBBLES ──
+(function initBubbles(){
+  const canvas=document.getElementById('bubblesCanvas');if(!canvas)return;
+  const ctx=canvas.getContext('2d');let W,H,bubbles=[];
+  function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
+  resize();window.addEventListener('resize',resize);
+  const isDarkM=()=>document.documentElement.dataset.theme==='dark';
+  function makeBubble(){const r=5+Math.random()*22;return{x:Math.random()*W,y:H+r+Math.random()*200,r,speed:0.35+Math.random()*0.75,drift:(Math.random()-.5)*.5,wobble:Math.random()*Math.PI*2,wobbleSpeed:.015+Math.random()*.02,opacity:.1+Math.random()*.2};}
+  for(let i=0;i<32;i++){const b=makeBubble();b.y=Math.random()*H;bubbles.push(b);}
+  function drawBubble(b){
+    const dark=isDarkM(),base=dark?'0,212,245':'0,180,216';
+    ctx.save();ctx.globalAlpha=b.opacity;
+    const grad=ctx.createRadialGradient(b.x-b.r*.3,b.y-b.r*.3,b.r*.05,b.x,b.y,b.r);
+    grad.addColorStop(0,'rgba(255,255,255,0.5)');grad.addColorStop(.5,`rgba(${base},0.07)`);grad.addColorStop(1,`rgba(${base},0.18)`);
+    ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,Math.PI*2);ctx.fillStyle=grad;ctx.fill();
+    ctx.strokeStyle=`rgba(${base},0.32)`;ctx.lineWidth=1;ctx.stroke();
+    ctx.globalAlpha=b.opacity*.65;ctx.beginPath();ctx.arc(b.x-b.r*.28,b.y-b.r*.28,b.r*.2,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,0.8)';ctx.fill();
+    ctx.restore();
+  }
+  function animate(){ctx.clearRect(0,0,W,H);bubbles.forEach((b,i)=>{b.wobble+=b.wobbleSpeed;b.x+=b.drift+Math.sin(b.wobble)*.35;b.y-=b.speed;if(b.y+b.r<-10)bubbles[i]=makeBubble();drawBubble(b);});requestAnimationFrame(animate);}
+  animate();
+})();
 
 // ── INIT ──
 loadMe();

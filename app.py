@@ -1,24 +1,22 @@
 """
-hardcoded account for superadmin/owner
+hardcoded account for superadmin/developer
 email= superadmin@laundry.com
 pass = StrongPass#2026!
 Laundry Lounge Management System — Flask Backend
-app.py  (Audited & fixed — production-grade)
+app.py  (Audited & updated — production-grade)
 
-CHANGES in this revision:
-  FP1. /forgot-password (POST form) removed — replaced by AJAX endpoint below.
-  FP2. /api/forgot-password (POST JSON) — accepts email, sends a real HTML
-       reset email (same styling as tracking email), stores token in DB.
-       Always returns {"ok": true} to avoid leaking whether email exists.
-  FP3. /reset-password (GET) — redirect page; appends ?reset_token=... to
-       /login so the login page JS can detect it and open the modal.
-  FP4. /api/reset-password (POST JSON) — validates token, sets new password,
-       deletes the token row. Returns {"ok": true} or {"error": "..."}.
-  FP5. Old GET /forgot-password route kept as alias so any bookmark still works.
-
-  STAGE FIX: Added APScheduler background job that calls advance_stages()
-             every 10 seconds automatically — no external cron needed.
-  CUSTOMER FIX: Customer portal now shows ALL active orders (removed LIMIT 1).
+NEW in this revision:
+  ARCH1. Staff archive/unarchive/permanent-delete endpoints.
+  ARCH2. Customer archive/unarchive/permanent-delete endpoints.
+  ARCH3. /api/admin/feedbacks — feedback list for admin panel.
+  ARCH4. /api/machines/status — public (no-auth) machine status for login page.
+  ARCH5. /api/customers/search?q= — autocomplete for operator encode form.
+  ARCH6. /api/staff/toggle/<id> — toggle staff active/inactive status.
+  ARCH7. DB migration extended for is_archived / archived_at on both
+         users and staff (same table, role-filtered).
+  FIX1.  Admin orders API now returns discount_pct and promo_code fields.
+  FIX2.  Customer list excludes archived users.
+  FIX3.  Staff list excludes archived users.
 """
 from flask_mail import Mail, Message as MailMessage
 import threading
@@ -108,22 +106,14 @@ FOLD_MAX_SECS = 15 * 60
 
 # ════════════════════════════════════════════════════════════════
 #  BACKGROUND SCHEDULER — Auto stage advancement every 10 seconds
-#  This replaces the need for an external cron job hitting
-#  /api/internal/advance-stages. It runs inside the Flask process.
 # ════════════════════════════════════════════════════════════════
 
 def _run_advance_stages():
-    """
-    Called by the background scheduler every 10 seconds.
-    Wraps advance_stages_logic() in an app context so DB calls work.
-    Uses a threading lock to prevent overlapping runs.
-    """
     with _stage_lock:
         try:
             with app.app_context():
                 _advance_stages_logic()
         except Exception as exc:
-            # Log but never crash the scheduler thread
             try:
                 app.logger.error(f"[scheduler] advance_stages error: {exc}")
             except Exception:
@@ -135,7 +125,6 @@ _scheduler_thread = None
 
 
 def _start_scheduler():
-    """Start a daemon thread that fires _run_advance_stages every 10 s."""
     global _scheduler_thread
 
     def _loop():
@@ -154,10 +143,7 @@ def _start_scheduler():
         pass
 
 
-# Start the scheduler when the module is imported (works with Flask dev server
-# and gunicorn workers). Guard against double-start in debug reloader.
 if not os.environ.get("WERKZEUG_RUN_MAIN") == "true" or True:
-    # Always start — the daemon=True flag ensures it dies with the process.
     _start_scheduler()
 
 
@@ -168,6 +154,7 @@ if not os.environ.get("WERKZEUG_RUN_MAIN") == "true" or True:
 @app.route("/api/db/migrate", methods=["POST", "GET"])
 def db_migrate():
     migrations = [
+        # original migrations
         """ALTER TABLE orders
            ADD COLUMN IF NOT EXISTS customer_email VARCHAR(120) DEFAULT NULL
            AFTER customer_name_walk_in""",
@@ -180,6 +167,13 @@ def db_migrate():
         """ALTER TABLE machines
            MODIFY COLUMN status
            ENUM('free','busy','idle','maintenance') NOT NULL DEFAULT 'free'""",
+        # archive columns on users table (covers both staff and customers)
+        """ALTER TABLE users
+           ADD COLUMN IF NOT EXISTS is_archived TINYINT(1) NOT NULL DEFAULT 0
+           AFTER status""",
+        """ALTER TABLE users
+           ADD COLUMN IF NOT EXISTS archived_at DATETIME DEFAULT NULL
+           AFTER is_archived""",
     ]
 
     results = []
@@ -291,10 +285,10 @@ def send_status_update_email(tracking_id, customer_email, customer_name,
     track_url = f"{TRACKING_BASE_URL}/track/{tracking_id}"
     info = {
         "ready_for_pickup": {
-            "subject": "📦 Your Laundry is Ready for Pickup!",
+            "subject":  "📦 Your Laundry is Ready for Pickup!",
             "headline": "Your laundry is ready! 🎉",
-            "body": "Your laundry has been washed, dried, and folded. Please come pick it up.",
-            "cta": "View Order Details",
+            "body":     "Your laundry has been washed, dried, and folded. Please come pick it up.",
+            "cta":      "View Order Details",
         }
     }.get(new_status)
     if not info:
@@ -589,6 +583,34 @@ def api_public_track(tracking_id):
 
 
 # ════════════════════════════════════════════════════════════════
+#  PUBLIC — MACHINE STATUS (used by login page, no auth required)
+# ════════════════════════════════════════════════════════════════
+
+@app.route("/api/machines/status")
+def api_machines_status_public():
+    """
+    Public endpoint — no authentication required.
+    Returns aggregate machine counts for the login page status bar.
+    """
+    try:
+        rows = query("SELECT status FROM machines") or []
+        free = sum(1 for m in rows if m["status"] == "free")
+        busy = sum(1 for m in rows if m["status"] == "busy")
+        idle = sum(1 for m in rows if m["status"] == "idle")
+        maintenance = sum(1 for m in rows if m["status"] == "maintenance")
+        return jresp({
+            "free":        free,
+            "busy":        busy,
+            "idle":        idle,
+            "maintenance": maintenance,
+            "total":       len(rows),
+        })
+    except Exception as e:
+        app.logger.error(f"api_machines_status_public error: {e}")
+        return jresp({"free": 0, "busy": 0, "idle": 0, "maintenance": 0, "total": 0})
+
+
+# ════════════════════════════════════════════════════════════════
 #  AUTH DECORATORS
 # ════════════════════════════════════════════════════════════════
 
@@ -643,13 +665,15 @@ def check_force_logout():
         return
     if session.get("role") == "superadmin":
         return
-    if request.endpoint in ("login", "login_post", "logout",
-                            "register", "forgot_password",
-                            "api_forgot_password", "api_reset_password",
-                            "reset_password_redirect",
-                            "public_track_page", "api_public_track",
-                            "api_maintenance_status", "db_init",
-                            "db_migrate", "static"):
+    if request.endpoint in (
+        "login", "login_post", "logout",
+        "register", "forgot_password",
+        "api_forgot_password", "api_reset_password",
+        "reset_password_redirect",
+        "public_track_page", "api_public_track",
+        "api_maintenance_status", "api_machines_status_public",
+        "db_init", "db_migrate", "static"
+    ):
         return
 
     db_ts_row = query(
@@ -783,6 +807,8 @@ def db_init():
             password_hash VARCHAR(256) NOT NULL,
             role          ENUM('superadmin','admin','staff','customer') NOT NULL DEFAULT 'customer',
             status        ENUM('active','inactive','blocked') NOT NULL DEFAULT 'active',
+            is_archived   TINYINT(1) NOT NULL DEFAULT 0,
+            archived_at   DATETIME DEFAULT NULL,
             created_at    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4""",
 
@@ -843,7 +869,7 @@ def db_init():
             order_id   INT NOT NULL,
             machine_id INT NOT NULL,
             UNIQUE KEY uq_om (order_id, machine_id),
-            FOREIGN KEY (order_id)   REFERENCES orders(order_id)   ON DELETE CASCADE,
+            FOREIGN KEY (order_id)   REFERENCES orders(order_id)    ON DELETE CASCADE,
             FOREIGN KEY (machine_id) REFERENCES machines(machine_id) ON DELETE CASCADE
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4""",
 
@@ -989,7 +1015,8 @@ def login_post():
             return redirect(url_for("login"))
     else:
         user = query(
-            "SELECT * FROM users WHERE (email=%s OR username=%s) AND status!='blocked'",
+            "SELECT * FROM users WHERE (email=%s OR username=%s) "
+            "AND status!='blocked' AND (is_archived=0 OR is_archived IS NULL)",
             (email, email), one=True
         )
 
@@ -1444,7 +1471,7 @@ def api_sa_emergency(action):
             "SELECT COUNT(*) AS cnt FROM promos WHERE is_active=1", one=True)
         query("UPDATE promos SET is_active=0", commit=True)
         extra["disabled_count"] = affected["cnt"] if affected else 0
-        extra["message"] = f"All promo codes deactivated."
+        extra["message"] = "All promo codes deactivated."
 
     elif action == "force_logout":
         ts = str(datetime.now().timestamp())
@@ -1566,6 +1593,7 @@ def api_admin_orders():
     rows = query(
         """SELECT o.order_id, o.tracking_id, o.service_type, o.weight_kg,
                   o.amount, o.status, o.with_dryer, o.with_downy,
+                  o.promo_code, o.discount_pct,
                   o.created_at, o.completed_at,
                   COALESCE(u.full_name, o.customer_name_walk_in) AS customer_name
            FROM orders o
@@ -1619,7 +1647,7 @@ def api_admin_staff_performance():
            LEFT JOIN orders o ON o.encoded_by=u.user_id
                               AND DATE(o.created_at)>=DATE_SUB(CURDATE(), INTERVAL 30 DAY)
                               AND o.status NOT IN ('cancelled')
-           WHERE u.role='staff'
+           WHERE u.role='staff' AND (u.is_archived=0 OR u.is_archived IS NULL)
            GROUP BY u.user_id, u.full_name
            ORDER BY total_services DESC"""
     )
@@ -1668,7 +1696,32 @@ def api_admin_export():
 
 
 # ════════════════════════════════════════════════════════════════
-#  API — STAFF MANAGEMENT
+#  API — ADMIN FEEDBACK
+# ════════════════════════════════════════════════════════════════
+
+@app.route("/api/admin/feedbacks")
+@role_required("admin", "superadmin")
+def api_admin_feedbacks():
+    """Return all customer feedback with order and customer details."""
+    rows = query(
+        """SELECT f.feedback_id, f.order_id, f.rating, f.comment, f.created_at,
+                  o.tracking_id, o.service_type,
+                  COALESCE(u.full_name, o.customer_name_walk_in) AS customer_name
+           FROM feedbacks f
+           LEFT JOIN orders  o ON f.order_id    = o.order_id
+           LEFT JOIN users   u ON f.customer_id = u.user_id
+           ORDER BY f.created_at DESC
+           LIMIT 500"""
+    ) or []
+    for r in rows:
+        r["service_type_label"] = SERVICE_RATES.get(
+            r.get("service_type", ""), {}
+        ).get("label", r.get("service_type", ""))
+    return jresp(rows)
+
+
+# ════════════════════════════════════════════════════════════════
+#  API — STAFF MANAGEMENT  (active roster)
 # ════════════════════════════════════════════════════════════════
 
 @app.route("/api/staff")
@@ -1676,7 +1729,8 @@ def api_admin_export():
 def api_staff_list():
     rows = query(
         "SELECT user_id, full_name, email, status, created_at "
-        "FROM users WHERE role='staff' ORDER BY full_name"
+        "FROM users WHERE role='staff' AND (is_archived=0 OR is_archived IS NULL) "
+        "ORDER BY full_name"
     ) or []
     for r in rows:
         r["staff_id"] = r["user_id"]
@@ -1738,11 +1792,96 @@ def api_staff_update(uid):
     return jresp({"ok": True})
 
 
+@app.route("/api/staff/toggle/<int:uid>", methods=["PUT"])
+@role_required("admin", "superadmin")
+@_require_json_or_xhr
+def api_staff_toggle(uid):
+    """Toggle staff active/inactive status."""
+    d = request.get_json(silent=True) or {}
+    status = d.get("status", "active")
+    if status not in ("active", "inactive"):
+        return jresp({"error": "Invalid status"}, 400)
+    query(
+        "UPDATE users SET status=%s WHERE user_id=%s AND role='staff'",
+        (status, uid), commit=True
+    )
+    log_audit(session["full_name"],
+              f"staff_{status}", f"id={uid}", request.remote_addr)
+    return jresp({"ok": True})
+
+
 @app.route("/api/staff/remove/<int:uid>", methods=["DELETE"])
 @role_required("admin", "superadmin")
 def api_staff_remove(uid):
     query("DELETE FROM users WHERE user_id=%s AND role='staff'", (uid,), commit=True)
     log_audit(session["full_name"], "remove_staff",
+              f"id={uid}", request.remote_addr)
+    return jresp({"ok": True})
+
+
+# ─── Staff Archive ───────────────────────────────────────────────
+
+@app.route("/api/staff/archive/<int:uid>", methods=["PUT"])
+@role_required("admin", "superadmin")
+@_require_json_or_xhr
+def api_staff_archive(uid):
+    """Move staff member to archive (soft-delete from active roster)."""
+    query(
+        "UPDATE users SET is_archived=1, archived_at=NOW() "
+        "WHERE user_id=%s AND role='staff'",
+        (uid,), commit=True
+    )
+    log_audit(session["full_name"], "archive_staff",
+              f"id={uid}", request.remote_addr)
+    return jresp({"ok": True})
+
+
+@app.route("/api/staff/unarchive/<int:uid>", methods=["PUT"])
+@role_required("admin", "superadmin")
+@_require_json_or_xhr
+def api_staff_unarchive(uid):
+    """Restore a staff member from archive back to the active roster."""
+    query(
+        "UPDATE users SET is_archived=0, archived_at=NULL, status='active' "
+        "WHERE user_id=%s AND role='staff'",
+        (uid,), commit=True
+    )
+    log_audit(session["full_name"], "unarchive_staff",
+              f"id={uid}", request.remote_addr)
+    return jresp({"ok": True})
+
+
+@app.route("/api/staff/archived")
+@role_required("admin", "superadmin")
+def api_staff_archived():
+    """Return all archived staff members."""
+    rows = query(
+        "SELECT user_id, full_name, email, status, archived_at, created_at "
+        "FROM users WHERE role='staff' AND is_archived=1 "
+        "ORDER BY archived_at DESC"
+    ) or []
+    for r in rows:
+        r["staff_id"] = r["user_id"]
+    return jresp(rows)
+
+
+@app.route("/api/staff/delete/<int:uid>", methods=["DELETE"])
+@role_required("admin", "superadmin")
+def api_staff_delete_permanent(uid):
+    """Permanently delete an archived staff member and all associated data."""
+    # Only allow deletion of archived staff
+    row = query(
+        "SELECT user_id FROM users WHERE user_id=%s AND role='staff' AND is_archived=1",
+        (uid,), one=True
+    )
+    if not row:
+        return jresp({"error": "Staff not found or not archived"}, 404)
+
+    # Nullify encoded_by references so orders are preserved
+    query("UPDATE orders SET encoded_by=NULL WHERE encoded_by=%s", (uid,), commit=True)
+    query("DELETE FROM issues WHERE reported_by=%s", (uid,), commit=True)
+    query("DELETE FROM users WHERE user_id=%s", (uid,), commit=True)
+    log_audit(session["full_name"], "delete_staff_permanent",
               f"id={uid}", request.remote_addr)
     return jresp({"ok": True})
 
@@ -1868,13 +2007,14 @@ def api_encode_service():
     linked_customer_id = None
     if customer_email:
         registered = query(
-            "SELECT user_id FROM users WHERE email=%s AND role='customer' AND status='active'",
+            "SELECT user_id FROM users WHERE email=%s AND role='customer' AND status='active' "
+            "AND (is_archived=0 OR is_archived IS NULL)",
             (customer_email,), one=True
         )
         if registered:
             linked_customer_id = registered["user_id"]
 
-    # Warn if multiple active services for same email (don't block)
+    # Warn if customer has multiple active services (don't block)
     active_service_count = 0
     if customer_email:
         row = query(
@@ -1982,9 +2122,7 @@ def api_assign_start(oid):
             tuple(taken)
         ) or []
         unit_nums = ", ".join(str(m["unit_number"]) for m in taken_units)
-        return jresp({
-            "error": f"Machine(s) Unit {unit_nums} are no longer free."
-        }, 409)
+        return jresp({"error": f"Machine(s) Unit {unit_nums} are no longer free."}, 409)
 
     wash_ends = datetime.now() + timedelta(seconds=WASH_SECS)
     query(
@@ -2176,24 +2314,10 @@ def api_report_issue():
 
 
 # ════════════════════════════════════════════════════════════════
-#  STAGE ADVANCEMENT LOGIC (shared by scheduler + HTTP endpoint)
+#  STAGE ADVANCEMENT LOGIC
 # ════════════════════════════════════════════════════════════════
 
 def _advance_stages_logic():
-    """
-    Core stage-advancement logic.
-    Called by the background scheduler (every 10s) and by the
-    HTTP endpoint /api/internal/advance-stages.
-
-    Flow:
-      washing  → drying  (if with_dryer)
-               → downy   (if with_downy but no dryer)
-               → folding (otherwise)
-      drying   → downy   (if with_downy)
-               → folding (otherwise)
-      downy    → folding
-    Machines are freed as soon as the order enters folding.
-    """
     now = datetime.now()
     advanced = 0
 
@@ -2268,10 +2392,6 @@ def _advance_stages_logic():
     return advanced
 
 
-# ════════════════════════════════════════════════════════════════
-#  HTTP ENDPOINT — manual trigger (still available for cron/testing)
-# ════════════════════════════════════════════════════════════════
-
 @app.route("/api/internal/advance-stages", methods=["POST"])
 def api_advance_stages():
     auth = request.headers.get("Authorization", "")
@@ -2295,7 +2415,7 @@ def api_staff_validate_promo(code):
 
 
 # ════════════════════════════════════════════════════════════════
-#  API — CUSTOMERS
+#  API — CUSTOMERS  (active / non-archived)
 # ════════════════════════════════════════════════════════════════
 
 @app.route("/api/customers")
@@ -2303,9 +2423,35 @@ def api_staff_validate_promo(code):
 def api_customers():
     rows = query(
         "SELECT user_id, full_name, email, phone, status, created_at "
-        "FROM users WHERE role='customer' ORDER BY created_at DESC"
+        "FROM users WHERE role='customer' AND (is_archived=0 OR is_archived IS NULL) "
+        "ORDER BY created_at DESC"
     )
     return jresp(rows or [])
+
+
+@app.route("/api/customers/search")
+@role_required("staff", "admin", "superadmin")
+def api_customers_search():
+    """
+    Autocomplete search for the operator encode form.
+    Returns active, non-archived customers whose name contains the query.
+    Query param: ?q=<search term>
+    """
+    q = request.args.get("q", "").strip()
+    if not q or len(q) < 1:
+        return jresp([])
+
+    like = f"%{q}%"
+    rows = query(
+        "SELECT user_id, full_name, email "
+        "FROM users "
+        "WHERE role='customer' AND status='active' "
+        "  AND (is_archived=0 OR is_archived IS NULL) "
+        "  AND (full_name LIKE %s OR email LIKE %s) "
+        "ORDER BY full_name ASC LIMIT 10",
+        (like, like)
+    ) or []
+    return jresp(rows)
 
 
 @app.route("/api/customers/block/<int:uid>", methods=["PUT"])
@@ -2324,6 +2470,72 @@ def api_unblock_customer(uid):
     query("UPDATE users SET status='active' WHERE user_id=%s AND role='customer'",
           (uid,), commit=True)
     log_audit(session["full_name"], "unblock_customer",
+              f"id={uid}", request.remote_addr)
+    return jresp({"ok": True})
+
+
+# ─── Customer Archive ────────────────────────────────────────────
+
+@app.route("/api/customers/archive/<int:uid>", methods=["PUT"])
+@role_required("admin", "superadmin")
+@_require_json_or_xhr
+def api_customer_archive(uid):
+    """Move a customer to archive (soft-delete from active list)."""
+    query(
+        "UPDATE users SET is_archived=1, archived_at=NOW() "
+        "WHERE user_id=%s AND role='customer'",
+        (uid,), commit=True
+    )
+    log_audit(session["full_name"], "archive_customer",
+              f"id={uid}", request.remote_addr)
+    return jresp({"ok": True})
+
+
+@app.route("/api/customers/unarchive/<int:uid>", methods=["PUT"])
+@role_required("admin", "superadmin")
+@_require_json_or_xhr
+def api_customer_unarchive(uid):
+    """Restore a customer from archive."""
+    query(
+        "UPDATE users SET is_archived=0, archived_at=NULL, status='active' "
+        "WHERE user_id=%s AND role='customer'",
+        (uid,), commit=True
+    )
+    log_audit(session["full_name"], "unarchive_customer",
+              f"id={uid}", request.remote_addr)
+    return jresp({"ok": True})
+
+
+@app.route("/api/customers/archived")
+@role_required("admin", "superadmin")
+def api_customers_archived():
+    """Return all archived customers."""
+    rows = query(
+        "SELECT user_id, full_name, email, phone, status, archived_at, created_at "
+        "FROM users WHERE role='customer' AND is_archived=1 "
+        "ORDER BY archived_at DESC"
+    ) or []
+    return jresp(rows)
+
+
+@app.route("/api/customers/delete/<int:uid>", methods=["DELETE"])
+@role_required("admin", "superadmin")
+def api_customer_delete_permanent(uid):
+    """Permanently delete an archived customer and all their data."""
+    row = query(
+        "SELECT user_id FROM users WHERE user_id=%s AND role='customer' AND is_archived=1",
+        (uid,), one=True
+    )
+    if not row:
+        return jresp({"error": "Customer not found or not archived"}, 404)
+
+    # Preserve orders by nullifying the customer link
+    query("UPDATE orders SET customer_id=NULL WHERE customer_id=%s",
+          (uid,), commit=True)
+    query("DELETE FROM feedbacks WHERE customer_id=%s", (uid,), commit=True)
+    query("DELETE FROM password_resets WHERE user_id=%s", (uid,), commit=True)
+    query("DELETE FROM users WHERE user_id=%s", (uid,), commit=True)
+    log_audit(session["full_name"], "delete_customer_permanent",
               f"id={uid}", request.remote_addr)
     return jresp({"ok": True})
 
@@ -2407,8 +2619,6 @@ def api_promo_delete(pid):
 
 # ════════════════════════════════════════════════════════════════
 #  API — CUSTOMER PORTAL
-#  FIX: All active-order endpoints now return ALL active orders,
-#       not just the most recent one (removed LIMIT 1).
 # ════════════════════════════════════════════════════════════════
 
 @app.route("/api/customer/dashboard")
@@ -2416,7 +2626,6 @@ def api_promo_delete(pid):
 def api_customer_dashboard():
     uid = session["user_id"]
 
-    # ── ALL active orders (not just 1) ──────────────────────────
     active_orders = query(
         """SELECT o.*, o.customer_email,
                   COALESCE(u.full_name, o.customer_name_walk_in) AS customer_name
@@ -2440,14 +2649,10 @@ def api_customer_dashboard():
         (uid,), one=True
     )
     active_count = len(active_orders)
-
-    # Keep backward-compat: expose the most recent as active_order
     active_order = active_orders[0] if active_orders else None
 
     return jresp({
-        # most recent (for single-card views)
         "active_order":  active_order,
-        # ALL active orders (new field)
         "active_orders": active_orders,
         "stats": {
             "active":      active_count,
@@ -2460,7 +2665,6 @@ def api_customer_dashboard():
 @app.route("/api/customer/active-order")
 @role_required("customer")
 def api_customer_active():
-    """Returns the most recent active order (backward-compat for status page)."""
     uid = session["user_id"]
     order = query(
         """SELECT o.*, o.customer_email,
@@ -2483,7 +2687,6 @@ def api_customer_active():
 @app.route("/api/customer/active-orders")
 @role_required("customer")
 def api_customer_active_orders():
-    """Returns ALL active orders for this customer."""
     uid = session["user_id"]
     rows = query(
         """SELECT o.*, o.customer_email,

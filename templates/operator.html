@@ -9,8 +9,6 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{--ease:cubic-bezier(0.16,1,0.3,1)}
-
-/* ── THEMES (matching customer page cyan/teal palette) ── */
 [data-theme="light"]{
   --bg:#E8F8FB;--bg2:#D6F1F7;--bg3:#C4EAF4;
   --surface:rgba(255,255,255,0.88);--surface2:rgba(245,253,255,0.98);
@@ -43,23 +41,16 @@
   --shadow-sm:0 4px 16px rgba(0,0,0,0.4);
   --input-bg:rgba(0,0,0,0.3);--overlay:rgba(0,0,0,0.7);--sidebar-w:272px;
 }
-
 html{scroll-behavior:smooth;font-size:16px}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;transition:background .4s,color .4s;padding-bottom:48px;font-size:1rem;line-height:1.6}
 body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:180px}
-
-/* ── DECO ── */
 .deco-bg{pointer-events:none;position:fixed;inset:0;overflow:hidden;z-index:0}
 .deco-word{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:clamp(5rem,14vw,16rem);line-height:.82;color:var(--text);opacity:.025;position:absolute;white-space:nowrap;user-select:none;letter-spacing:-.02em}
 .deco-word.w1{top:-4%;left:-2%;transform:rotate(-2deg)}
 .deco-word.w2{bottom:-3%;right:-3%;transform:rotate(2deg);font-style:italic}
 @media(max-width:540px){.deco-word{display:none}}
-
-/* ── OVERLAY ── */
 #overlay{position:fixed;inset:0;background:var(--overlay);backdrop-filter:blur(4px);z-index:35;display:none}
 #overlay.visible{display:block}
-
-/* ── SIDEBAR ── */
 #sidebar{position:fixed;top:0;left:0;height:100%;width:var(--sidebar-w);z-index:40;background:var(--surface2);border-right:1px solid var(--border);transform:translateX(-100%);transition:transform .32s var(--ease);display:flex;flex-direction:column;overflow-y:auto;overscroll-behavior:contain}
 #sidebar.open{transform:translateX(0)}
 .sb-top{padding:22px 18px 0}
@@ -70,7 +61,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opa
 #closeSidebar{width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.85rem;transition:border-color .2s,color .2s}
 #closeSidebar:hover{border-color:var(--accent);color:var(--accent)}
 .nav-sec{font-family:'DM Mono',monospace;font-size:.48rem;letter-spacing:.24em;text-transform:uppercase;color:var(--text3);padding:0 10px;margin:14px 0 4px}
-.nav-link{display:flex;align-items:center;gap:11px;padding:10px 11px;border-radius:11px;font-size:.92rem;font-weight:500;color:var(--text2);border:1px solid transparent;text-decoration:none;min-height:44px;cursor:pointer;transition:background .18s,color .18s,border-color .18s}
+.nav-link{display:flex;align-items:center;gap:11px;padding:10px 11px;border-radius:11px;font-size:.92rem;font-weight:500;color:var(--text2);border:1px solid transparent;text-decoration:none;min-height:44px;cursor:pointer;transition:background .18s,color .18s,border-color .18s;position:relative}
 .nav-link:hover{background:var(--surface);color:var(--text)}
 .nav-link.active{background:rgba(0,180,216,.08);color:var(--accent);border-color:var(--border-acc)}
 .nav-icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .18s}
@@ -84,8 +75,9 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opa
 .sb-urole{font-family:'DM Mono',monospace;font-size:.48rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
 .sb-logout{display:flex;align-items:center;justify-content:center;gap:8px;padding:10px;border-radius:10px;background:var(--danger-bg);color:var(--danger);border:1px solid var(--danger-border);font-family:'DM Mono',monospace;font-size:.54rem;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;text-decoration:none;transition:background .2s,transform .15s}
 .sb-logout:hover{background:rgba(192,57,43,.15);transform:translateY(-1px)}
-
-/* ── TOPBAR ── */
+/* NOTIFICATION BADGE */
+.notif-badge{position:absolute;top:6px;right:6px;min-width:16px;height:16px;border-radius:8px;background:var(--danger);color:#fff;font-family:'DM Mono',monospace;font-size:.4rem;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 4px;display:none}
+.notif-badge.visible{display:flex}
 .topbar{position:sticky;top:0;z-index:30;background:var(--surface);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:12px clamp(14px,4vw,28px);transition:background .4s}
 .topbar-left{display:flex;align-items:center;gap:11px}
 #openSidebar{width:40px;height:40px;border-radius:10px;background:var(--surface2);border:1px solid var(--border);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:border-color .2s,transform .15s}
@@ -98,45 +90,32 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opa
 .btn-theme{width:40px;height:40px;border-radius:10px;background:var(--surface2);border:1px solid var(--border);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.95rem;transition:border-color .2s,transform .15s}
 .btn-theme:hover{border-color:var(--accent);transform:scale(1.05)}
 @media(max-width:540px){.op-badge{display:none}}
-
-/* ── LAYOUT ── */
 #layout{position:relative;z-index:10;min-height:calc(100vh - 64px)}
 #main{max-width:2200px;margin:0 auto;padding:clamp(16px,3.5vw,30px) clamp(14px,4vw,32px)}
-
-/* ── ANIMATIONS ── */
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 @keyframes livePulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
 @keyframes machineWash{0%,100%{transform:rotate(0deg)}25%{transform:rotate(15deg)}75%{transform:rotate(-15deg)}}
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-
-/* ── SECTIONS ── */
+@keyframes slideDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
 .section{display:none}
 .section.active{display:block;animation:fadeUp .38s var(--ease)}
-
-/* ── PAGE HEAD ── */
 .page-head{margin-bottom:clamp(16px,3vw,24px)}
 .live-tag{display:inline-flex;align-items:center;gap:6px;padding:5px 11px 5px 9px;background:var(--accent);color:#fff;border-radius:4px;font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;margin-bottom:10px}
 .live-dot{width:7px;height:7px;background:rgba(255,255,255,.8);border-radius:50%;animation:livePulse 1.8s ease-in-out infinite}
-.page-title{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:clamp(5rem,6.5vw,3.8rem);letter-spacing:-.02em;color:var(--text);line-height:.92}
+.page-title{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:clamp(2rem,5vw,3.8rem);letter-spacing:-.02em;color:var(--text);line-height:.92}
 .page-title em{display:block;font-style:italic;font-weight:400;color:var(--accent)}
-.page-sub{font-size:1rem;color:var(--text3);margin-top:7px;font-weight:300}
-
-/* ── DIVIDER ── */
+.page-sub{font-size:.95rem;color:var(--text3);margin-top:7px;font-weight:300}
 .divider{display:flex;align-items:center;gap:11px;margin:clamp(14px,3vw,20px) 0}
 .divider .rule{flex:1;height:1px;background:var(--border)}
 .divider .dia{width:8px;height:8px;border:1px solid var(--accent);transform:rotate(45deg);opacity:.4;flex-shrink:0}
-
-/* ── GLASS ── */
 .glass{background:var(--surface);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow-sm);transition:box-shadow .3s,transform .3s,background .4s}
 .glass:hover{box-shadow:var(--shadow);transform:translateY(-2px)}
 .gstatic{background:var(--surface);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow-sm);transition:background .4s}
 .corner{position:absolute;top:-1px;right:-1px;width:44px;height:44px;border-top:2px solid var(--accent);border-right:2px solid var(--accent);border-radius:0 18px 0 0;opacity:.3;pointer-events:none;transition:opacity .2s}
 .glass:hover .corner{opacity:1}
-
-/* ── STATS ── */
 .stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:11px;margin-bottom:clamp(14px,3vw,20px)}
-.stat-card{position:relative;overflow:hidden;border-radius:16px;padding:16px 18px;cursor:default; min-height: 150px;}
+.stat-card{position:relative;overflow:hidden;border-radius:16px;padding:16px 18px;cursor:default;min-height:150px}
 .stat-lbl{font-family:'DM Mono',monospace;font-size:.9rem;letter-spacing:.2em;text-transform:uppercase;color:var(--text3);margin-bottom:5px}
 .stat-val{font-family:'Cormorant Garamond',serif;font-size:clamp(2.5rem,4vw,4rem);font-weight:700;color:var(--text);letter-spacing:-.02em;line-height:1}
 .stat-icon{position:absolute;top:13px;right:14px;font-size:1rem;opacity:.28}
@@ -146,15 +125,9 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opa
 .stat-tag.warn{background:var(--warn-bg);color:var(--warn)}
 .stat-tag.red{background:var(--danger-bg);color:var(--danger)}
 .stat-tag.orange{background:var(--orange-bg);color:var(--orange)}
-
-/* ── GRID ── */
 .grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin-bottom:14px}
-
-/* ── CARD ── */
 .card{padding:20px 22px;position:relative;overflow:hidden}
 .card-lbl{font-family:'DM Mono',monospace;font-size:1rem;letter-spacing:.22em;text-transform:uppercase;color:var(--text3);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:8px}
-
-/* ── PILLS ── */
 .pill{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-family:'DM Mono',monospace;font-size:.48rem;letter-spacing:.1em;text-transform:uppercase}
 .pill.green{background:var(--success-bg);color:var(--success);border:1px solid var(--success-border)}
 .pill.red{background:var(--danger-bg);color:var(--danger);border:1px solid var(--danger-border)}
@@ -164,15 +137,10 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opa
 .pill.purple{background:var(--purple-bg);color:var(--purple);border:1px solid var(--purple-border)}
 .pill.teal{background:var(--teal-bg);color:var(--teal);border:1px solid var(--teal-border)}
 .pill.orange{background:var(--orange-bg);color:var(--orange);border:1px solid var(--orange-border)}
-.pill.maint{background:var(--danger-bg);color:var(--danger);border:1px solid var(--danger-border)}
 .pill-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;background:currentColor}
 .pill.green .pill-dot{animation:livePulse 2s ease-in-out infinite}
 .pill.blue .pill-dot{animation:livePulse 1.5s ease-in-out infinite}
-
-/* ── MONO CELL ── */
 .mono-cell{font-family:'DM Mono',monospace;font-size:.99rem;color:var(--text3);letter-spacing:.05em}
-
-/* ── MACHINE GRID ── */
 .machine-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;margin-top:8px}
 .machine-card{border-radius:13px;border:1.5px solid var(--border);padding:13px 10px;text-align:center;transition:border-color .25s,box-shadow .25s,transform .2s;background:var(--input-bg);cursor:default;position:relative;overflow:hidden}
 .machine-card.free{border-color:var(--success-border);background:var(--success-bg)}
@@ -182,7 +150,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opa
 .machine-icon{font-size:3.5rem;display:block;margin-bottom:5px}
 .machine-card.busy .machine-icon{animation:machineWash 1.4s ease-in-out infinite}
 .machine-num{font-family:'DM Mono',monospace;font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:var(--text3)}
-.machine-status{font-family:'DM Mono',monospace;font-size:.52rem;letter-spacing:.1em;text-transform:uppercase;margin-top:3px}
+.machine-status{font-family:'DM Mono',monospace;font-size:1rem;letter-spacing:.1em;text-transform:uppercase;margin-top:3px}
 .machine-card.free .machine-status{color:var(--success)}
 .machine-card.busy .machine-status{color:var(--accent)}
 .machine-card.idle .machine-status{color:var(--warn)}
@@ -193,8 +161,6 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opa
 .machine-maint-btn{display:inline-flex;align-items:center;gap:3px;margin-top:7px;padding:4px 8px;border-radius:7px;border:1px solid var(--border);background:transparent;color:var(--text3);font-family:'DM Mono',monospace;font-size:.38rem;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:border-color .2s,color .2s,background .2s}
 .machine-maint-btn:hover{border-color:var(--danger-border);color:var(--danger);background:var(--danger-bg)}
 .machine-card.maintenance .machine-maint-btn{border-color:var(--success-border);color:var(--success);background:var(--success-bg)}
-
-/* ── QUEUE ITEMS ── */
 .queue-item{border:1px solid var(--border);border-radius:13px;padding:14px 16px;margin-bottom:10px;background:var(--surface);transition:border-color .2s,box-shadow .2s;position:relative;overflow:hidden}
 .queue-item:hover{border-color:var(--border-acc);box-shadow:var(--shadow-sm)}
 .queue-item.washing{border-left:3px solid var(--accent)}
@@ -205,33 +171,30 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opa
 .queue-item.completed,.queue-item.done{border-left:3px solid var(--success);opacity:.72}
 .queue-item.pending{border-left:3px solid var(--text3)}
 .qi-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px}
-.qi-id{font-family:'DM Mono',monospace;font-size:.48rem;color:var(--text3);letter-spacing:.08em}
-.qi-customer{font-size:.9rem;font-weight:600;color:var(--text)}
-.qi-service{font-family:'DM Mono',monospace;font-size:.54rem;color:var(--accent);margin-top:2px}
+.qi-id{font-family:'DM Mono',monospace;font-size:1rem;color:var(--text3);letter-spacing:.08em}
+.qi-customer{font-size:1.2rem;font-weight:600;color:var(--text)}
+.qi-service{font-family:'DM Mono',monospace;font-size:.5rem;color:var(--accent);margin-top:2px}
 .qi-meta{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:8px}
-.qi-timer{display:inline-flex;align-items:center;gap:4px;font-family:'DM Mono',monospace;font-size:.54rem;padding:4px 9px;border-radius:7px;border:1px solid var(--border-acc);background:rgba(0,180,216,.06);color:var(--accent)}
+.qi-timer{display:inline-flex;align-items:center;gap:4px;font-family:'DM Mono',monospace;font-size:1rem;padding:4px 9px;border-radius:7px;border:1px solid var(--border-acc);background:rgba(0,180,216,.06);color:var(--accent)}
 .qi-timer.running{color:var(--success);border-color:var(--success-border);background:var(--success-bg)}
 .qi-timer.waiting{color:var(--warn);border-color:var(--warn-border);background:var(--warn-bg)}
 .qi-timer.folding-timer{color:var(--warn);border-color:var(--warn-border);background:var(--warn-bg)}
 .qi-timer.pickup{color:var(--orange);border-color:var(--orange-border);background:var(--orange-bg)}
-.stage-progress{height:4px;border-radius:10px;background:rgba(0,180,216,.1);overflow:hidden;margin-top:9px}
+.stage-progress{height:7px;border-radius:10px;background:rgba(0,180,216,.1);overflow:hidden;margin-top:9px}
 .stage-fill{height:100%;border-radius:10px;transition:width .5s linear}
 .stage-fill.washing{background:var(--accent)}
 .stage-fill.drying{background:var(--teal)}
 .stage-fill.downy{background:var(--purple)}
 .stage-fill.folding{background:var(--warn)}
-
-/* ── WORKFLOW STEPS ── */
 .workflow-steps{display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin-top:10px}
 .ws-step{display:flex;align-items:center;gap:4px}
-.ws-dot{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.65rem;border:1.5px solid var(--border)}
+.ws-dot{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.5rem;border:1.5px solid var(--border)}
 .ws-dot.done{background:var(--success);border-color:var(--success);color:#fff}
 .ws-dot.active{background:var(--accent);border-color:var(--accent);color:#fff;animation:livePulse 2s ease-in-out infinite}
 .ws-dot.pending-dot{background:var(--bg3);border-color:var(--border);color:var(--text3)}
-.ws-arrow{font-size:.65rem;color:var(--text3)}
-.ws-lbl{font-family:'DM Mono',monospace;font-size:.4rem;color:var(--text3);letter-spacing:.08em;text-align:center;margin-top:2px;text-transform:uppercase}
-
-/* ── ENCODE FORM ── */
+.ws-arrow{font-size:.75rem;color:var(--text3)}
+.ws-lbl{font-family:'DM Mono',monospace;font-size:.9rem;color:var(--text3);letter-spacing:.08em;text-align:center;margin-top:2px;text-transform:uppercase}
+/* ENCODE FORM */
 .price-calc-box{background:var(--bg2);border:1px solid var(--border-acc);border-radius:12px;padding:16px 18px;margin-top:14px}
 .price-line{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)}
 .price-line:last-child{border-bottom:none;padding-top:10px;margin-top:3px}
@@ -242,8 +205,6 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opa
 .rate-card{border:1px solid var(--border);border-radius:10px;padding:11px 13px;background:var(--input-bg)}
 .rate-name{font-size:.94rem;font-weight:600;color:var(--text);margin-bottom:3px}
 .rate-price{font-family:'DM Mono',monospace;font-size:1.2rem;color:var(--accent)}
-
-/* ── TOOLBAR ── */
 .toolbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px}
 .toolbar-left{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .search-wrap{position:relative}
@@ -257,8 +218,6 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opa
 .btn-add{height:38px;padding:0 18px;border-radius:22px;background:var(--accent);color:#fff;border:none;font-family:'DM Mono',monospace;font-size:.52rem;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;gap:6px;transition:opacity .2s,transform .15s,box-shadow .2s}
 .btn-add:hover{opacity:.88;transform:translateY(-1px);box-shadow:0 6px 18px var(--accent-glow)}
 .btn-add:disabled{opacity:.45;cursor:not-allowed;transform:none}
-
-/* ── TABLE ── */
 .table-card{border-radius:18px;overflow:hidden}
 .table-hdr{display:flex;align-items:center;justify-content:space-between;padding:15px 20px 12px;border-bottom:1px solid var(--border)}
 .table-lbl{font-family:'DM Mono',monospace;font-size:1rem;letter-spacing:.22em;text-transform:uppercase;color:var(--text3);display:flex;align-items:center;gap:8px}
@@ -270,25 +229,22 @@ tbody tr{border-bottom:1px solid var(--border);transition:background .15s}
 tbody tr:last-child{border-bottom:none}
 tbody tr:hover{background:rgba(0,180,216,.025)}
 td{padding:12px 16px;vertical-align:middle;font-size:1.3rem}
-
-/* ── MODAL ── */
 .modal-overlay{position:fixed;inset:0;background:var(--overlay);backdrop-filter:blur(5px);z-index:60;display:none;align-items:center;justify-content:center;padding:20px;overflow-y:auto}
 .modal-overlay.open{display:flex}
-.modal{background:var(--surface2);border:1px solid var(--border-acc);border-radius:20px;padding:28px;width:100%;max-width:500px;box-shadow:var(--shadow);animation:fadeUp .3s var(--ease);margin:auto}
+.modal{background:var(--surface2);border:1px solid var(--border-acc);border-radius:20px;padding:28px;width:100%;max-width:700px;box-shadow:var(--shadow);animation:fadeUp .3s var(--ease);margin:auto}
 .modal-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--border)}
-.modal-ttl{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:1.3rem;color:var(--text)}
+.modal-ttl{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:1.5rem;color:var(--text)}
 .modal-close{width:30px;height:30px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.85rem;transition:border-color .2s,color .2s}
 .modal-close:hover{border-color:var(--accent);color:var(--accent)}
-.mfield{margin-bottom:14px}
-.mfield label{display:block;font-family:'DM Mono',monospace;font-size:.70rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text3);margin-bottom:7px}
+.mfield{margin-bottom:14px;position:relative}
+.mfield label{display:block;font-family:'DM Mono',monospace;font-size:.80rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text3);margin-bottom:7px}
 .mfield input,.mfield select,.mfield textarea{width:100%;border-radius:10px;border:1px solid var(--border);background:var(--input-bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:.9rem;padding:0 13px;outline:none;transition:border-color .2s,box-shadow .2s}
 .mfield input,.mfield select{height:50px}
 .mfield textarea{height:80px;padding:11px 13px;resize:vertical;line-height:2}
 .mfield input:focus,.mfield select:focus,.mfield textarea:focus{border-color:var(--border-acc);box-shadow:0 0 0 3px var(--accent-glow)}
+.mfield input.error{border-color:var(--danger-border);box-shadow:0 0 0 3px var(--danger-bg)}
 .mfield select option{background:var(--bg2);color:var(--text)}
 .modal-btns{display:flex;gap:8px;margin-top:18px;justify-content:flex-end}
-
-/* ── BUTTONS ── */
 .btn-primary{height:38px;padding:0 20px;border-radius:22px;background:var(--accent);color:#fff;border:none;font-family:'DM Mono',monospace;font-size:.54rem;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;transition:opacity .2s,transform .15s,box-shadow .2s}
 .btn-primary:hover{opacity:.88;transform:translateY(-1px);box-shadow:0 6px 18px var(--accent-glow)}
 .btn-primary:disabled{opacity:.45;cursor:not-allowed;transform:none}
@@ -302,31 +258,23 @@ td{padding:12px 16px;vertical-align:middle;font-size:1.3rem}
 .btn-orange:disabled{opacity:.45;cursor:not-allowed}
 .btn-danger{height:38px;padding:0 20px;border-radius:22px;background:var(--danger-bg);color:var(--danger);border:1px solid var(--danger-border);font-family:'DM Mono',monospace;font-size:.54rem;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;transition:background .2s}
 .btn-danger:hover{background:rgba(192,57,43,.15)}
-
-/* ── INLINE ROW ── */
 .inline-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border)}
 .inline-row:last-child{border-bottom:none}
 .ikey{font-family:'DM Mono',monospace;font-size:.54rem;color:var(--text3);letter-spacing:.06em}
 .ival{font-family:'DM Mono',monospace;font-size:.6rem;color:var(--text);font-weight:500}
-
-/* ── NOTICES ── */
 .restrict-notice{display:flex;align-items:flex-start;gap:11px;padding:12px 15px;background:var(--danger-bg);border:1px solid var(--danger-border);border-radius:11px;margin-bottom:16px}
 .restrict-icon{font-size:1rem;flex-shrink:0;margin-top:2px}
 .restrict-txt{font-family:'DM Mono',monospace;font-size:.72rem;letter-spacing:.04em;color:var(--danger);line-height:1.7}
 .info-notice{display:flex;align-items:flex-start;gap:11px;padding:12px 15px;background:rgba(0,180,216,.05);border:1px solid var(--border-acc);border-radius:11px;margin-bottom:16px}
 .info-notice .info-icon{font-size:1rem;flex-shrink:0;margin-top:1px}
-.info-notice .info-txt{font-family:'DM Mono',monospace;font-size:.52rem;letter-spacing:.04em;color:var(--accent);line-height:1.7}
+.info-notice .info-txt{font-family:'DM Mono',monospace;font-size:.9rem;letter-spacing:.04em;color:var(--accent);line-height:1.7}
 .sys-rule{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:5px;background:rgba(0,180,216,.06);border:1px solid var(--border-acc);font-family:'DM Mono',monospace;font-size:.44rem;letter-spacing:.12em;color:var(--accent);text-transform:uppercase}
-
-/* ── LOADING / ERROR / EMPTY ── */
 .spinner{display:inline-block;width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
 .loading-row{display:flex;align-items:center;justify-content:center;gap:8px;padding:28px;color:var(--text3);font-family:'DM Mono',monospace;font-size:.54rem}
-.error-row{padding:14px 18px;text-align:center;color:var(--danger);font-family:'DM Mono',monospace;font-size:.54rem;background:var(--danger-bg);border-radius:10px;border:1px solid var(--danger-border);margin:8px 0}
+.error-row{padding:14px 18px;text-align:center;color:var(--danger);font-family:'DM Mono',monospace;font-size:.94rem;background:var(--danger-bg);border-radius:10px;border:1px solid var(--danger-border);margin:8px 0}
 .empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:36px 20px;color:var(--text3);gap:9px}
 .empty-state .es-icon{font-size:2rem;opacity:.4}
 .empty-state .es-msg{font-family:'DM Mono',monospace;font-size:.54rem;letter-spacing:.1em}
-
-/* ── MACHINE CHECK (assign modal) ── */
 .machine-check-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px;margin-top:10px}
 .machine-check-item{border:1.5px solid var(--border);border-radius:10px;padding:11px 8px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;background:var(--input-bg);position:relative}
 .machine-check-item:hover:not(.taken):not(.maintenance-taken){border-color:var(--border-acc)}
@@ -335,12 +283,10 @@ td{padding:12px 16px;vertical-align:middle;font-size:1.3rem}
 .machine-check-item.maintenance-taken{border-color:var(--danger-border);background:var(--danger-bg);cursor:not-allowed;opacity:.55}
 .mci-icon{font-size:1.3rem;display:block;margin-bottom:5px}
 .mci-num{font-family:'DM Mono',monospace;font-size:.46rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text3)}
-.mci-status{font-family:'DM Mono',monospace;font-size:.4rem;letter-spacing:.08em;text-transform:uppercase;margin-top:2px}
-.mci-check{position:absolute;top:5px;right:6px;width:14px;height:14px;border-radius:50%;background:var(--success);color:#fff;display:none;align-items:center;justify-content:center;font-size:.5rem}
+.mci-status{font-family:'DM Mono',monospace;font-size:1rem;letter-spacing:.08em;text-transform:uppercase;margin-top:2px}
+.mci-check{position:absolute;top:5px;right:6px;width:14px;height:14px;border-radius:50%;background:var(--success);color:#fff;display:none;align-items:center;justify-content:center;font-size:.6rem}
 .machine-check-item.selected .mci-check{display:flex}
 .stuck-warning{display:flex;align-items:flex-start;gap:8px;padding:10px 13px;background:var(--warn-bg);border:1px solid var(--warn-border);border-radius:9px;margin-bottom:10px;font-family:'DM Mono',monospace;font-size:.5rem;color:var(--warn);line-height:1.6}
-
-/* ── BULK BAR ── */
 .bulk-bar{display:none;align-items:center;gap:10px;padding:11px 15px;background:rgba(0,180,216,.06);border:1px solid var(--border-acc);border-radius:11px;margin-bottom:12px}
 .bulk-bar.visible{display:flex}
 .bulk-count{font-family:'DM Mono',monospace;font-size:.54rem;color:var(--accent)}
@@ -350,57 +296,71 @@ td{padding:12px 16px;vertical-align:middle;font-size:1.3rem}
 .btn-bulk.cancel:hover{border-color:var(--danger-border);color:var(--danger);background:var(--danger-bg)}
 .cb-wrap{display:flex;align-items:center;gap:8px;cursor:pointer}
 .cb-wrap input[type=checkbox]{width:16px;height:16px;accent-color:var(--accent);cursor:pointer}
-
-/* ── EMAIL BADGES ── */
 .email-sent-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;background:var(--success-bg);border:1px solid var(--success-border);font-family:'DM Mono',monospace;font-size:.4rem;color:var(--success)}
 .email-pending-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;background:var(--warn-bg);border:1px solid var(--warn-border);font-family:'DM Mono',monospace;font-size:.4rem;color:var(--warn)}
 .linked-account-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;background:rgba(0,180,216,.1);border:1px solid var(--border-acc);font-family:'DM Mono',monospace;font-size:.4rem;color:var(--accent)}
-
-/* ── PICKUP BANNER ── */
 .pickup-banner{display:flex;align-items:flex-start;gap:11px;padding:14px 16px;background:var(--orange-bg);border:1.5px solid var(--orange-border);border-radius:12px;margin-bottom:10px}
 .pickup-banner .pb-icon{font-size:1.4rem;flex-shrink:0;margin-top:2px}
 .pickup-banner .pb-txt{font-family:'DM Mono',monospace;font-size:.52rem;color:var(--orange);line-height:1.7;letter-spacing:.04em;flex:1}
 .pickup-banner .pb-btn{display:flex;flex-direction:column;gap:7px;align-items:flex-end;flex-shrink:0}
-
-/* ── ISSUE CARD ── */
 .issue-card{border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:10px;background:var(--surface)}
 .issue-type-lbl{font-family:'DM Mono',monospace;font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;color:var(--danger);margin-bottom:5px}
 .issue-desc{font-size:.88rem;color:var(--text2);line-height:1.5}
 .issue-meta{font-family:'DM Mono',monospace;font-size:.46rem;color:var(--text3);margin-top:6px}
-
-/* ── TOAST ── */
 .toast{position:fixed;bottom:52px;left:50%;transform:translateX(-50%) translateY(12px);background:var(--text);color:var(--bg);padding:10px 20px;border-radius:30px;font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.1em;z-index:100;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;white-space:nowrap;max-width:90vw;text-overflow:ellipsis;overflow:hidden}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .toast.success{background:var(--success)}
 .toast.error{background:var(--danger)}
 .toast.warn{background:var(--warn)}
-
-/* ── TICKER ── */
 .ticker-wrap{position:fixed;bottom:0;left:0;width:100%;background:var(--accent);overflow:hidden;padding:5px 0;z-index:50}
 .ticker-inner{display:flex;white-space:nowrap;animation:ticker 30s linear infinite}
 .ticker-item{font-family:'DM Mono',monospace;font-size:.52rem;letter-spacing:.2em;text-transform:uppercase;padding:0 24px;color:rgba(255,255,255,.9)}
 .ticker-dot{display:inline-block;width:3px;height:3px;background:rgba(255,255,255,.4);border-radius:50%;vertical-align:middle;margin:0 8px}
-
-/* ── BUBBLES CANVAS ── */
 #bubblesCanvas{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
-
-/* ── ENCODE FORM SPECIFICS ── */
 .form-row-check{display:flex;gap:16px;margin-bottom:14px;flex-wrap:wrap}
-.enc-email-hint{font-family:'DM Mono',monospace;font-size:.74rem;color:var(--accent);margin-top:5px;display:block}
+.enc-email-hint{font-family:'DM Mono',monospace;font-size:.74rem;margin-top:5px;display:block}
+.enc-email-hint.ok{color:var(--success)}
+.enc-email-hint.err{color:var(--danger)}
+.enc-email-hint.info{color:var(--accent)}
 .promo-status{font-family:'DM Mono',monospace;font-size:.46rem;margin-top:6px;min-height:18px}
-
-/* ── RESPONSIVE ── */
-@media(max-width:640px){
-  .grid-2{grid-template-columns:1fr}
-  .search-input{width:100%}
-  .toolbar{flex-direction:column;align-items:stretch}
-  .toolbar-left{flex-direction:column}
-}
+/* FIELD VALIDATION */
+.field-error{font-family:'DM Mono',monospace;font-size:.46rem;color:var(--danger);margin-top:5px;min-height:16px}
+/* NAME ROW */
+.name-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+@media(max-width:500px){.name-row{grid-template-columns:1fr}}
+/* AUTOCOMPLETE */
+.autocomplete-wrap{position:relative}
+.autocomplete-dropdown{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--surface2);border:1px solid var(--border-acc);border-radius:12px;box-shadow:var(--shadow);z-index:200;max-height:220px;overflow-y:auto;display:none;animation:slideDown .18s var(--ease)}
+.autocomplete-dropdown.open{display:block}
+.ac-item{padding:11px 14px;cursor:pointer;border-bottom:1px solid var(--border);transition:background .15s}
+.ac-item:last-child{border-bottom:none}
+.ac-item:hover{background:rgba(0,180,216,.06)}
+.ac-name{font-size:.9rem;font-weight:600;color:var(--text)}
+.ac-email{font-family:'DM Mono',monospace;font-size:.46rem;color:var(--text3);margin-top:2px}
+.ac-badge{font-family:'DM Mono',monospace;font-size:.38rem;padding:2px 6px;border-radius:10px;background:rgba(0,180,216,.1);color:var(--accent);margin-left:6px;border:1px solid var(--border-acc)}
+/* PROMO CARD */
+.promo-card{border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:10px;background:var(--surface);display:flex;align-items:center;justify-content:space-between;gap:12px}
+.promo-card-left .promo-code{font-family:'DM Mono',monospace;font-size:1.1rem;font-weight:700;color:var(--accent);letter-spacing:.1em}
+.promo-card-left .promo-disc{font-family:'DM Mono',monospace;font-size:.52rem;color:var(--text3);margin-top:3px}
+/* NOTIFICATION BANNER */
+.notif-banner{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;background:rgba(160,112,16,0.06);border:1.5px solid var(--warn-border);border-radius:12px;margin-bottom:10px;animation:fadeUp .3s var(--ease)}
+.notif-banner .nb-icon{font-size:1.4rem;flex-shrink:0}
+.notif-banner .nb-txt{flex:1;font-family:'DM Mono',monospace;font-size:.52rem;color:var(--warn);line-height:1.7}
+.notif-banner .nb-new{display:inline-block;padding:2px 8px;border-radius:10px;background:var(--warn);color:#fff;font-size:.38rem;margin-left:6px;vertical-align:middle}
+/* PROFILE */
+.profile-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin-bottom:14px}
+.profile-avatar-wrap{display:flex;flex-direction:column;align-items:center;gap:14px;padding:26px 0 18px}
+.profile-avatar-big{width:88px;height:88px;border-radius:50%;background:rgba(0,180,216,.12);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:2.6rem;color:var(--accent);border:2px solid var(--border-acc)}
+.profile-name-big{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:1.5rem;color:var(--text);text-align:center}
+.profile-role-tag{font-family:'DM Mono',monospace;font-size:.54rem;letter-spacing:.18em;text-transform:uppercase;color:var(--accent)}
+.pw-strength-bar{height:4px;border-radius:20px;background:var(--bg3);overflow:hidden;margin-top:6px}
+.pw-strength-fill{height:100%;border-radius:20px;transition:width .4s,background .4s}
+.pw-strength-label{font-family:'DM Mono',monospace;font-size:.46rem;letter-spacing:.1em;text-transform:uppercase;margin-top:4px}
+@media(max-width:640px){.grid-2{grid-template-columns:1fr}.search-input{width:100%}.toolbar{flex-direction:column;align-items:stretch}.toolbar-left{flex-direction:column}.name-row{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <canvas id="bubblesCanvas" aria-hidden="true"></canvas>
-
 <div class="deco-bg" aria-hidden="true">
   <div class="deco-word w1">MACHINE</div>
   <div class="deco-word w2">Operator</div>
@@ -446,9 +406,22 @@ td{padding:12px 16px;vertical-align:middle;font-size:1.3rem}
         <span class="nav-icon"><svg viewBox="0 0 16 16" fill="none"><path d="M8 2l2 4h4l-3 3 1 4-4-2.5L4 13l1-4L2 6h4z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg></span>
         Ready for Pickup
       </a>
+      <a class="nav-link" onclick="showSection('promos',this)">
+        <span class="nav-icon" style="position:relative"><svg viewBox="0 0 16 16" fill="none"><path d="M2 9L9 2h5v5l-7 7-5-5z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><circle cx="11.5" cy="4.5" r="1" fill="currentColor"/></svg>
+          <span class="notif-badge" id="promo-nav-badge">0</span>
+        </span>
+        Promos
+      </a>
       <a class="nav-link" onclick="showSection('issues',this)">
         <span class="nav-icon"><svg viewBox="0 0 16 16" fill="none"><path d="M8 2L2 13h12L8 2z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M8 6v3M8 11v.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span>
         Issue Reports
+      </a>
+    </nav>
+    <p class="nav-sec">Account</p>
+    <nav style="display:flex;flex-direction:column;gap:3px">
+      <a class="nav-link" onclick="showSection('profile',this)">
+        <span class="nav-icon"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5.5" r="3" stroke="currentColor" stroke-width="1.2"/><path d="M2 14c0-2.2 2.7-4 6-4s6 1.8 6 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></span>
+        My Profile
       </a>
     </nav>
   </div>
@@ -484,8 +457,7 @@ td{padding:12px 16px;vertical-align:middle;font-size:1.3rem}
   </div>
 </header>
 
-<div id="layout">
-<div id="main">
+<div id="layout"><div id="main">
 
 <!-- ══ DASHBOARD ══ -->
 <div id="sec-dashboard" class="section active">
@@ -543,7 +515,7 @@ td{padding:12px 16px;vertical-align:middle;font-size:1.3rem}
   </div>
   <div class="divider"><div class="rule"></div><div class="dia"></div><div class="rule"></div></div>
   <div class="gstatic card">
-    <div class="card-lbl">Currently Running Laundry Service <span class="sys-rule">&#x2699; Auto-Timer Active</span></div>
+    <div class="card-lbl">Currently Running <span class="sys-rule">&#x2699; Auto-Timer Active</span></div>
     <div id="machines-running-list" style="margin-top:6px"><div class="loading-row"><div class="spinner"></div></div></div>
   </div>
 </div>
@@ -584,9 +556,7 @@ td{padding:12px 16px;vertical-align:middle;font-size:1.3rem}
         <option value="completed">Completed</option>
       </select>
     </div>
-    <button class="btn-ghost" onclick="loadQueue()" style="height:38px;font-size:.5rem;padding:0 16px">
-      &#x21BB; Refresh
-    </button>
+    <button class="btn-ghost" onclick="loadQueue()" style="height:38px;font-size:.5rem;padding:0 16px">&#x21BB; Refresh</button>
   </div>
   <div id="queue-list"><div class="loading-row"><div class="spinner"></div>Loading queue&hellip;</div></div>
 </div>
@@ -600,22 +570,36 @@ td{padding:12px 16px;vertical-align:middle;font-size:1.3rem}
   </div>
   <div class="info-notice">
     <div class="info-icon">&#x1F4E7;</div>
-    <div class="info-txt">EMAIL + ACCOUNT LINK &mdash; If the customer email matches a registered account, the order is automatically linked to their portal. They see live status instantly. Non-registered emails still receive the tracking link.</div>
+    <div class="info-txt">EMAIL + ACCOUNT LINK &mdash; If the customer email matches a registered account, the order is automatically linked to their portal. Type the first name to search registered customers and auto-fill details.</div>
   </div>
   <div class="divider"><div class="rule"></div><div class="dia"></div><div class="rule"></div></div>
   <div class="grid-2">
     <!-- LEFT: Form -->
     <div class="gstatic card">
       <div class="card-lbl">Service Entry</div>
-      <div class="mfield">
-        <label>Customer Name *</label>
-        <input type="text" id="enc-customer" placeholder="Full name" oninput="calcPrice()">
+
+      <!-- NAME FIELDS (split + autocomplete) -->
+      <div class="name-row">
+        <div class="mfield autocomplete-wrap" style="margin-bottom:0">
+          <label>First Name *</label>
+          <input type="text" id="enc-firstname" placeholder="e.g. Juan" autocomplete="off" oninput="onFirstNameInput()" onfocus="onFirstNameInput()">
+          <div class="autocomplete-dropdown" id="ac-dropdown"></div>
+          <div class="field-error" id="enc-firstname-err"></div>
+        </div>
+        <div class="mfield" style="margin-bottom:0">
+          <label>Last Name *</label>
+          <input type="text" id="enc-lastname" placeholder="e.g. dela Cruz" autocomplete="off" oninput="clearFieldErr('enc-lastname-err')">
+          <div class="field-error" id="enc-lastname-err"></div>
+        </div>
       </div>
+
       <div class="mfield">
-        <label>Customer Email <span style="font-size:.7rem;opacity:.7">(for tracking &amp; account link)</span></label>
-        <input type="email" id="enc-email" placeholder="customer@gmail.com" autocomplete="off">
-        <span class="enc-email-hint">&#x1F4E7; Tracking sent &middot; links to customer account if registered</span>
+        <label>Gmail Address <span style="font-size:.7rem;opacity:.7">(for tracking &amp; account link)</span></label>
+        <input type="email" id="enc-email" placeholder="customer@gmail.com" autocomplete="off" oninput="validateGmail()">
+        <span class="enc-email-hint info" id="enc-email-hint">&#x1F4E7; Must end in @gmail.com &middot; 6–30 characters</span>
+        <div class="field-error" id="enc-email-err"></div>
       </div>
+
       <div class="mfield">
         <label>Service Type *</label>
         <select id="enc-service" onchange="calcPrice()">
@@ -628,7 +612,7 @@ td{padding:12px 16px;vertical-align:middle;font-size:1.3rem}
         </select>
       </div>
       <div class="mfield">
-        <label>Total Weight (max kg 8) *</label>
+        <label>Total Weight (max 8kg) *</label>
         <input type="number" id="enc-weight" placeholder="e.g. 5.0" min="0.5" step="0.5" oninput="calcPrice()">
       </div>
       <div class="mfield">
@@ -640,19 +624,11 @@ td{padding:12px 16px;vertical-align:middle;font-size:1.3rem}
         <div class="promo-status" id="promo-status"></div>
       </div>
       <div class="form-row-check">
-        <label class="cb-wrap">
-          <input type="checkbox" id="enc-dryer" onchange="calcPrice()">
-          <span style="font-size:.88rem;color:var(--text2)">With Dryer <span style="color:var(--text3);font-size:.8rem">(+&#x20B1;20 flat)</span></span>
-        </label>
-        <label class="cb-wrap">
-          <input type="checkbox" id="enc-downy" onchange="calcPrice()">
-          <span style="font-size:.88rem;color:var(--text2)">With Downy</span>
-        </label>
+        <label class="cb-wrap"><input type="checkbox" id="enc-dryer" onchange="calcPrice()"><span style="font-size:.88rem;color:var(--text2)">With Dryer <span style="color:var(--text3);font-size:.8rem">(+&#x20B1;20 flat)</span></span></label>
+        <label class="cb-wrap"><input type="checkbox" id="enc-downy" onchange="calcPrice()"><span style="font-size:.88rem;color:var(--text2)">With Downy</span></label>
       </div>
       <div style="display:flex;gap:9px;flex-wrap:wrap;margin-top:4px">
-        <button class="btn-primary" id="enc-submit-btn" onclick="encodeService()">
-          &#x1F4E7; Encode &amp; Send Tracking
-        </button>
+        <button class="btn-primary" id="enc-submit-btn" onclick="encodeService()">&#x1F4E7; Encode &amp; Send Tracking</button>
         <button class="btn-ghost" onclick="clearEncodeForm()">Clear Form</button>
       </div>
     </div>
@@ -671,9 +647,7 @@ td{padding:12px 16px;vertical-align:middle;font-size:1.3rem}
       </div>
       <div style="margin-top:16px">
         <div class="card-lbl" style="margin-bottom:8px">Stage Timeline <span class="sys-rule">&#x2699; Fixed Timers</span></div>
-        <div id="calc-timeline" style="display:flex;gap:6px;flex-wrap:wrap">
-          <span class="pill blue"><span class="pill-dot"></span>Washing 44m</span>
-        </div>
+        <div id="calc-timeline" style="display:flex;gap:6px;flex-wrap:wrap"><span class="pill blue"><span class="pill-dot"></span>Washing 44m</span></div>
       </div>
       <div style="margin-top:16px;padding:12px 14px;background:var(--success-bg);border:1px solid var(--success-border);border-radius:10px">
         <div style="font-family:'DM Mono',monospace;font-size:.86rem;color:var(--success);letter-spacing:.1em;text-transform:uppercase;margin-bottom:7px">&#x1F4E7; Auto Email &amp; Account Link Flow</div>
@@ -691,7 +665,6 @@ td{padding:12px 16px;vertical-align:middle;font-size:1.3rem}
     </div>
   </div>
 
-  <!-- Pricing Reference -->
   <div class="gstatic card" style="margin-bottom:14px">
     <div class="card-lbl">Pricing Rates Reference</div>
     <div class="price-rate-grid">
@@ -724,19 +697,16 @@ td{padding:12px 16px;vertical-align:middle;font-size:1.3rem}
   <div class="page-head">
     <div class="live-tag"><div class="live-dot"></div>Folding</div>
     <div class="page-title">Folding <em>Queue</em></div>
-    <div class="page-sub">Services completed washing/drying/downy. Click &ldquo;Fold Done&rdquo; to move to Ready for Pickup.</div>
+    <div class="page-sub">Click &ldquo;Fold Done&rdquo; to move completed items to Ready for Pickup.</div>
   </div>
   <div class="info-notice">
     <div class="info-icon">&#x1F455;</div>
-    <div class="info-txt">FOLDING QUEUE &mdash; Orders arrive here automatically after the wash/dry/downy cycle completes. Once staff finishes folding, click <strong>Fold Done</strong>. The order moves to Ready for Pickup.</div>
+    <div class="info-txt">FOLDING QUEUE &mdash; Orders arrive here automatically after the wash/dry/downy cycle completes. Once staff finishes folding, click <strong>Fold Done</strong>.</div>
   </div>
   <div class="divider"><div class="rule"></div><div class="dia"></div><div class="rule"></div></div>
   <div class="toolbar">
     <div class="toolbar-left">
-      <label class="cb-wrap">
-        <input type="checkbox" id="fold-select-all" onchange="toggleFoldSelectAll()">
-        <span style="font-family:'DM Mono',monospace;font-size:.52rem;color:var(--text2)">Select All</span>
-      </label>
+      <label class="cb-wrap"><input type="checkbox" id="fold-select-all" onchange="toggleFoldSelectAll()"><span style="font-family:'DM Mono',monospace;font-size:.52rem;color:var(--text2)">Select All</span></label>
     </div>
     <button class="btn-ghost" onclick="loadFolding()" style="height:38px;font-size:.5rem;padding:0 16px">&#x21BB; Refresh</button>
   </div>
@@ -759,7 +729,7 @@ td{padding:12px 16px;vertical-align:middle;font-size:1.3rem}
   </div>
   <div class="info-notice">
     <div class="info-icon">&#x1F4E7;</div>
-    <div class="info-txt">PICKUP READY &mdash; Click <strong>Send Pickup Email</strong> to notify the customer. Then mark <strong>Completed</strong> when they collect. Orders without an email can be marked completed directly.</div>
+    <div class="info-txt">PICKUP READY &mdash; Click <strong>Send Pickup Email</strong> to notify the customer. Then mark <strong>Completed</strong> when they collect.</div>
   </div>
   <div class="divider"><div class="rule"></div><div class="dia"></div><div class="rule"></div></div>
   <div class="toolbar">
@@ -767,6 +737,29 @@ td{padding:12px 16px;vertical-align:middle;font-size:1.3rem}
     <button class="btn-ghost" onclick="loadPickup()" style="height:38px;font-size:.5rem;padding:0 16px">&#x21BB; Refresh</button>
   </div>
   <div id="pickup-list"><div class="loading-row"><div class="spinner"></div>Loading pickup queue&hellip;</div></div>
+</div>
+
+<!-- ══ PROMOS (VIEW ONLY) ══ -->
+<div id="sec-promos" class="section">
+  <div class="page-head">
+    <div class="live-tag"><div class="live-dot"></div>Promos</div>
+    <div class="page-title">Active <em>Promos</em></div>
+    <div class="page-sub">View-only. Active promo codes you can apply during service encoding. New codes are set by Admin.</div>
+  </div>
+  <div class="info-notice">
+    <div class="info-icon">&#x1F3F7;&#xFE0F;</div>
+    <div class="info-txt">PROMO CODES &mdash; Use these codes in the Encode Service form. When Admin adds a new promo, you will see a notification here. These codes are managed by Admin — you can view but not edit them.</div>
+  </div>
+  <div class="divider"><div class="rule"></div><div class="dia"></div><div class="rule"></div></div>
+  <div id="promo-notif-area" style="margin-bottom:4px"></div>
+  <div class="toolbar">
+    <div class="toolbar-left"></div>
+    <button class="btn-ghost" onclick="loadPromos()" style="height:38px;font-size:.5rem;padding:0 16px">&#x21BB; Refresh</button>
+  </div>
+  <div class="gstatic card">
+    <div class="card-lbl">Active Promo Codes <span class="count-pill" id="promos-count">0</span></div>
+    <div id="promos-list"><div class="loading-row"><div class="spinner"></div>Loading promos&hellip;</div></div>
+  </div>
 </div>
 
 <!-- ══ ISSUES ══ -->
@@ -790,16 +783,67 @@ td{padding:12px 16px;vertical-align:middle;font-size:1.3rem}
   </div>
 </div>
 
-</div><!-- /main -->
-</div><!-- /layout -->
+<!-- ══ PROFILE ══ -->
+<div id="sec-profile" class="section">
+  <div class="page-head">
+    <div class="live-tag"><div class="live-dot"></div>My Profile</div>
+    <div class="page-title">Operator <em>Profile</em></div>
+    <div class="page-sub">Manage your account details and security settings.</div>
+  </div>
+  <div class="divider"><div class="rule"></div><div class="dia"></div><div class="rule"></div></div>
+  <div class="profile-grid">
+    <div class="gstatic card">
+      <div class="card-lbl">Account Overview</div>
+      <div class="profile-avatar-wrap">
+        <div class="profile-avatar-big" id="profile-av-big">M</div>
+        <div class="profile-name-big" id="profile-fullname">&mdash;</div>
+        <div class="profile-role-tag">&#x2699; Machine Operator</div>
+      </div>
+      <div style="border-top:1px solid var(--border);padding-top:16px">
+        <div class="inline-row"><span class="ikey">Email</span><span class="ival" id="profile-email-disp">&mdash;</span></div>
+        <div class="inline-row"><span class="ikey">Phone</span><span class="ival" id="profile-phone-disp">&mdash;</span></div>
+        <div class="inline-row"><span class="ikey">Status</span><span class="pill green"><span class="pill-dot"></span>Active</span></div>
+        <div class="inline-row"><span class="ikey">Member Since</span><span class="ival" id="profile-since">&mdash;</span></div>
+      </div>
+    </div>
+    <div class="gstatic card">
+      <div class="card-lbl">Edit Information</div>
+      <div class="mfield"><label>Full Name</label><input type="text" id="p-fullname" placeholder="Your full name"></div>
+      <div class="mfield"><label>Phone Number</label><input type="tel" id="p-phone" placeholder="+63 9XX XXX XXXX"></div>
+      <div class="mfield">
+        <label>Email Address</label>
+        <input type="email" id="p-email" placeholder="your@email.com" disabled style="opacity:.55;cursor:not-allowed">
+        <div style="font-family:'DM Mono',monospace;font-size:.75rem;color:var(--text3);margin-top:5px">Email cannot be changed here. Contact admin if needed.</div>
+      </div>
+      <div style="display:flex;justify-content:flex-end;margin-top:8px">
+        <button class="btn-primary" onclick="saveProfile()">Save Changes</button>
+      </div>
+    </div>
+  </div>
+  <div class="gstatic card">
+    <div class="card-lbl">Change Password</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px">
+      <div class="mfield" style="margin-bottom:0"><label>Current Password</label><input type="password" id="p-cur-pw" placeholder="Enter current password"></div>
+      <div class="mfield" style="margin-bottom:0">
+        <label>New Password</label>
+        <input type="password" id="p-new-pw" placeholder="Min. 8 characters" oninput="checkPwStrength(this.value)">
+        <div class="pw-strength-bar"><div class="pw-strength-fill" id="pw-strength-fill" style="width:0%;background:var(--danger)"></div></div>
+        <div class="pw-strength-label" id="pw-strength-label" style="color:var(--text3)">Enter a new password</div>
+      </div>
+      <div class="mfield" style="margin-bottom:0"><label>Confirm New Password</label><input type="password" id="p-confirm-pw" placeholder="Re-enter new password"></div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;margin-top:18px">
+      <button class="btn-primary" onclick="changePassword()">Update Password</button>
+    </div>
+  </div>
+</div>
 
-<!-- ══ MODAL: ASSIGN + START ══ -->
+</div></div>
+
+<!-- ══ MODALS ══ -->
 <div class="modal-overlay" id="modal-assign-start">
   <div class="modal" style="max-width:540px">
-    <div class="modal-hdr">
-      <div class="modal-ttl">Assign Machine &amp; Start</div>
-      <button class="modal-close" onclick="closeModal('assign-start')">&#x2715;</button>
-    </div>
+    <div class="modal-hdr"><div class="modal-ttl">Assign Machine &amp; Start</div><button class="modal-close" onclick="closeModal('assign-start')">&#x2715;</button></div>
     <div style="margin-bottom:14px;padding:13px 15px;background:var(--bg2);border-radius:10px;border:1px solid var(--border)">
       <div style="font-family:'DM Mono',monospace;font-size:.46rem;color:var(--text3);margin-bottom:5px;letter-spacing:.12em;text-transform:uppercase">Order Details</div>
       <div id="as-order-info" style="font-size:.92rem;font-weight:600;color:var(--text)">&mdash;</div>
@@ -808,25 +852,19 @@ td{padding:12px 16px;vertical-align:middle;font-size:1.3rem}
     <div id="as-req-hint" style="font-family:'DM Mono',monospace;font-size:.5rem;margin-bottom:10px;padding:9px 13px;background:rgba(0,180,216,.06);border:1px solid var(--border-acc);border-radius:9px;color:var(--accent)"></div>
     <div id="as-no-machines" style="display:none;margin-bottom:10px" class="error-row"></div>
     <div id="as-not-enough" style="display:none;margin-bottom:10px" class="error-row"></div>
-    <div id="as-stuck-warning" style="display:none" class="stuck-warning">
-      <span>&#x26A0;&#xFE0F;</span><span id="as-stuck-text"></span>
-    </div>
+    <div id="as-stuck-warning" style="display:none" class="stuck-warning"><span>&#x26A0;&#xFE0F;</span><span id="as-stuck-text"></span></div>
     <div id="as-sel-status" style="font-family:'DM Mono',monospace;font-size:.46rem;color:var(--text3);margin-bottom:9px;min-height:18px"></div>
     <div id="as-machine-grid" class="machine-check-grid"></div>
-    <div class="modal-btns" style="margin-top:18px">
+    <div class="modal-btns">
       <button class="btn-ghost" onclick="closeModal('assign-start')">Cancel</button>
       <button class="btn-success" id="as-submit-btn" onclick="submitAssignStart()" disabled>&#x25B6; Assign &amp; Start Wash</button>
     </div>
   </div>
 </div>
 
-<!-- ══ MODAL: REPORT ISSUE ══ -->
 <div class="modal-overlay" id="modal-add-issue">
   <div class="modal">
-    <div class="modal-hdr">
-      <div class="modal-ttl">Report Issue</div>
-      <button class="modal-close" onclick="closeModal('add-issue')">&#x2715;</button>
-    </div>
+    <div class="modal-hdr"><div class="modal-ttl">Report Issue</div><button class="modal-close" onclick="closeModal('add-issue')">&#x2715;</button></div>
     <div class="mfield">
       <label>Issue Type</label>
       <select id="iss-type">
@@ -845,13 +883,9 @@ td{padding:12px 16px;vertical-align:middle;font-size:1.3rem}
   </div>
 </div>
 
-<!-- ══ MODAL: MACHINE MAINTENANCE ══ -->
 <div class="modal-overlay" id="modal-machine-maint">
   <div class="modal" style="max-width:400px">
-    <div class="modal-hdr">
-      <div class="modal-ttl">&#x1F6E0; Machine Maintenance</div>
-      <button class="modal-close" onclick="closeModal('machine-maint')">&#x2715;</button>
-    </div>
+    <div class="modal-hdr"><div class="modal-ttl">&#x1F6E0; Machine Maintenance</div><button class="modal-close" onclick="closeModal('machine-maint')">&#x2715;</button></div>
     <div id="maint-modal-body" style="font-family:'DM Mono',monospace;font-size:.54rem;color:var(--text2);line-height:1.9;margin-bottom:18px"></div>
     <div class="modal-btns">
       <button class="btn-ghost" onclick="closeModal('machine-maint')">Cancel</button>
@@ -861,7 +895,6 @@ td{padding:12px 16px;vertical-align:middle;font-size:1.3rem}
 </div>
 
 <div class="toast" id="toast"></div>
-
 <div class="ticker-wrap" aria-hidden="true">
   <div class="ticker-inner">
     <span class="ticker-item">Machine Operator</span><span class="ticker-dot"></span>
@@ -880,1095 +913,563 @@ td{padding:12px 16px;vertical-align:middle;font-size:1.3rem}
 <script>
 'use strict';
 
-// ══════════════════════════════════════════════════════════════
-//  CONSTANTS — match app.py exactly
-//  Backend uses 1*60 for dev, real shop uses 44/40/16.
-//  These constants are for display labels only; timers come from server.
-// ══════════════════════════════════════════════════════════════
-const MACHINE_CAPACITY = 8;
-const DRYER_SURCHARGE  = 20.0;
-const SERVICE_RATES = {
-  single_wash: { label: 'Single Wash',            rate: 30 },
-  double_wash: { label: 'Double Wash',            rate: 35 },
-  household:   { label: 'Household Items',        rate: 45 },
-  heavy_wash:  { label: 'Heavy Wash (Comforter)', rate: 75 },
-  soak_whites: { label: 'Soak for Whites',        rate: 50 },
-};
-const STATUS_PILL = {
-  pending:'amber', washing:'blue', drying:'teal', downy:'purple',
-  folding:'amber', ready_for_pickup:'orange', completed:'green',
-  done:'green', cancelled:'red'
-};
-const STATUS_LABELS = {
-  pending:'\u23F3 Pending', washing:'\uD83E\uDEE7 Washing',
-  drying:'\uD83D\uDCA8 Drying', downy:'\uD83C\uDF38 Downy',
-  folding:'\uD83D\uDC55 Folding', ready_for_pickup:'\uD83D\uDCE6 Ready for Pickup',
-  completed:'\u2705 Done', done:'\u2705 Done', cancelled:'\u274C Cancelled'
-};
-const ISSUE_TYPE_LABELS = {
-  damaged_clothes:'\uD83D\uDD34 Damaged Clothes',
-  lost_item:'\uD83D\uDFE0 Lost Item',
-  machine_malfunction:'\uD83D\uDD27 Machine Malfunction',
-  other:'\uD83D\uDCCC Other'
-};
+// ── CONSTANTS ──
+const MACHINE_CAPACITY=8,DRYER_SURCHARGE=20.0;
+const SERVICE_RATES={single_wash:{label:'Single Wash',rate:30},double_wash:{label:'Double Wash',rate:35},household:{label:'Household Items',rate:45},heavy_wash:{label:'Heavy Wash (Comforter)',rate:75},soak_whites:{label:'Soak for Whites',rate:50}};
+const STATUS_PILL={pending:'amber',washing:'blue',drying:'teal',downy:'purple',folding:'amber',ready_for_pickup:'orange',completed:'green',done:'green',cancelled:'red'};
+const STATUS_LABELS={pending:'\u23F3 Pending',washing:'\uD83E\uDEE7 Washing',drying:'\uD83D\uDCA8 Drying',downy:'\uD83C\uDF38 Downy',folding:'\uD83D\uDC55 Folding',ready_for_pickup:'\uD83D\uDCE6 Ready for Pickup',completed:'\u2705 Done',done:'\u2705 Done',cancelled:'\u274C Cancelled'};
+const ISSUE_TYPE_LABELS={damaged_clothes:'\uD83D\uDD34 Damaged Clothes',lost_item:'\uD83D\uDFE0 Lost Item',machine_malfunction:'\uD83D\uDD27 Machine Malfunction',other:'\uD83D\uDCCC Other'};
 
-// ══════════════════════════════════════════════════════════════
-//  THEME
-// ══════════════════════════════════════════════════════════════
-function toggleTheme() {
-  const h = document.documentElement;
-  const isDark = h.getAttribute('data-theme') === 'dark';
-  h.setAttribute('data-theme', isDark ? 'light' : 'dark');
-  document.getElementById('themeBtn').textContent = isDark ? '\u263E' : '\u2600';
-  localStorage.setItem('op-theme', isDark ? 'light' : 'dark');
-}
-(function() {
-  const t = localStorage.getItem('op-theme');
-  if (t) {
-    document.documentElement.setAttribute('data-theme', t);
-    document.getElementById('themeBtn').textContent = t === 'dark' ? '\u263E' : '\u2600';
+// Gmail validation rules
+const GMAIL_FORBIDDEN=/[&=_'\-+,<>]/;
+function validateGmail(){
+  const val=document.getElementById('enc-email').value.trim();
+  const hint=document.getElementById('enc-email-hint');
+  const err=document.getElementById('enc-email-err');
+  const inp=document.getElementById('enc-email');
+  if(!val){
+    hint.textContent='\uD83D\uDCE7 Must end in @gmail.com \u00B7 6\u201330 characters';
+    hint.className='enc-email-hint info';
+    err.textContent='';inp.classList.remove('error');return true;
   }
-})();
-
-// ══════════════════════════════════════════════════════════════
-//  SIDEBAR
-// ══════════════════════════════════════════════════════════════
-const sidebar = document.getElementById('sidebar');
-const overlay = document.getElementById('overlay');
-document.getElementById('openSidebar').onclick  = () => { sidebar.classList.add('open'); overlay.classList.add('visible'); };
-document.getElementById('closeSidebar').onclick = closeSidebar;
-overlay.onclick = closeSidebar;
-function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('visible'); }
-
-// ══════════════════════════════════════════════════════════════
-//  SECTION NAV
-// ══════════════════════════════════════════════════════════════
-const SECTION_LOADERS = {
-  dashboard: loadDashboard,
-  machines:  loadMachines,
-  queue:     loadQueue,
-  encode:    loadEncoded,
-  folding:   loadFolding,
-  pickup:    loadPickup,
-  issues:    loadIssues,
-};
-
-function showSection(id, el) {
-  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-  const sec = document.getElementById('sec-' + id);
-  if (sec) sec.classList.add('active');
-  if (el) el.classList.add('active');
-  if (window.innerWidth < 900) closeSidebar();
-  if (SECTION_LOADERS[id]) SECTION_LOADERS[id]();
+  if(!val.endsWith('@gmail.com')){err.textContent='Must end with @gmail.com';inp.classList.add('error');hint.className='enc-email-hint err';return false;}
+  if(val.length<6){err.textContent='Minimum 6 characters';inp.classList.add('error');return false;}
+  if(val.length>30){err.textContent='Maximum 30 characters';inp.classList.add('error');return false;}
+  if(GMAIL_FORBIDDEN.test(val.replace('@gmail.com',''))){err.textContent='Contains forbidden characters: & = _ \u2019 - + , < >';inp.classList.add('error');return false;}
+  if(!/^[^\s@]+@gmail\.com$/.test(val)){err.textContent='Invalid email format';inp.classList.add('error');return false;}
+  err.textContent='';inp.classList.remove('error');
+  hint.textContent='\u2705 Valid Gmail address';hint.className='enc-email-hint ok';return true;
 }
 
-// ══════════════════════════════════════════════════════════════
-//  TOAST
-// ══════════════════════════════════════════════════════════════
+// ── THEME ──
+function toggleTheme(){const h=document.documentElement,isDark=h.getAttribute('data-theme')==='dark';h.setAttribute('data-theme',isDark?'light':'dark');document.getElementById('themeBtn').textContent=isDark?'\u263E':'\u2600';localStorage.setItem('op-theme',isDark?'light':'dark');}
+(function(){const t=localStorage.getItem('op-theme');if(t){document.documentElement.setAttribute('data-theme',t);document.getElementById('themeBtn').textContent=t==='dark'?'\u263E':'\u2600';}})();
+
+// ── SIDEBAR ──
+const sidebar=document.getElementById('sidebar'),overlay=document.getElementById('overlay');
+document.getElementById('openSidebar').onclick=()=>{sidebar.classList.add('open');overlay.classList.add('visible')};
+document.getElementById('closeSidebar').onclick=closeSidebar;overlay.onclick=closeSidebar;
+function closeSidebar(){sidebar.classList.remove('open');overlay.classList.remove('visible')}
+
+// ── SECTION NAV ──
+const SECTION_LOADERS={dashboard:loadDashboard,machines:loadMachines,queue:loadQueue,encode:loadEncoded,folding:loadFolding,pickup:loadPickup,promos:loadPromos,issues:loadIssues,profile:loadProfile};
+function showSection(id,el){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
+  const sec=document.getElementById('sec-'+id);if(sec)sec.classList.add('active');
+  if(el)el.classList.add('active');
+  if(window.innerWidth<900)closeSidebar();
+  if(SECTION_LOADERS[id])SECTION_LOADERS[id]();
+}
+
+// ── TOAST ──
 let _toastTimer;
-function showToast(msg, type = '', dur = 3500) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = 'toast show' + (type ? ' ' + type : '');
-  clearTimeout(_toastTimer);
-  _toastTimer = setTimeout(() => t.classList.remove('show'), dur);
+function showToast(msg,type='',dur=3500){const t=document.getElementById('toast');t.textContent=msg;t.className='toast show'+(type?' '+type:'');clearTimeout(_toastTimer);_toastTimer=setTimeout(()=>t.classList.remove('show'),dur);}
+
+// ── MODALS ──
+function openModal(id){document.getElementById('modal-'+id).classList.add('open')}
+function closeModal(id){document.getElementById('modal-'+id).classList.remove('open')}
+
+// ── API ──
+const JSON_HEADERS={'Content-Type':'application/json','X-Requested-With':'XMLHttpRequest'};
+async function apiFetch(url,opts={}){try{const r=await fetch(url,opts);if(r.status===401){if(!url.includes('validate-promo'))showToast('\u26A0\uFE0F Session expired. Please log in.','error');return null;}if(!r.ok&&r.status!==404)return null;return await r.json();}catch(e){console.error('apiFetch error',url,e);return null;}}
+async function apiPost(url,body){return apiFetch(url,{method:'POST',headers:JSON_HEADERS,body:JSON.stringify(body)})}
+async function apiPut(url,body={}){return apiFetch(url,{method:'PUT',headers:JSON_HEADERS,body:JSON.stringify(body)})}
+
+// ── UTILITIES ──
+function fmtRemaining(s){if(s==null||s<0)s=0;const m=Math.floor(s/60),sec=s%60;return String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0')}
+function calcMachines(w){return Math.max(1,Math.ceil(w/MACHINE_CAPACITY))}
+function fmtPHP(n){return '\u20B1'+Number(n||0).toLocaleString('en-PH',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function clearFieldErr(id){const e=document.getElementById(id);if(e)e.textContent='';}
+function btnLoading(id){const b=document.getElementById(id);if(!b)return;b.disabled=true;b._origHTML=b.innerHTML;b.innerHTML='<span class="spinner" style="width:13px;height:13px;display:inline-block;vertical-align:middle;margin-right:7px"></span>Working\u2026';}
+function btnRestore(id){const b=document.getElementById(id);if(!b)return;b.disabled=false;if(b._origHTML!==undefined)b.innerHTML=b._origHTML;}
+
+// ── LIVE TIMERS ──
+let _timerInterval=null;
+function startLiveTimers(){if(_timerInterval)clearInterval(_timerInterval);_timerInterval=setInterval(()=>{document.querySelectorAll('[data-ends]').forEach(el=>{const rem=Math.max(0,Math.round((parseFloat(el.dataset.ends)-Date.now())/1000));el.textContent=fmtRemaining(rem);});},1000);}
+
+function buildWorkflowSteps(status,withDryer,withDowny){
+  const stages=['pending','washing'];if(withDryer)stages.push('drying');if(withDowny)stages.push('downy');stages.push('folding','ready_for_pickup','completed');
+  const labels={pending:'Wait',washing:'Wash',drying:'Dry',downy:'Downy',folding:'Fold',ready_for_pickup:'Pickup',completed:'Done'};
+  const icons={pending:'\u23F3',washing:'\uD83E\uDEE7',drying:'\uD83D\uDCA8',downy:'\uD83C\uDF38',folding:'\uD83D\uDC55',ready_for_pickup:'\uD83D\uDCE6',completed:'\u2705'};
+  const cur=stages.indexOf(status);
+  return '<div class="workflow-steps">'+stages.map((s,i)=>{
+    const cls=i<cur?'done':i===cur?'active':'pending-dot';
+    const arrow=i<stages.length-1?'<span class="ws-arrow">&rsaquo;</span>':'';
+    return`<div class="ws-step"><div style="text-align:center"><div class="ws-dot ${cls}">${icons[s]||'\u25CB'}</div><div class="ws-lbl">${labels[s]||s}</div></div>${arrow}</div>`;
+  }).join('')+'</div>';
 }
 
-// ══════════════════════════════════════════════════════════════
-//  MODALS
-// ══════════════════════════════════════════════════════════════
-function openModal(id)  { document.getElementById('modal-' + id).classList.add('open'); }
-function closeModal(id) { document.getElementById('modal-' + id).classList.remove('open'); }
-
-// ══════════════════════════════════════════════════════════════
-//  API HELPERS
-// ══════════════════════════════════════════════════════════════
-const JSON_HEADERS = { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' };
-
-async function apiFetch(url, opts = {}) {
-  try {
-    const r = await fetch(url, opts);
-    if (r.status === 401) {
-      if (!url.includes('validate-promo')) showToast('\u26A0\uFE0F Session expired. Please log in.', 'error');
-      return null;
-    }
-    if (!r.ok && r.status !== 404) return null;
-    return await r.json();
-  } catch (e) {
-    console.error('apiFetch error', url, e);
-    return null;
-  }
-}
-async function apiPost(url, body) { return apiFetch(url, { method: 'POST', headers: JSON_HEADERS, body: JSON.stringify(body) }); }
-async function apiPut(url, body = {}) { return apiFetch(url, { method: 'PUT', headers: JSON_HEADERS, body: JSON.stringify(body) }); }
-
-// ══════════════════════════════════════════════════════════════
-//  UTILITIES
-// ══════════════════════════════════════════════════════════════
-function fmtRemaining(s) {
-  if (s == null || s < 0) s = 0;
-  const m = Math.floor(s / 60), sec = s % 60;
-  return String(m).padStart(2,'0') + ':' + String(sec).padStart(2,'0');
-}
-function calcMachines(w) { return Math.max(1, Math.ceil(w / MACHINE_CAPACITY)); }
-function fmtPHP(n) { return '\u20B1' + Number(n || 0).toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
-function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-
-// Button loading state
-function btnLoading(id) {
-  const b = document.getElementById(id);
-  if (!b) return;
-  b.disabled = true;
-  b._origHTML = b.innerHTML;
-  b.innerHTML = '<span class="spinner" style="width:13px;height:13px;display:inline-block;vertical-align:middle;margin-right:7px"></span>Working\u2026';
-}
-function btnRestore(id) {
-  const b = document.getElementById(id);
-  if (!b) return;
-  b.disabled = false;
-  if (b._origHTML !== undefined) b.innerHTML = b._origHTML;
+// ── LOAD ME ──
+async function loadMe(){
+  const me=await apiFetch('/api/me');
+  if(me&&me.full_name){document.getElementById('sb-name').textContent=me.full_name;document.getElementById('sb-av').textContent=me.full_name.charAt(0).toUpperCase();}
 }
 
-// ── Live timers: driven by server-provided remaining_seconds + client drift ──
-let _timerInterval = null;
-// Map: element selector → {endTs}
-const _timerMap = new Map();
-
-function registerTimer(el, remainingSeconds) {
-  if (!el || remainingSeconds == null) return;
-  const endTs = Date.now() + remainingSeconds * 1000;
-  el.dataset.ends = endTs;
+// ── MACHINE CARD ──
+function renderMachineCard(m,showMaintBtn=false){
+  const isMaint=m.status==='maintenance',isBusy=m.status==='busy';
+  const cls=isMaint?'maintenance':isBusy?'busy':m.status==='free'?'free':'idle';
+  const icon=isMaint?'\uD83D\uDD27':isBusy?'\uD83E\uDEE7':m.status==='idle'?'\u23F8':'\uD83D\uDFE2';
+  const prog=isBusy&&m.progress_pct!=null?`<div class="machine-progress"><div class="machine-progress-fill" style="width:${m.progress_pct}%"></div></div>`:'';
+  const orderInfo=m.current_order_id?`<div class="machine-order">#${m.current_order_id}${m.remaining_seconds!=null?' \u2014 <span data-ends="'+(Date.now()+m.remaining_seconds*1000)+'">'+fmtRemaining(m.remaining_seconds)+'</span>':''}</div>`:'';
+  const stageLabel=m.current_stage?`<div style="font-family:'DM Mono',monospace;font-size:.38rem;color:var(--text3);margin-top:1px">${m.current_stage.toUpperCase()}</div>`:'';
+  const maintBtn=showMaintBtn&&!isBusy?`<button class="machine-maint-btn" onclick="openMaintModal(${m.machine_id},${m.unit_number},'${m.status}')">${isMaint?'\uD83D\uDFE2 Set Free':'\uD83D\uDD27 Maintenance'}</button>`:'';
+  return`<div class="machine-card ${cls}"><span class="machine-icon">${icon}</span><div class="machine-num">Unit ${m.unit_number}</div><div class="machine-status">${isMaint?'MAINTENANCE':m.status.toUpperCase()}</div>${stageLabel}${orderInfo}${prog}${maintBtn}</div>`;
 }
 
-function startLiveTimers() {
-  if (_timerInterval) clearInterval(_timerInterval);
-  _timerInterval = setInterval(() => {
-    document.querySelectorAll('[data-ends]').forEach(el => {
-      const rem = Math.max(0, Math.round((parseFloat(el.dataset.ends) - Date.now()) / 1000));
-      el.textContent = fmtRemaining(rem);
-    });
-  }, 1000);
-}
-
-function buildWorkflowSteps(status, withDryer, withDowny) {
-  const stages = ['pending', 'washing'];
-  if (withDryer) stages.push('drying');
-  if (withDowny) stages.push('downy');
-  stages.push('folding', 'ready_for_pickup', 'completed');
-  const labels = { pending:'Wait', washing:'Wash', drying:'Dry', downy:'Downy', folding:'Fold', ready_for_pickup:'Pickup', completed:'Done' };
-  const icons  = { pending:'⏳', washing:'🫧', drying:'💨', downy:'🌸', folding:'👕', ready_for_pickup:'📦', completed:'✅' };
-  const cur = stages.indexOf(status);
-  return '<div class="workflow-steps">' + stages.map((s, i) => {
-    const cls = i < cur ? 'done' : i === cur ? 'active' : 'pending-dot';
-    const arrow = i < stages.length - 1 ? '<span class="ws-arrow">&rsaquo;</span>' : '';
-    return `<div class="ws-step">
-      <div style="text-align:center">
-        <div class="ws-dot ${cls}">${icons[s] || '○'}</div>
-        <div class="ws-lbl">${labels[s] || s}</div>
-      </div>${arrow}
-    </div>`;
-  }).join('') + '</div>';
-}
-
-// ══════════════════════════════════════════════════════════════
-//  LOAD ME
-// ══════════════════════════════════════════════════════════════
-async function loadMe() {
-  const me = await apiFetch('/api/me');
-  if (me && me.full_name) {
-    document.getElementById('sb-name').textContent = me.full_name;
-    document.getElementById('sb-av').textContent   = me.full_name.charAt(0).toUpperCase();
-  }
-}
-
-// ══════════════════════════════════════════════════════════════
-//  MACHINE CARD
-// ══════════════════════════════════════════════════════════════
-function renderMachineCard(m, showMaintBtn = false) {
-  const isMaint = m.status === 'maintenance';
-  const isBusy  = m.status === 'busy';
-  const cls = isMaint ? 'maintenance' : isBusy ? 'busy' : m.status === 'free' ? 'free' : 'idle';
-  const icon = isMaint ? '🔧' : isBusy ? '🫧' : m.status === 'idle' ? '⏸' : '🟢';
-  const prog = (isBusy && m.progress_pct != null)
-    ? `<div class="machine-progress"><div class="machine-progress-fill" style="width:${m.progress_pct}%"></div></div>` : '';
-  const orderInfo = m.current_order_id
-    ? `<div class="machine-order">#${m.current_order_id}${m.remaining_seconds != null ? ' — <span data-ends="' + (Date.now() + m.remaining_seconds * 1000) + '">' + fmtRemaining(m.remaining_seconds) + '</span>' : ''}</div>` : '';
-  const stageLabel = m.current_stage
-    ? `<div style="font-family:'DM Mono',monospace;font-size:.38rem;color:var(--text3);margin-top:1px">${m.current_stage.toUpperCase()}</div>` : '';
-  const maintBtn = showMaintBtn && !isBusy
-    ? `<button class="machine-maint-btn" onclick="openMaintModal(${m.machine_id},${m.unit_number},'${m.status}')">
-        ${isMaint ? '🟢 Set Free' : '🔧 Maintenance'}
-       </button>` : '';
-  return `<div class="machine-card ${cls}">
-    <span class="machine-icon">${icon}</span>
-    <div class="machine-num">Unit ${m.unit_number}</div>
-    <div class="machine-status">${isMaint ? 'MAINTENANCE' : m.status.toUpperCase()}</div>
-    ${stageLabel}${orderInfo}${prog}${maintBtn}
-  </div>`;
-}
-
-// ══════════════════════════════════════════════════════════════
-//  MACHINE MAINTENANCE TOGGLE
-// ══════════════════════════════════════════════════════════════
-let _maintTarget = { machineId: null, unitNum: null, currentStatus: '' };
-
-function openMaintModal(machineId, unitNum, currentStatus) {
-  _maintTarget = { machineId, unitNum, currentStatus };
-  const isMaint = currentStatus === 'maintenance';
-  document.getElementById('maint-modal-body').innerHTML = isMaint
-    ? `Unit <strong>${unitNum}</strong> is currently under maintenance.<br><br>Set it back to <span style="color:var(--success)">Free</span> and make it available for orders?`
-    : `Set Unit <strong>${unitNum}</strong> to <span style="color:var(--danger)">Maintenance</span> mode?<br><br>It will not accept new orders until restored.`;
-  const btn = document.getElementById('maint-confirm-btn');
-  btn.textContent = isMaint ? '✅ Restore to Free' : '🔧 Set Maintenance';
-  btn.style.background = isMaint ? 'var(--success)' : 'var(--danger)';
+// ── MACHINE MAINTENANCE ──
+let _maintTarget={machineId:null,unitNum:null,currentStatus:''};
+function openMaintModal(machineId,unitNum,currentStatus){
+  _maintTarget={machineId,unitNum,currentStatus};
+  const isMaint=currentStatus==='maintenance';
+  document.getElementById('maint-modal-body').innerHTML=isMaint?`Unit <strong>${unitNum}</strong> is currently under maintenance.<br><br>Set it back to <span style="color:var(--success)">Free</span>?`:`Set Unit <strong>${unitNum}</strong> to <span style="color:var(--danger)">Maintenance</span> mode?<br><br>It will not accept new orders until restored.`;
+  const btn=document.getElementById('maint-confirm-btn');btn.textContent=isMaint?'\u2705 Restore to Free':'\uD83D\uDD27 Set Maintenance';btn.style.background=isMaint?'var(--success)':'var(--danger)';
   openModal('machine-maint');
 }
-
-async function confirmMaintenance() {
-  const { machineId, currentStatus } = _maintTarget;
-  const newStatus = currentStatus === 'maintenance' ? 'free' : 'maintenance';
-  btnLoading('maint-confirm-btn');
-  const res = await apiPut(`/api/staff/machines/${machineId}/status`, { status: newStatus });
-  btnRestore('maint-confirm-btn');
-  if (res && res.ok) {
-    showToast(`✅ Unit ${_maintTarget.unitNum} → ${newStatus.toUpperCase()}`, 'success');
-    closeModal('machine-maint');
-    loadMachines();
-    if (document.getElementById('sec-dashboard').classList.contains('active')) loadDashboard();
-  } else {
-    showToast('❌ ' + (res?.error || 'Failed to update machine status'), 'error');
-  }
+async function confirmMaintenance(){
+  const{machineId,currentStatus}=_maintTarget,newStatus=currentStatus==='maintenance'?'free':'maintenance';
+  btnLoading('maint-confirm-btn');const res=await apiPut(`/api/staff/machines/${machineId}/status`,{status:newStatus});btnRestore('maint-confirm-btn');
+  if(res&&res.ok){showToast(`\u2705 Unit ${_maintTarget.unitNum} \u2192 ${newStatus.toUpperCase()}`,'success');closeModal('machine-maint');loadMachines();if(document.getElementById('sec-dashboard').classList.contains('active'))loadDashboard();}
+  else showToast('\u274C '+(res?.error||'Failed to update machine status'),'error');
 }
 
-// ══════════════════════════════════════════════════════════════
-//  DASHBOARD
-// ══════════════════════════════════════════════════════════════
-async function loadDashboard() {
-  const [machines, orders] = await Promise.all([
-    apiFetch('/api/staff/machines'),
-    apiFetch('/api/staff/tasks'),
-  ]);
-
-  if (machines) {
-    document.getElementById('ds-free').textContent = machines.filter(m => m.status === 'free').length;
-    document.getElementById('ds-busy').textContent = machines.filter(m => m.status === 'busy').length;
-    document.getElementById('dash-machine-grid').innerHTML = machines.map(m => renderMachineCard(m, false)).join('');
-  } else {
-    document.getElementById('dash-machine-grid').innerHTML = '<div class="error-row">Failed to load machine data</div>';
-  }
-
-  if (orders) {
-    document.getElementById('ds-queued').textContent = orders.filter(o => o.status === 'pending').length;
-    document.getElementById('ds-pickup').textContent = orders.filter(o => o.status === 'ready_for_pickup').length;
-    document.getElementById('ds-done').textContent   = orders.filter(o => ['completed','done'].includes(o.status)).length;
-
-    const active  = orders.filter(o => ['washing','drying','downy'].includes(o.status));
-    const pending = orders.filter(o => o.status === 'pending');
-
-    document.getElementById('dash-active-list').innerHTML = active.length
-      ? active.slice(0, 6).map(o => `
-          <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border)">
-            <div>
-              <div style="font-size:.99rem;font-weight:600;color:var(--text)">${escHtml(o.customer_name || 'Walk-in')}</div>
-              <div class="mono-cell">${SERVICE_RATES[o.service_type]?.label || o.service_type} &middot; ${o.weight_kg}kg</div>
-              ${o.remaining_seconds != null ? `<div class="mono-cell" data-ends="${Date.now() + (o.remaining_seconds * 1000)}">${fmtRemaining(o.remaining_seconds)}</div>` : ''}
-            </div>
-            <span class="pill ${STATUS_PILL[o.status] || 'amber'}">${STATUS_LABELS[o.status] || o.status}</span>
-          </div>`).join('')
-      : '<div class="empty-state"><span class="es-icon">🫧</span><span class="es-msg">No active services</span></div>';
-
-    document.getElementById('dash-pending-list').innerHTML = pending.length
-      ? pending.slice(0, 6).map(o => `
-          <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border)">
-            <div>
-              <div style="font-size:.9rem;font-weight:600;color:var(--text)">${escHtml(o.customer_name || 'Walk-in')}</div>
-              <div class="mono-cell">${o.weight_kg}kg &middot; ${o.machines_needed} unit(s) needed</div>
-            </div>
-            <button class="btn-add" style="height:30px;font-size:.44rem;padding:0 12px;flex-shrink:0"
-              data-order-id="${o.order_id}"
-              data-customer="${escHtml(o.customer_name || 'Walk-in')}"
-              data-machines="${o.machines_needed}"
-              data-service="${escHtml(SERVICE_RATES[o.service_type]?.label || o.service_type)}"
-              data-weight="${o.weight_kg}"
-              onclick="openAssignStartFromBtn(this)">Assign</button>
-          </div>`).join('')
-      : '<div class="empty-state"><span class="es-icon">✅</span><span class="es-msg">No pending orders</span></div>';
-
+// ── DASHBOARD ──
+async function loadDashboard(){
+  const[machines,orders]=await Promise.all([apiFetch('/api/staff/machines'),apiFetch('/api/staff/tasks')]);
+  if(machines){document.getElementById('ds-free').textContent=machines.filter(m=>m.status==='free').length;document.getElementById('ds-busy').textContent=machines.filter(m=>m.status==='busy').length;document.getElementById('dash-machine-grid').innerHTML=machines.map(m=>renderMachineCard(m,false)).join('');}
+  else document.getElementById('dash-machine-grid').innerHTML='<div class="error-row">Failed to load machine data</div>';
+  if(orders){
+    document.getElementById('ds-queued').textContent=orders.filter(o=>o.status==='pending').length;
+    document.getElementById('ds-pickup').textContent=orders.filter(o=>o.status==='ready_for_pickup').length;
+    document.getElementById('ds-done').textContent=orders.filter(o=>['completed','done'].includes(o.status)).length;
+    const active=orders.filter(o=>['washing','drying','downy'].includes(o.status));
+    const pending=orders.filter(o=>o.status==='pending');
+    document.getElementById('dash-active-list').innerHTML=active.length?active.slice(0,6).map(o=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border)"><div><div style="font-size:.99rem;font-weight:600;color:var(--text)">${escHtml(o.customer_name||'Walk-in')}</div><div class="mono-cell">${SERVICE_RATES[o.service_type]?.label||o.service_type} \u00B7 ${o.weight_kg}kg</div>${o.remaining_seconds!=null?`<div class="mono-cell" data-ends="${Date.now()+(o.remaining_seconds*1000)}">${fmtRemaining(o.remaining_seconds)}</div>`:''}</div><span class="pill ${STATUS_PILL[o.status]||'amber'}">${STATUS_LABELS[o.status]||o.status}</span></div>`).join(''):'<div class="empty-state"><span class="es-icon">\uD83E\uDEE7</span><span class="es-msg">No active services</span></div>';
+    document.getElementById('dash-pending-list').innerHTML=pending.length?pending.slice(0,6).map(o=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border)"><div><div style="font-size:.9rem;font-weight:600;color:var(--text)">${escHtml(o.customer_name||'Walk-in')}</div><div class="mono-cell">${o.weight_kg}kg \u00B7 ${o.machines_needed} unit(s) needed</div></div><button class="btn-add" style="height:30px;font-size:.44rem;padding:0 12px;flex-shrink:0" data-order-id="${o.order_id}" data-customer="${escHtml(o.customer_name||'Walk-in')}" data-machines="${o.machines_needed}" data-service="${escHtml(SERVICE_RATES[o.service_type]?.label||o.service_type)}" data-weight="${o.weight_kg}" onclick="openAssignStartFromBtn(this)">Assign</button></div>`).join(''):'<div class="empty-state"><span class="es-icon">\u2705</span><span class="es-msg">No pending orders</span></div>';
     startLiveTimers();
   }
 }
 
-// ══════════════════════════════════════════════════════════════
-//  MACHINES
-// ══════════════════════════════════════════════════════════════
-async function loadMachines() {
-  const machines = await apiFetch('/api/staff/machines');
-  if (!machines) {
-    document.getElementById('machines-detail-grid').innerHTML = '<div class="error-row">Failed to load machines</div>';
-    return;
-  }
-
-  document.getElementById('m-free').textContent    = machines.filter(m => m.status === 'free').length;
-  document.getElementById('m-washing').textContent = machines.filter(m => m.status === 'busy' && m.current_stage === 'washing').length;
-  document.getElementById('m-drying').textContent  = machines.filter(m => m.status === 'busy' && m.current_stage === 'drying').length;
-  document.getElementById('m-idle').textContent    = machines.filter(m => m.status === 'idle').length;
-  document.getElementById('m-maint').textContent   = machines.filter(m => m.status === 'maintenance').length;
-
-  document.getElementById('machines-detail-grid').innerHTML = machines.map(m => renderMachineCard(m, true)).join('');
-
-  const running = machines.filter(m => m.status === 'busy' && m.current_order_id);
-  document.getElementById('machines-running-list').innerHTML = running.length
-    ? running.map(m => `
-        <div class="inline-row">
-          <span class="ikey">Unit ${m.unit_number} → Order #${m.current_order_id}
-            <span style="text-transform:uppercase;color:var(--accent)">(${m.current_stage || '—'})</span>
-          </span>
-          <span class="ival" ${m.remaining_seconds != null ? `data-ends="${Date.now() + (m.remaining_seconds * 1000)}"` : ''}>
-            ${m.remaining_seconds != null ? fmtRemaining(m.remaining_seconds) + ' left' : '—'}
-          </span>
-        </div>`).join('')
-    : '<div class="empty-state"><span class="es-icon">🟢</span><span class="es-msg">All machines are free</span></div>';
-
+// ── MACHINES ──
+async function loadMachines(){
+  const machines=await apiFetch('/api/staff/machines');
+  if(!machines){document.getElementById('machines-detail-grid').innerHTML='<div class="error-row">Failed to load machines</div>';return;}
+  document.getElementById('m-free').textContent=machines.filter(m=>m.status==='free').length;
+  document.getElementById('m-washing').textContent=machines.filter(m=>m.status==='busy'&&m.current_stage==='washing').length;
+  document.getElementById('m-drying').textContent=machines.filter(m=>m.status==='busy'&&m.current_stage==='drying').length;
+  document.getElementById('m-idle').textContent=machines.filter(m=>m.status==='idle').length;
+  document.getElementById('m-maint').textContent=machines.filter(m=>m.status==='maintenance').length;
+  document.getElementById('machines-detail-grid').innerHTML=machines.map(m=>renderMachineCard(m,true)).join('');
+  const running=machines.filter(m=>m.status==='busy'&&m.current_order_id);
+  document.getElementById('machines-running-list').innerHTML=running.length?running.map(m=>`<div class="inline-row"><span class="ikey">Unit ${m.unit_number} \u2192 Order #${m.current_order_id} <span style="text-transform:uppercase;color:var(--accent)">(${m.current_stage||'\u2014'})</span></span><span class="ival" ${m.remaining_seconds!=null?`data-ends="${Date.now()+(m.remaining_seconds*1000)}"`:''}}>${m.remaining_seconds!=null?fmtRemaining(m.remaining_seconds)+' left':'\u2014'}</span></div>`).join(''):'<div class="empty-state"><span class="es-icon">\uD83D\uDFE2</span><span class="es-msg">All machines are free</span></div>';
   startLiveTimers();
 }
 
-// ══════════════════════════════════════════════════════════════
-//  SERVICE QUEUE
-// ══════════════════════════════════════════════════════════════
-let _queueData = [];
-
-async function loadQueue() {
-  document.getElementById('queue-list').innerHTML = '<div class="loading-row"><div class="spinner"></div>Loading&hellip;</div>';
-  const data = await apiFetch('/api/staff/tasks');
-  if (!data) {
-    document.getElementById('queue-list').innerHTML = '<div class="error-row">Failed to load queue.</div>';
-    return;
-  }
-  _queueData = data;
-  document.getElementById('q-pending').textContent        = data.filter(o => o.status === 'pending').length;
-  document.getElementById('q-washing').textContent        = data.filter(o => o.status === 'washing').length;
-  document.getElementById('q-drying').textContent         = data.filter(o => o.status === 'drying').length;
-  document.getElementById('q-folding').textContent        = data.filter(o => o.status === 'folding').length;
-  document.getElementById('q-pickup').textContent         = data.filter(o => o.status === 'ready_for_pickup').length;
-  renderQueue(data);
-  startLiveTimers();
+// ── SERVICE QUEUE ──
+let _queueData=[];
+async function loadQueue(){
+  document.getElementById('queue-list').innerHTML='<div class="loading-row"><div class="spinner"></div>Loading&hellip;</div>';
+  const data=await apiFetch('/api/staff/tasks');
+  if(!data){document.getElementById('queue-list').innerHTML='<div class="error-row">Failed to load queue.</div>';return;}
+  _queueData=data;
+  document.getElementById('q-pending').textContent=data.filter(o=>o.status==='pending').length;
+  document.getElementById('q-washing').textContent=data.filter(o=>o.status==='washing').length;
+  document.getElementById('q-drying').textContent=data.filter(o=>o.status==='drying').length;
+  document.getElementById('q-folding').textContent=data.filter(o=>o.status==='folding').length;
+  document.getElementById('q-pickup').textContent=data.filter(o=>o.status==='ready_for_pickup').length;
+  renderQueue(data);startLiveTimers();
+}
+function filterQueue(){const q=document.getElementById('q-search').value.toLowerCase(),filt=document.getElementById('q-filter').value;renderQueue(_queueData.filter(o=>(!filt||o.status===filt)&&(!q||(o.customer_name||'').toLowerCase().includes(q)||(o.tracking_id||'').toLowerCase().includes(q)||String(o.order_id).includes(q)||(o.service_type_label||o.service_type||'').toLowerCase().includes(q))));}
+function renderQueue(data){
+  if(!data.length){document.getElementById('queue-list').innerHTML='<div class="empty-state"><span class="es-icon">\uD83D\uDCCB</span><span class="es-msg">No orders match your filter</span></div>';return;}
+  document.getElementById('queue-list').innerHTML=data.map(o=>{
+    const active=['washing','drying','downy'].includes(o.status),rem=o.remaining_seconds,prog=o.progress_pct||0;
+    const stageBar=active?`<div class="stage-progress"><div class="stage-fill ${o.status}" style="width:${prog}%"></div></div>`:'';
+    const endsTs=(active&&rem!=null)?Date.now()+(rem*1000):0;
+    let timerBadge='';
+    if(active&&rem!=null)timerBadge=`<span class="qi-timer running">\u23F1 <span data-ends="${endsTs}">${fmtRemaining(rem)}</span></span>`;
+    else if(o.status==='pending')timerBadge='<span class="qi-timer waiting">\u23F3 Awaiting machine</span>';
+    else if(o.status==='folding')timerBadge='<span class="qi-timer folding-timer">\uD83D\uDC55 In folding queue</span>';
+    else if(o.status==='ready_for_pickup')timerBadge='<span class="qi-timer pickup">\uD83D\uDCE6 Ready for Pickup!</span>';
+    const assignBtn=o.status==='pending'?`<button class="btn-add" style="height:30px;font-size:.44rem;padding:0 12px;flex-shrink:0" data-order-id="${o.order_id}" data-customer="${escHtml(o.customer_name||'Walk-in')}" data-machines="${o.machines_needed}" data-service="${escHtml(o.service_type_label||SERVICE_RATES[o.service_type]?.label||o.service_type)}" data-weight="${o.weight_kg}" onclick="openAssignStartFromBtn(this)">Assign &amp; Start</button>`:'';
+    const foldBtn=o.status==='folding'?`<button class="btn-success" style="height:30px;font-size:.44rem;padding:0 12px;flex-shrink:0" onclick="singleFoldDone(${o.order_id},this)">\u2705 Fold Done</button>`:'';
+    const pickupBtn=o.status==='ready_for_pickup'?`${o.customer_email?`<button class="btn-primary" style="height:30px;font-size:.44rem;padding:0 11px;flex-shrink:0" onclick="sendPickupEmail(${o.order_id},this)">\uD83D\uDCE7 Notify</button>`:''}<button class="btn-orange" style="height:30px;font-size:.44rem;padding:0 12px;flex-shrink:0;margin-left:${o.customer_email?'4px':'auto'}" onclick="markCompleted(${o.order_id},this)">\u2714 Done</button>`:'';
+    const emailBadge=o.customer_email?(o.email_sent?'<span class="email-sent-badge">\uD83D\uDCE7 Email sent</span>':'<span class="email-pending-badge">\uD83D\uDCE7 No email yet</span>'):'';
+    const linkedBadge=o.customer_id?'<span class="linked-account-badge">\uD83D\uDD17 Linked</span>':'';
+    const workflow=buildWorkflowSteps(o.status,o.with_dryer,o.with_downy);
+    return`<div class="queue-item ${o.status}"><div class="qi-top"><div><div class="qi-id">Order #${o.order_id} \u00B7 TRK: ${escHtml(o.tracking_id||'\u2014')}${o.queue_position?' \u00B7 Queue #'+o.queue_position:''}</div><div class="qi-customer">${escHtml(o.customer_name||'Walk-in')}</div><div class="qi-service">${escHtml(SERVICE_RATES[o.service_type]?.label||o.service_type)} \u00B7 ${o.weight_kg}kg \u00B7 ${o.machines_needed} unit(s)</div>${o.customer_email?`<div class="mono-cell" style="font-size:.52rem;margin-top:2px">\uD83D\uDCE7 ${escHtml(o.customer_email)}</div>`:''}</div><span class="pill ${STATUS_PILL[o.status]||'amber'}">${STATUS_LABELS[o.status]||o.status}</span></div>${workflow}<div class="qi-meta"><span class="mono-cell">${fmtPHP(o.amount)}</span>${o.with_dryer?'<span class="pill teal">\uD83D\uDCA8 Dryer</span>':''}${o.with_downy?'<span class="pill purple">\uD83C\uDF38 Downy</span>':''}${o.promo_code?`<span class="pill green">\uD83C\uDFF7 ${escHtml(o.promo_code)}</span>`:''}${emailBadge}${linkedBadge}${timerBadge}<span style="margin-left:auto;display:flex;gap:5px;align-items:center">${assignBtn}${foldBtn}${pickupBtn}</span></div>${stageBar}</div>`;
+  }).join('');startLiveTimers();
 }
 
-function filterQueue() {
-  const q    = document.getElementById('q-search').value.toLowerCase();
-  const filt = document.getElementById('q-filter').value;
-  renderQueue(_queueData.filter(o =>
-    (!filt || o.status === filt) &&
-    (!q || (o.customer_name || '').toLowerCase().includes(q) ||
-           (o.tracking_id  || '').toLowerCase().includes(q) ||
-           String(o.order_id).includes(q) ||
-           (o.service_type_label || o.service_type || '').toLowerCase().includes(q))
-  ));
+// ══════════════════════════════════════════════════════════════
+//  AUTOCOMPLETE — Customer search
+// ══════════════════════════════════════════════════════════════
+let _acTimer=null,_acOpen=false;
+
+async function onFirstNameInput(){
+  const q=document.getElementById('enc-firstname').value.trim();
+  clearFieldErr('enc-firstname-err');
+  if(q.length<1){closeAutocomplete();return;}
+  clearTimeout(_acTimer);
+  _acTimer=setTimeout(async()=>{
+    const data=await apiFetch(`/api/customers/search?q=${encodeURIComponent(q)}`);
+    if(!data||!data.length){closeAutocomplete();return;}
+    renderAutocomplete(data);
+  },260);
 }
 
-function renderQueue(data) {
-  if (!data.length) {
-    document.getElementById('queue-list').innerHTML =
-      '<div class="empty-state"><span class="es-icon">📋</span><span class="es-msg">No orders match your filter</span></div>';
-    return;
-  }
-
-  document.getElementById('queue-list').innerHTML = data.map(o => {
-    const active  = ['washing','drying','downy'].includes(o.status);
-    const rem     = o.remaining_seconds;
-    const prog    = o.progress_pct || 0;
-    const stageBar = active
-      ? `<div class="stage-progress"><div class="stage-fill ${o.status}" style="width:${prog}%"></div></div>` : '';
-    const endsTs = (active && rem != null) ? Date.now() + (rem * 1000) : 0;
-
-    let timerBadge = '';
-    if (active && rem != null) {
-      timerBadge = `<span class="qi-timer running">⏱ <span data-ends="${endsTs}">${fmtRemaining(rem)}</span></span>`;
-    } else if (o.status === 'pending') {
-      timerBadge = `<span class="qi-timer waiting">⏳ Awaiting machine</span>`;
-    } else if (o.status === 'folding') {
-      timerBadge = `<span class="qi-timer folding-timer">👕 In folding queue</span>`;
-    } else if (o.status === 'ready_for_pickup') {
-      timerBadge = `<span class="qi-timer pickup">📦 Ready for Pickup!</span>`;
-    }
-
-    const assignBtn = o.status === 'pending'
-      ? `<button class="btn-add" style="height:30px;font-size:.44rem;padding:0 12px;flex-shrink:0"
-           data-order-id="${o.order_id}"
-           data-customer="${escHtml(o.customer_name || 'Walk-in')}"
-           data-machines="${o.machines_needed}"
-           data-service="${escHtml(o.service_type_label || SERVICE_RATES[o.service_type]?.label || o.service_type)}"
-           data-weight="${o.weight_kg}"
-           onclick="openAssignStartFromBtn(this)">Assign &amp; Start</button>` : '';
-
-    const foldBtn = o.status === 'folding'
-      ? `<button class="btn-success" style="height:30px;font-size:.44rem;padding:0 12px;flex-shrink:0"
-           onclick="singleFoldDone(${o.order_id},this)">✅ Fold Done</button>` : '';
-
-    const pickupBtn = o.status === 'ready_for_pickup'
-      ? `${o.customer_email ? `<button class="btn-primary" style="height:30px;font-size:.44rem;padding:0 11px;flex-shrink:0"
-           onclick="sendPickupEmail(${o.order_id},this)">📧 Notify</button>` : ''}
-         <button class="btn-orange" style="height:30px;font-size:.44rem;padding:0 12px;flex-shrink:0;margin-left:${o.customer_email ? '4px' : 'auto'}"
-           onclick="markCompleted(${o.order_id},this)">✔ Done</button>` : '';
-
-    const emailBadge = o.customer_email
-      ? (o.email_sent ? `<span class="email-sent-badge">📧 Email sent</span>` : `<span class="email-pending-badge">📧 No email yet</span>`)
-      : '';
-    const linkedBadge = o.customer_id ? `<span class="linked-account-badge">🔗 Linked</span>` : '';
-    const workflow = buildWorkflowSteps(o.status, o.with_dryer, o.with_downy);
-
-    return `<div class="queue-item ${o.status}">
-      <div class="qi-top">
-        <div>
-          <div class="qi-id">Order #${o.order_id} &middot; TRK: ${escHtml(o.tracking_id || '—')}${o.queue_position ? ' &middot; Queue #' + o.queue_position : ''}</div>
-          <div class="qi-customer">${escHtml(o.customer_name || 'Walk-in')}</div>
-          <div class="qi-service">${escHtml(SERVICE_RATES[o.service_type]?.label || o.service_type)} &middot; ${o.weight_kg}kg &middot; ${o.machines_needed} unit(s)</div>
-          ${o.customer_email ? `<div class="mono-cell" style="font-size:.42rem;margin-top:2px">📧 ${escHtml(o.customer_email)}</div>` : ''}
-        </div>
-        <span class="pill ${STATUS_PILL[o.status] || 'amber'}">${STATUS_LABELS[o.status] || o.status}</span>
-      </div>
-      ${workflow}
-      <div class="qi-meta">
-        <span class="mono-cell">${fmtPHP(o.amount)}</span>
-        ${o.with_dryer ? '<span class="pill teal">💨 Dryer</span>' : ''}
-        ${o.with_downy ? '<span class="pill purple">🌸 Downy</span>' : ''}
-        ${o.promo_code ? `<span class="pill green">🏷 ${escHtml(o.promo_code)}</span>` : ''}
-        ${emailBadge}${linkedBadge}
-        ${timerBadge}
-        <span style="margin-left:auto;display:flex;gap:5px;align-items:center">
-          ${assignBtn}${foldBtn}${pickupBtn}
-        </span>
-      </div>
-      ${stageBar}
+function renderAutocomplete(customers){
+  const dd=document.getElementById('ac-dropdown');
+  dd.innerHTML=customers.slice(0,8).map(c=>{
+    const parts=(c.full_name||'').split(' ');
+    const first=parts[0]||'',last=parts.slice(1).join(' ')||'';
+    return`<div class="ac-item" onclick="selectCustomer('${escHtml(first)}','${escHtml(last)}','${escHtml(c.email||'')}')">
+      <div class="ac-name">${escHtml(c.full_name||'')}<span class="ac-badge">\uD83D\uDD17 Registered</span></div>
+      <div class="ac-email">${escHtml(c.email||'')}</div>
     </div>`;
   }).join('');
-
-  startLiveTimers();
+  dd.classList.add('open');_acOpen=true;
 }
 
+function selectCustomer(first,last,email){
+  document.getElementById('enc-firstname').value=first;
+  document.getElementById('enc-lastname').value=last;
+  if(email){document.getElementById('enc-email').value=email;validateGmail();}
+  closeAutocomplete();
+  showToast('\uD83D\uDD17 Customer details auto-filled from registered account','success',2500);
+}
+
+function closeAutocomplete(){
+  const dd=document.getElementById('ac-dropdown');dd.classList.remove('open');_acOpen=false;
+}
+
+document.addEventListener('click',e=>{if(!e.target.closest('.autocomplete-wrap'))closeAutocomplete();});
+
 // ══════════════════════════════════════════════════════════════
-//  ENCODE SERVICE — Fixed promo validation, form state, email validation
+//  ENCODE SERVICE
 // ══════════════════════════════════════════════════════════════
-let _validatedPromoCode   = null;
-let _validatedDiscountPct = 0;
+let _validatedPromoCode=null,_validatedDiscountPct=0;
 
-async function validatePromoStaff() {
-  const code     = document.getElementById('enc-promo').value.trim().toUpperCase();
-  const statusEl = document.getElementById('promo-status');
-
-  if (!code) {
-    statusEl.innerHTML = '';
-    _validatedPromoCode   = null;
-    _validatedDiscountPct = 0;
-    calcPrice();
-    return;
-  }
-
-  statusEl.innerHTML = '<span class="spinner" style="width:12px;height:12px;display:inline-block;vertical-align:middle"></span> Validating&hellip;';
-
-  // Try staff endpoint first, fall back to customer endpoint
-  let data = null;
-  try {
-    const r = await fetch(`/api/staff/validate-promo/${encodeURIComponent(code)}`, {
-      headers: { 'X-Requested-With': 'XMLHttpRequest' }
-    });
-    if (r.ok) {
-      data = await r.json();
-    } else if (r.status === 404) {
-      // Promo not found (404 = invalid)
-      data = { valid: false };
-    }
-    // For 401/403 try customer endpoint as fallback
-    if (!data) {
-      const r2 = await fetch(`/api/customer/validate-promo/${encodeURIComponent(code)}`, {
-        headers: { 'X-Requested-With': 'XMLHttpRequest' }
-      });
-      if (r2.ok || r2.status === 404) data = await r2.json();
-    }
-  } catch (e) {
-    statusEl.innerHTML = '<span style="color:var(--danger)">❌ Could not reach server</span>';
-    return;
-  }
-
-  if (data && data.valid) {
-    _validatedPromoCode   = code;
-    _validatedDiscountPct = parseFloat(data.discount) || 0;
-    statusEl.innerHTML = `<span style="color:var(--success)">✅ Valid — ${data.discount}% discount applied</span>`;
-  } else {
-    _validatedPromoCode   = null;
-    _validatedDiscountPct = 0;
-    statusEl.innerHTML = '<span style="color:var(--danger)">❌ Invalid or expired promo code</span>';
-  }
+async function validatePromoStaff(){
+  const code=document.getElementById('enc-promo').value.trim().toUpperCase();
+  const statusEl=document.getElementById('promo-status');
+  if(!code){statusEl.innerHTML='';_validatedPromoCode=null;_validatedDiscountPct=0;calcPrice();return;}
+  statusEl.innerHTML='<span class="spinner" style="width:12px;height:12px;display:inline-block;vertical-align:middle"></span> Validating\u2026';
+  let data=null;
+  try{
+    const r=await fetch(`/api/staff/validate-promo/${encodeURIComponent(code)}`,{headers:{'X-Requested-With':'XMLHttpRequest'}});
+    if(r.ok)data=await r.json();
+    else if(r.status===404)data={valid:false};
+    if(!data){const r2=await fetch(`/api/customer/validate-promo/${encodeURIComponent(code)}`,{headers:{'X-Requested-With':'XMLHttpRequest'}});if(r2.ok||r2.status===404)data=await r2.json();}
+  }catch(e){statusEl.innerHTML='<span style="color:var(--danger)">\u274C Could not reach server</span>';return;}
+  if(data&&data.valid){_validatedPromoCode=code;_validatedDiscountPct=parseFloat(data.discount)||0;statusEl.innerHTML=`<span style="color:var(--success)">\u2705 Valid \u2014 ${data.discount}% discount applied</span>`;}
+  else{_validatedPromoCode=null;_validatedDiscountPct=0;statusEl.innerHTML='<span style="color:var(--danger)">\u274C Invalid or expired promo code</span>';}
   calcPrice();
 }
 
-function calcPrice() {
-  const svc    = document.getElementById('enc-service').value;
-  const weight = parseFloat(document.getElementById('enc-weight').value) || 0;
-  const dryer  = document.getElementById('enc-dryer').checked;
-  const downy  = document.getElementById('enc-downy').checked;
-
-  const rate = SERVICE_RATES[svc]?.rate || 0;
-  const base = rate * weight;
-  const disc = base * _validatedDiscountPct / 100;
-  const total = (base - disc) + (dryer ? DRYER_SURCHARGE : 0);
-  const mach  = weight > 0 ? calcMachines(weight) : 0;
-
-  document.getElementById('calc-rate').textContent     = rate    ? `₱${rate}/kg`        : '—';
-  document.getElementById('calc-weight').textContent   = weight  ? `${weight} kg`        : '—';
-  document.getElementById('calc-base').textContent     = base    ? fmtPHP(base)          : '—';
-  document.getElementById('calc-discount').textContent = disc > 0 ? `-${fmtPHP(disc)} (${_validatedDiscountPct}%)` : '—';
-  document.getElementById('calc-dryer').textContent    = dryer   ? '+₱20.00'            : '—';
-  document.getElementById('calc-machines').textContent = mach    ? `${mach} unit(s)`     : '—';
-  document.getElementById('calc-total').textContent    = fmtPHP(total);
-
-  // Timeline pills — show real times matching app.py
-  const tl = ['<span class="pill blue"><span class="pill-dot"></span>Washing 44m</span>'];
-  if (dryer) tl.push('<span class="pill teal"><span class="pill-dot"></span>Drying 40m</span>');
-  if (downy) tl.push('<span class="pill purple"><span class="pill-dot"></span>Downy 16m</span>');
+function calcPrice(){
+  const svc=document.getElementById('enc-service').value,weight=parseFloat(document.getElementById('enc-weight').value)||0,dryer=document.getElementById('enc-dryer').checked,downy=document.getElementById('enc-downy').checked;
+  const rate=SERVICE_RATES[svc]?.rate||0,base=rate*weight,disc=base*_validatedDiscountPct/100,total=(base-disc)+(dryer?DRYER_SURCHARGE:0),mach=weight>0?calcMachines(weight):0;
+  document.getElementById('calc-rate').textContent=rate?`\u20B1${rate}/kg`:'\u2014';
+  document.getElementById('calc-weight').textContent=weight?`${weight} kg`:'\u2014';
+  document.getElementById('calc-base').textContent=base?fmtPHP(base):'\u2014';
+  document.getElementById('calc-discount').textContent=disc>0?`-${fmtPHP(disc)} (${_validatedDiscountPct}%)`:'\u2014';
+  document.getElementById('calc-dryer').textContent=dryer?'+\u20B120.00':'\u2014';
+  document.getElementById('calc-machines').textContent=mach?`${mach} unit(s)`:'\u2014';
+  document.getElementById('calc-total').textContent=fmtPHP(total);
+  const tl=['<span class="pill blue"><span class="pill-dot"></span>Washing 44m</span>'];
+  if(dryer)tl.push('<span class="pill teal"><span class="pill-dot"></span>Drying 40m</span>');
+  if(downy)tl.push('<span class="pill purple"><span class="pill-dot"></span>Downy 16m</span>');
   tl.push('<span class="pill amber"><span class="pill-dot"></span>Folding (manual)</span>');
   tl.push('<span class="pill orange"><span class="pill-dot"></span>Ready Pickup</span>');
-  document.getElementById('calc-timeline').innerHTML = tl.join('');
+  document.getElementById('calc-timeline').innerHTML=tl.join('');
 }
 
-// Simple email format check
-function isValidEmail(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
+async function encodeService(){
+  const firstName=document.getElementById('enc-firstname').value.trim();
+  const lastName=document.getElementById('enc-lastname').value.trim();
+  const email=document.getElementById('enc-email').value.trim();
+  const svc=document.getElementById('enc-service').value;
+  const weight=parseFloat(document.getElementById('enc-weight').value);
+  const dryer=document.getElementById('enc-dryer').checked;
+  const downy=document.getElementById('enc-downy').checked;
 
-async function encodeService() {
-  const customer = document.getElementById('enc-customer').value.trim();
-  const email    = document.getElementById('enc-email').value.trim();
-  const svc      = document.getElementById('enc-service').value;
-  const weight   = parseFloat(document.getElementById('enc-weight').value);
-  const dryer    = document.getElementById('enc-dryer').checked;
-  const downy    = document.getElementById('enc-downy').checked;
+  // Validate
+  let hasError=false;
+  if(!firstName){document.getElementById('enc-firstname-err').textContent='First name is required';hasError=true;}
+  if(!lastName){document.getElementById('enc-lastname-err').textContent='Last name is required';hasError=true;}
+  if(!svc){showToast('\u26A0\uFE0F Select a service type','error');hasError=true;}
+  if(!weight||isNaN(weight)||weight<0.5){showToast('\u26A0\uFE0F Minimum weight is 0.5 kg','error');hasError=true;}
+  if(email&&!validateGmail()){hasError=true;}
+  if(hasError)return;
 
-  // Validation
-  if (!customer) { showToast('⚠️ Customer name is required', 'error'); return; }
-  if (!svc)      { showToast('⚠️ Select a service type', 'error'); return; }
-  if (!weight || isNaN(weight) || weight < 0.5) { showToast('⚠️ Minimum weight is 0.5 kg', 'error'); return; }
-  if (email && !isValidEmail(email)) { showToast('⚠️ Invalid email address format', 'error'); return; }
-
+  const customer=`${firstName} ${lastName}`;
   btnLoading('enc-submit-btn');
-
-  const payload = {
-    customer_name:  customer,
-    service_type:   svc,
-    weight_kg:      weight,
-    with_dryer:     dryer,
-    with_downy:     downy,
-  };
-  if (email) payload.customer_email = email;
-  if (_validatedPromoCode) payload.promo_code = _validatedPromoCode;
-
-  const res = await apiPost('/api/staff/encode', payload);
-
+  const payload={customer_name:customer,service_type:svc,weight_kg:weight,with_dryer:dryer,with_downy:downy};
+  if(email)payload.customer_email=email;
+  if(_validatedPromoCode)payload.promo_code=_validatedPromoCode;
+  const res=await apiPost('/api/staff/encode',payload);
   btnRestore('enc-submit-btn');
-
-  if (res && res.ok) {
-    let msg = `✅ Encoded — ${res.tracking_id} · ${fmtPHP(res.amount)}`;
-    if (email) {
-      msg += res.linked_to_account ? ` · 🔗 Linked to account` : ` · 📧 Tracking sent`;
-    }
-    showToast(msg, 'success', 6000);
-
-    if (res.active_services_warning > 0) {
-      setTimeout(() => {
-        showToast(`⚠️ Note: ${email} already has ${res.active_services_warning} active service(s). New service added.`, 'warn', 7000);
-      }, 800);
-    }
-
-    clearEncodeForm();
-    loadEncoded();
-
-    // Refresh dashboard if visible
-    if (document.getElementById('sec-dashboard').classList.contains('active')) loadDashboard();
-  } else {
-    showToast('❌ ' + (res?.error || 'Failed to encode service. Check all fields and try again.'), 'error', 5000);
-  }
+  if(res&&res.ok){
+    let msg=`\u2705 Encoded \u2014 ${res.tracking_id} \u00B7 ${fmtPHP(res.amount)}`;
+    if(email)msg+=res.linked_to_account?' \u00B7 \uD83D\uDD17 Linked to account':' \u00B7 \uD83D\uDCE7 Tracking sent';
+    showToast(msg,'success',6000);
+    if(res.active_services_warning>0)setTimeout(()=>showToast(`\u26A0\uFE0F Note: ${email} already has ${res.active_services_warning} active service(s).`,'warn',7000),800);
+    clearEncodeForm();loadEncoded();
+    if(document.getElementById('sec-dashboard').classList.contains('active'))loadDashboard();
+  }else showToast('\u274C '+(res?.error||'Failed to encode service.'),'error',5000);
 }
 
-function clearEncodeForm() {
-  ['enc-customer','enc-email','enc-weight','enc-promo'].forEach(id => { document.getElementById(id).value = ''; });
-  document.getElementById('enc-service').value = '';
-  document.getElementById('enc-dryer').checked = false;
-  document.getElementById('enc-downy').checked = false;
-  document.getElementById('promo-status').innerHTML = '';
-  _validatedPromoCode   = null;
-  _validatedDiscountPct = 0;
-  calcPrice();
+function clearEncodeForm(){
+  ['enc-firstname','enc-lastname','enc-weight','enc-promo'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('enc-email').value='';document.getElementById('enc-service').value='';
+  document.getElementById('enc-dryer').checked=false;document.getElementById('enc-downy').checked=false;
+  document.getElementById('promo-status').innerHTML='';
+  document.getElementById('enc-email-hint').textContent='\uD83D\uDCE7 Must end in @gmail.com \u00B7 6\u201330 characters';
+  document.getElementById('enc-email-hint').className='enc-email-hint info';
+  document.getElementById('enc-email').classList.remove('error');
+  ['enc-firstname-err','enc-lastname-err','enc-email-err'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent='';});
+  _validatedPromoCode=null;_validatedDiscountPct=0;calcPrice();closeAutocomplete();
 }
 
-async function loadEncoded() {
-  const data = await apiFetch('/api/staff/my-orders');
-  if (!data) {
-    document.getElementById('enc-tbody').innerHTML =
-      `<tr><td colspan="12" class="error-row" style="border-radius:0">Failed to load</td></tr>`;
-    return;
-  }
-  document.getElementById('enc-count').textContent = data.length;
-  if (!data.length) {
-    document.getElementById('enc-tbody').innerHTML =
-      `<tr><td colspan="12" style="text-align:center;padding:28px;color:var(--text3);font-family:'DM Mono',monospace;font-size:.54rem">No services encoded today</td></tr>`;
-    return;
-  }
-  document.getElementById('enc-tbody').innerHTML = data.map(o => `
-    <tr>
-      <td><span class="mono-cell">#${o.order_id}</span></td>
-      <td><span style="font-size:.9rem;font-weight:600;color:var(--text)">${escHtml(o.customer_name || '—')}</span></td>
-      <td><span class="mono-cell" style="font-size:.9rem">${escHtml(o.customer_email || '—')}</span></td>
-      <td><span class="mono-cell">${escHtml(SERVICE_RATES[o.service_type]?.label || o.service_type || '—')}</span></td>
-      <td><span class="mono-cell">${o.weight_kg || '—'}kg</span></td>
-      <td><span class="mono-cell">${o.machines_needed || '—'} unit(s)</span></td>
-      <td><span class="mono-cell">${fmtPHP(o.amount)}</span></td>
-      <td><span class="pill ${o.with_dryer ? 'teal' : 'red'}" style="font-size:.8rem">${o.with_dryer ? 'Yes' : 'No'}</span></td>
-      <td><span class="pill ${o.with_downy ? 'purple' : 'red'}" style="font-size:.8rem">${o.with_downy ? 'Yes' : 'No'}</span></td>
-      <td><span class="pill ${STATUS_PILL[o.status] || 'amber'}">${STATUS_LABELS[o.status] || o.status}</span></td>
-      <td>
-        ${o.customer_email
-          ? (o.email_sent
-              ? `<span class="email-sent-badge">📧 Sent</span>${o.customer_id ? '<br><span class="linked-account-badge">🔗 Linked</span>' : ''}`
-              : `<span class="email-pending-badge">📧 Pending</span>`)
-          : '<span class="mono-cell">—</span>'}
-      </td>
-      <td>
-        ${o.status === 'pending'
-          ? `<button class="btn-add" style="height:28px;font-size:.43rem;padding:0 11px"
-               data-order-id="${o.order_id}"
-               data-customer="${escHtml(o.customer_name || 'Walk-in')}"
-               data-machines="${o.machines_needed}"
-               data-service="${escHtml(SERVICE_RATES[o.service_type]?.label || o.service_type)}"
-               data-weight="${o.weight_kg}"
-               onclick="openAssignStartFromBtn(this)">▶ Start</button>`
-          : '<span class="mono-cell">—</span>'}
-      </td>
-    </tr>`).join('');
+async function loadEncoded(){
+  const data=await apiFetch('/api/staff/my-orders');
+  if(!data){document.getElementById('enc-tbody').innerHTML=`<tr><td colspan="12" class="error-row" style="border-radius:0">Failed to load</td></tr>`;return;}
+  document.getElementById('enc-count').textContent=data.length;
+  if(!data.length){document.getElementById('enc-tbody').innerHTML=`<tr><td colspan="12" style="text-align:center;padding:28px;color:var(--text3);font-family:'DM Mono',monospace;font-size:.54rem">No services encoded today</td></tr>`;return;}
+  document.getElementById('enc-tbody').innerHTML=data.map(o=>`<tr><td><span class="mono-cell">#${o.order_id}</span></td><td><span style="font-size:.9rem;font-weight:600;color:var(--text)">${escHtml(o.customer_name||'\u2014')}</span></td><td><span class="mono-cell" style="font-size:.9rem">${escHtml(o.customer_email||'\u2014')}</span></td><td><span class="mono-cell">${escHtml(SERVICE_RATES[o.service_type]?.label||o.service_type||'\u2014')}</span></td><td><span class="mono-cell">${o.weight_kg||'\u2014'}kg</span></td><td><span class="mono-cell">${o.machines_needed||'\u2014'} unit(s)</span></td><td><span class="mono-cell">${fmtPHP(o.amount)}</span></td><td><span class="pill ${o.with_dryer?'teal':'red'}" style="font-size:.8rem">${o.with_dryer?'Yes':'No'}</span></td><td><span class="pill ${o.with_downy?'purple':'red'}" style="font-size:.8rem">${o.with_downy?'Yes':'No'}</span></td><td><span class="pill ${STATUS_PILL[o.status]||'amber'}">${STATUS_LABELS[o.status]||o.status}</span></td><td>${o.customer_email?(o.email_sent?`<span class="email-sent-badge">\uD83D\uDCE7 Sent</span>${o.customer_id?'<br><span class="linked-account-badge">\uD83D\uDD17 Linked</span>':''}`:`<span class="email-pending-badge">\uD83D\uDCE7 Pending</span>`):'<span class="mono-cell">\u2014</span>'}</td><td>${o.status==='pending'?`<button class="btn-add" style="height:28px;font-size:.43rem;padding:0 11px" data-order-id="${o.order_id}" data-customer="${escHtml(o.customer_name||'Walk-in')}" data-machines="${o.machines_needed}" data-service="${escHtml(SERVICE_RATES[o.service_type]?.label||o.service_type)}" data-weight="${o.weight_kg}" onclick="openAssignStartFromBtn(this)">\u25B6 Start</button>`:'<span class="mono-cell">\u2014</span>'}</td></tr>`).join('');
 }
 
-// ══════════════════════════════════════════════════════════════
-//  ASSIGN & START — Fixed stale machine data, selection reset
-// ══════════════════════════════════════════════════════════════
-let _asContext = { orderId: null, machinesNeeded: 1 };
-let _asSelectedIds = new Set();
-
-function openAssignStartFromBtn(btn) {
-  openAssignStart(
-    Number(btn.dataset.orderId),
-    btn.dataset.customer,
-    Number(btn.dataset.machines) || 1,
-    btn.dataset.service,
-    btn.dataset.weight
-  );
-}
-
-async function openAssignStart(orderId, customerName, machinesNeeded, serviceLabel, weight) {
-  // Always reset context and selection on open
-  _asContext     = { orderId, machinesNeeded };
-  _asSelectedIds = new Set();
-
-  document.getElementById('as-order-info').textContent  = `${customerName || 'Walk-in'} — ${serviceLabel || ''}`;
-  document.getElementById('as-order-meta').textContent  = `Order #${orderId} · ${weight || '?'}kg · ${machinesNeeded} machine(s) required`;
-  document.getElementById('as-req-hint').textContent    = `ℹ Select exactly ${machinesNeeded} free machine(s) to begin the wash cycle.`;
-  document.getElementById('as-sel-status').textContent  = `Select ${machinesNeeded} machine(s) to proceed`;
-  document.getElementById('as-submit-btn').disabled      = true;
-  ['as-no-machines','as-not-enough'].forEach(id => { const e = document.getElementById(id); e.style.display='none'; e.textContent=''; });
-  document.getElementById('as-stuck-warning').style.display = 'none';
-  document.getElementById('as-machine-grid').innerHTML  = '<div class="loading-row"><div class="spinner"></div>Fetching latest machine status&hellip;</div>';
-
+// ── ASSIGN & START ──
+let _asContext={orderId:null,machinesNeeded:1},_asSelectedIds=new Set();
+function openAssignStartFromBtn(btn){openAssignStart(Number(btn.dataset.orderId),btn.dataset.customer,Number(btn.dataset.machines)||1,btn.dataset.service,btn.dataset.weight);}
+async function openAssignStart(orderId,customerName,machinesNeeded,serviceLabel,weight){
+  _asContext={orderId,machinesNeeded};_asSelectedIds=new Set();
+  document.getElementById('as-order-info').textContent=`${customerName||'Walk-in'} \u2014 ${serviceLabel||''}`;
+  document.getElementById('as-order-meta').textContent=`Order #${orderId} \u00B7 ${weight||'?'}kg \u00B7 ${machinesNeeded} machine(s) required`;
+  document.getElementById('as-req-hint').textContent=`\u2139 Select exactly ${machinesNeeded} free machine(s) to begin the wash cycle.`;
+  document.getElementById('as-sel-status').textContent=`Select ${machinesNeeded} machine(s) to proceed`;
+  document.getElementById('as-submit-btn').disabled=true;
+  ['as-no-machines','as-not-enough'].forEach(id=>{const e=document.getElementById(id);e.style.display='none';e.textContent='';});
+  document.getElementById('as-stuck-warning').style.display='none';
+  document.getElementById('as-machine-grid').innerHTML='<div class="loading-row"><div class="spinner"></div>Fetching latest machine status\u2026</div>';
   openModal('assign-start');
-
-  // Always fetch fresh machine data when modal opens
-  const machines = await apiFetch('/api/staff/machines');
-  if (!machines) {
-    document.getElementById('as-no-machines').style.display = 'block';
-    document.getElementById('as-no-machines').textContent   = 'Failed to load machine data. Close and try again.';
-    document.getElementById('as-machine-grid').innerHTML    = '';
-    return;
-  }
-
-  const free  = machines.filter(m => m.status === 'free');
-  const stuck = machines.filter(m => m.status === 'busy' && m.remaining_seconds != null && m.remaining_seconds <= 0);
-
-  if (stuck.length) {
-    document.getElementById('as-stuck-text').textContent =
-      `Unit(s) ${stuck.map(m => m.unit_number).join(', ')} finished their cycle but the system timer hasn't freed them yet. They'll become available within a minute.`;
-    document.getElementById('as-stuck-warning').style.display = 'flex';
-  }
-
-  if (free.length === 0) {
-    document.getElementById('as-no-machines').style.display = 'block';
-    document.getElementById('as-no-machines').textContent   = 'No free machines right now. Wait for a running cycle to finish.';
-  } else if (free.length < machinesNeeded) {
-    document.getElementById('as-not-enough').style.display = 'block';
-    document.getElementById('as-not-enough').textContent   = `This order needs ${machinesNeeded} machine(s) but only ${free.length} are free.`;
-  }
-
-  const sorted = [...machines].sort((a, b) => a.unit_number - b.unit_number);
-  document.getElementById('as-machine-grid').innerHTML = sorted.map(m => {
-    const isFree  = m.status === 'free';
-    const isMaint = m.status === 'maintenance';
-    const icon   = isMaint ? '🔧' : isFree ? '🟢' : '🔴';
-    const sTxt   = isMaint ? 'Maintenance' : isFree ? 'Free' : m.current_stage ? m.current_stage.toUpperCase() : m.status.toUpperCase();
-    const sColor = isFree ? 'var(--success)' : isMaint ? 'var(--danger)' : 'var(--danger)';
-    const extraCls = isMaint ? ' maintenance-taken' : isFree ? '' : ' taken';
-    return `<div class="machine-check-item${extraCls}" id="mci-${m.machine_id}"
-               onclick="${isFree ? `toggleMachineSelect(${m.machine_id})` : ''}">
-      <div class="mci-check">✓</div>
-      <span class="mci-icon">${icon}</span>
-      <div class="mci-num">Unit ${m.unit_number}</div>
-      <div class="mci-status" style="color:${sColor}">${sTxt}</div>
-      ${m.current_order_id && !isFree ? `<div style="font-family:'DM Mono',monospace;font-size:.35rem;color:var(--text3);margin-top:2px">#${m.current_order_id}</div>` : ''}
-    </div>`;
+  const machines=await apiFetch('/api/staff/machines');
+  if(!machines){document.getElementById('as-no-machines').style.display='block';document.getElementById('as-no-machines').textContent='Failed to load machine data.';document.getElementById('as-machine-grid').innerHTML='';return;}
+  const free=machines.filter(m=>m.status==='free');
+  const stuck=machines.filter(m=>m.status==='busy'&&m.remaining_seconds!=null&&m.remaining_seconds<=0);
+  if(stuck.length){document.getElementById('as-stuck-text').textContent=`Unit(s) ${stuck.map(m=>m.unit_number).join(', ')} finished their cycle but haven't been freed yet.`;document.getElementById('as-stuck-warning').style.display='flex';}
+  if(free.length===0){document.getElementById('as-no-machines').style.display='block';document.getElementById('as-no-machines').textContent='No free machines right now.';}
+  else if(free.length<machinesNeeded){document.getElementById('as-not-enough').style.display='block';document.getElementById('as-not-enough').textContent=`This order needs ${machinesNeeded} machine(s) but only ${free.length} are free.`;}
+  const sorted=[...machines].sort((a,b)=>a.unit_number-b.unit_number);
+  document.getElementById('as-machine-grid').innerHTML=sorted.map(m=>{
+    const isFree=m.status==='free',isMaint=m.status==='maintenance';
+    const icon=isMaint?'\uD83D\uDD27':isFree?'\uD83D\uDFE2':'\uD83D\uDD34';
+    const sTxt=isMaint?'Maintenance':isFree?'Free':m.current_stage?m.current_stage.toUpperCase():m.status.toUpperCase();
+    const sColor=isFree?'var(--success)':isMaint?'var(--danger)':'var(--danger)';
+    const extraCls=isMaint?' maintenance-taken':isFree?'':' taken';
+    return`<div class="machine-check-item${extraCls}" id="mci-${m.machine_id}" onclick="${isFree?`toggleMachineSelect(${m.machine_id})`:''}"><div class="mci-check">\u2713</div><span class="mci-icon">${icon}</span><div class="mci-num">Unit ${m.unit_number}</div><div class="mci-status" style="color:${sColor}">${sTxt}</div>${m.current_order_id&&!isFree?`<div style="font-family:'DM Mono',monospace;font-size:.35rem;color:var(--text3);margin-top:2px">#${m.current_order_id}</div>`:''}</div>`;
   }).join('');
-
   updateAsSelStatus();
 }
-
-function toggleMachineSelect(machineId) {
-  const needed = _asContext.machinesNeeded;
-  const item   = document.getElementById(`mci-${machineId}`);
-  if (!item || item.classList.contains('taken') || item.classList.contains('maintenance-taken')) return;
-
-  if (_asSelectedIds.has(machineId)) {
-    _asSelectedIds.delete(machineId);
-    item.classList.remove('selected');
-  } else {
-    if (_asSelectedIds.size >= needed) {
-      showToast(`⚠️ You can only select ${needed} machine(s) for this order.`, 'error');
-      return;
-    }
-    _asSelectedIds.add(machineId);
-    item.classList.add('selected');
-  }
+function toggleMachineSelect(machineId){
+  const needed=_asContext.machinesNeeded,item=document.getElementById(`mci-${machineId}`);
+  if(!item||item.classList.contains('taken')||item.classList.contains('maintenance-taken'))return;
+  if(_asSelectedIds.has(machineId)){_asSelectedIds.delete(machineId);item.classList.remove('selected');}
+  else{if(_asSelectedIds.size>=needed){showToast(`\u26A0\uFE0F You can only select ${needed} machine(s).`,'error');return;}_asSelectedIds.add(machineId);item.classList.add('selected');}
   updateAsSelStatus();
 }
-
-function updateAsSelStatus() {
-  const needed   = _asContext.machinesNeeded;
-  const selected = _asSelectedIds.size;
-  const btn      = document.getElementById('as-submit-btn');
-  document.getElementById('as-sel-status').textContent = selected === 0
-    ? `Select ${needed} machine(s) to proceed`
-    : `${selected} / ${needed} machine(s) selected`;
-  btn.disabled = selected !== needed;
+function updateAsSelStatus(){const needed=_asContext.machinesNeeded,selected=_asSelectedIds.size,btn=document.getElementById('as-submit-btn');document.getElementById('as-sel-status').textContent=selected===0?`Select ${needed} machine(s) to proceed`:`${selected} / ${needed} machine(s) selected`;btn.disabled=selected!==needed;}
+async function submitAssignStart(){
+  const{orderId,machinesNeeded}=_asContext,machineIds=[..._asSelectedIds];
+  if(machineIds.length!==machinesNeeded){showToast(`\u26A0\uFE0F Select exactly ${machinesNeeded} machine(s)`,'error');return;}
+  btnLoading('as-submit-btn');const res=await apiPost(`/api/staff/orders/assign-start/${orderId}`,{machine_ids:machineIds});btnRestore('as-submit-btn');
+  if(res&&res.ok){showToast(`\u2705 Order #${orderId} started \u2014 ${res.machine_ids.length} machine(s) assigned`,'success');closeModal('assign-start');if(document.getElementById('sec-dashboard').classList.contains('active'))loadDashboard();if(document.getElementById('sec-queue').classList.contains('active'))loadQueue();if(document.getElementById('sec-encode').classList.contains('active'))loadEncoded();if(document.getElementById('sec-machines').classList.contains('active'))loadMachines();}
+  else showToast('\u274C '+(res?.error||'Failed to assign.'),'error',5000);
 }
 
-async function submitAssignStart() {
-  const { orderId, machinesNeeded } = _asContext;
-  const machineIds = [..._asSelectedIds];
-
-  if (machineIds.length !== machinesNeeded) {
-    showToast(`⚠️ Select exactly ${machinesNeeded} machine(s)`, 'error');
-    return;
-  }
-
-  btnLoading('as-submit-btn');
-  const res = await apiPost(`/api/staff/orders/assign-start/${orderId}`, { machine_ids: machineIds });
-  btnRestore('as-submit-btn');
-
-  if (res && res.ok) {
-    showToast(`✅ Order #${orderId} started — ${res.machine_ids.length} machine(s) assigned`, 'success');
-    closeModal('assign-start');
-    // Refresh all potentially affected sections
-    if (document.getElementById('sec-dashboard').classList.contains('active')) loadDashboard();
-    if (document.getElementById('sec-queue').classList.contains('active'))     loadQueue();
-    if (document.getElementById('sec-encode').classList.contains('active'))    loadEncoded();
-    if (document.getElementById('sec-machines').classList.contains('active'))  loadMachines();
-  } else {
-    const errMsg = res?.error || 'Failed to assign. Machines may have been taken. Close and try again.';
-    showToast('❌ ' + errMsg, 'error', 5000);
-    const noM = document.getElementById('as-no-machines');
-    noM.style.display = 'block';
-    noM.textContent   = errMsg;
-    // Re-fetch machine list on error so user sees current state
-    const machines = await apiFetch('/api/staff/machines');
-    if (machines) {
-      _asSelectedIds.clear();
-      // Re-render grid
-      openAssignStart(orderId,
-        document.getElementById('as-order-info').textContent.split('—')[0].trim(),
-        machinesNeeded,
-        document.getElementById('as-order-info').textContent.split('—')[1]?.trim() || '',
-        document.getElementById('as-order-meta').textContent.split('·')[1]?.trim().replace('kg','') || '');
-    }
-  }
+// ── FOLDING QUEUE ──
+let _foldingData=[];
+async function loadFolding(){
+  document.getElementById('folding-list').innerHTML='<div class="loading-row"><div class="spinner"></div>Loading folding queue\u2026</div>';
+  const data=await apiFetch('/api/staff/tasks');
+  if(!data){document.getElementById('folding-list').innerHTML='<div class="error-row">Failed to load.</div>';return;}
+  _foldingData=data.filter(o=>o.status==='folding');
+  if(!_foldingData.length){document.getElementById('folding-list').innerHTML='<div class="empty-state"><span class="es-icon">\uD83D\uDC55</span><span class="es-msg">No items in folding queue</span></div>';document.getElementById('fold-select-all').checked=false;updateFoldBulkBar();return;}
+  document.getElementById('folding-list').innerHTML=_foldingData.map(o=>`<div class="queue-item folding" id="fold-item-${o.order_id}"><div class="qi-top"><div style="display:flex;align-items:center;gap:11px"><label class="cb-wrap"><input type="checkbox" class="fold-cb" data-id="${o.order_id}" onchange="updateFoldBulkBar()"></label><div><div class="qi-id">Order #${o.order_id} \u00B7 TRK: ${escHtml(o.tracking_id||'\u2014')}</div><div class="qi-customer">${escHtml(o.customer_name||'Walk-in')}</div><div class="qi-service">${escHtml(SERVICE_RATES[o.service_type]?.label||o.service_type)} \u00B7 ${o.weight_kg}kg</div>${o.customer_email?`<div class="mono-cell" style="font-size:.42rem">\uD83D\uDCE7 ${escHtml(o.customer_email)}</div>`:''}</div></div><span class="pill amber">\uD83D\uDC55 Folding</span></div><div style="margin-top:10px;padding:10px 13px;background:var(--warn-bg);border:1px solid var(--warn-border);border-radius:9px;font-family:'DM Mono',monospace;font-size:.5rem;color:var(--warn)">\uD83D\uDC55 Ready to fold \u2014 click <strong>Fold Done</strong> when finished</div><div class="qi-meta"><span class="mono-cell">${fmtPHP(o.amount)}</span>${o.with_dryer?'<span class="pill teal">\uD83D\uDCA8 Dryer</span>':''}${o.with_downy?'<span class="pill purple">\uD83C\uDF38 Downy</span>':''}<button class="btn-success" style="height:30px;font-size:.44rem;padding:0 13px;margin-left:auto" onclick="singleFoldDone(${o.order_id},this)">\u2705 Fold Done</button></div></div>`).join('');
+  document.getElementById('fold-select-all').checked=false;updateFoldBulkBar();
 }
+function toggleFoldSelectAll(){const checked=document.getElementById('fold-select-all').checked;document.querySelectorAll('.fold-cb').forEach(cb=>cb.checked=checked);updateFoldBulkBar();}
+function updateFoldBulkBar(){const selected=[...document.querySelectorAll('.fold-cb:checked')].length;document.getElementById('fold-bulk-count').textContent=`${selected} selected`;document.getElementById('fold-bulk-bar').classList.toggle('visible',selected>0);}
+function clearFoldSelection(){document.querySelectorAll('.fold-cb').forEach(cb=>cb.checked=false);document.getElementById('fold-select-all').checked=false;updateFoldBulkBar();}
+async function singleFoldDone(orderId,btn){if(btn){btn.disabled=true;btn.textContent='Marking\u2026';}const res=await apiPut(`/api/staff/orders/fold-done/${orderId}`);if(res&&res.ok){showToast(`\u2705 Order #${orderId} \u2192 Ready for Pickup`,'success');const item=document.getElementById(`fold-item-${orderId}`);if(item){item.style.opacity='0';item.style.transform='translateX(20px)';item.style.transition='opacity .3s,transform .3s';setTimeout(()=>loadFolding(),320);}else loadFolding();}else{if(btn){btn.disabled=false;btn.textContent='\u2705 Fold Done';}showToast('\u274C '+(res?.error||'Failed'),'error');}}
+async function bulkFoldDone(){const ids=[...document.querySelectorAll('.fold-cb:checked')].map(cb=>Number(cb.dataset.id));if(!ids.length)return;const res=await apiPut('/api/staff/orders/fold-done-bulk',{order_ids:ids});if(res&&res.ok){showToast(`\u2705 ${res.completed} order(s) moved to Ready for Pickup`,'success');loadFolding();if(document.getElementById('sec-pickup').classList.contains('active'))loadPickup();}else showToast('\u274C '+(res?.error||'Bulk fold failed'),'error');}
+
+// ── PICKUP ──
+async function loadPickup(){
+  document.getElementById('pickup-list').innerHTML='<div class="loading-row"><div class="spinner"></div>Loading pickup queue\u2026</div>';
+  const data=await apiFetch('/api/staff/tasks');
+  if(!data){document.getElementById('pickup-list').innerHTML='<div class="error-row">Failed to load.</div>';return;}
+  const pickupOrders=data.filter(o=>o.status==='ready_for_pickup');
+  if(!pickupOrders.length){document.getElementById('pickup-list').innerHTML='<div class="empty-state"><span class="es-icon">\uD83D\uDCE6</span><span class="es-msg">No orders waiting for pickup</span></div>';return;}
+  document.getElementById('pickup-list').innerHTML=pickupOrders.map(o=>`<div class="pickup-banner" id="pickup-item-${o.order_id}"><div class="pb-icon">\uD83D\uDCE6</div><div class="pb-txt"><strong style="color:var(--text);font-size:.88rem">${escHtml(o.customer_name||'Walk-in')}</strong> \u2014 Order #${o.order_id} \u00B7 TRK: ${escHtml(o.tracking_id||'\u2014')}<br>${escHtml(SERVICE_RATES[o.service_type]?.label||o.service_type)} \u00B7 ${o.weight_kg}kg \u00B7 ${fmtPHP(o.amount)}<br>${o.customer_email?`\uD83D\uDCE7 ${escHtml(o.customer_email)} \u00B7 `:''}<span style="color:var(--orange)">Ready for pickup</span></div><div class="pb-btn">${o.customer_email?`<button class="btn-primary" style="height:34px;padding:0 16px;font-size:.5rem;white-space:nowrap" onclick="sendPickupEmail(${o.order_id},this)">\uD83D\uDCE7 Send Pickup Email</button>`:''}<button class="btn-success" style="height:36px;padding:0 18px;font-size:.52rem" onclick="markCompleted(${o.order_id},this)">\u2714 Mark Completed</button></div></div>`).join('');
+}
+async function sendPickupEmail(orderId,btn){if(btn){btn.disabled=true;btn.textContent='\uD83D\uDCE7 Sending\u2026';}const res=await apiPost(`/api/staff/orders/send-pickup-email/${orderId}`,{});if(res&&res.ok){showToast(`\uD83D\uDCE7 Pickup email sent for Order #${orderId}`,'success');if(btn){btn.disabled=true;btn.textContent='\u2705 Email Sent';btn.style.opacity='.6';}}else{if(btn){btn.disabled=false;btn.textContent='\uD83D\uDCE7 Send Pickup Email';}showToast('\u274C '+(res?.error||'Failed to send email'),'error');}}
+async function markCompleted(orderId,btn){if(btn){btn.disabled=true;btn.textContent='Completing\u2026';}const res=await apiPut(`/api/staff/orders/complete/${orderId}`);if(res&&res.ok){showToast(`\u2705 Order #${orderId} marked Completed!`,'success');const item=document.getElementById(`pickup-item-${orderId}`);if(item){item.style.opacity='0';item.style.transform='translateY(-10px)';item.style.transition='opacity .3s,transform .3s';setTimeout(()=>loadPickup(),320);}else loadPickup();if(document.getElementById('sec-dashboard').classList.contains('active'))loadDashboard();if(document.getElementById('sec-queue').classList.contains('active'))loadQueue();}else{if(btn){btn.disabled=false;btn.textContent='\u2714 Mark Completed';}showToast('\u274C '+(res?.error||'Failed'),'error');}}
 
 // ══════════════════════════════════════════════════════════════
-//  FOLDING QUEUE
+//  PROMOS — View Only with New Promo Notifications
 // ══════════════════════════════════════════════════════════════
-let _foldingData = [];
+const PROMO_SEEN_KEY='op-seen-promos';
+function getSeenPromos(){try{return new Set(JSON.parse(localStorage.getItem(PROMO_SEEN_KEY)||'[]'));}catch{return new Set();}}
+function markPromoSeen(id){const s=getSeenPromos();s.add(String(id));localStorage.setItem(PROMO_SEEN_KEY,JSON.stringify([...s]));}
+function markAllPromosSeen(promos){const s=getSeenPromos();promos.forEach(p=>s.add(String(p.promo_id)));localStorage.setItem(PROMO_SEEN_KEY,JSON.stringify([...s]));}
 
-async function loadFolding() {
-  document.getElementById('folding-list').innerHTML =
-    '<div class="loading-row"><div class="spinner"></div>Loading folding queue&hellip;</div>';
-  const data = await apiFetch('/api/staff/tasks');
-  if (!data) {
-    document.getElementById('folding-list').innerHTML = '<div class="error-row">Failed to load folding queue.</div>';
-    return;
-  }
-  _foldingData = data.filter(o => o.status === 'folding');
-  if (!_foldingData.length) {
-    document.getElementById('folding-list').innerHTML =
-      '<div class="empty-state"><span class="es-icon">👕</span><span class="es-msg">No items in folding queue</span></div>';
-    document.getElementById('fold-select-all').checked = false;
-    updateFoldBulkBar();
-    return;
-  }
-  document.getElementById('folding-list').innerHTML = _foldingData.map(o => `
-    <div class="queue-item folding" id="fold-item-${o.order_id}">
-      <div class="qi-top">
-        <div style="display:flex;align-items:center;gap:11px">
-          <label class="cb-wrap">
-            <input type="checkbox" class="fold-cb" data-id="${o.order_id}" onchange="updateFoldBulkBar()">
-          </label>
-          <div>
-            <div class="qi-id">Order #${o.order_id} &middot; TRK: ${escHtml(o.tracking_id || '—')}</div>
-            <div class="qi-customer">${escHtml(o.customer_name || 'Walk-in')}</div>
-            <div class="qi-service">${escHtml(SERVICE_RATES[o.service_type]?.label || o.service_type)} &middot; ${o.weight_kg}kg</div>
-            ${o.customer_email ? `<div class="mono-cell" style="font-size:.42rem">📧 ${escHtml(o.customer_email)}</div>` : ''}
-          </div>
+async function loadPromos(){
+  const data=await apiFetch('/api/promos');
+  const promos=data||[];
+  const seen=getSeenPromos();
+  const newPromos=promos.filter(p=>!seen.has(String(p.promo_id)));
+
+  // Update badge
+  const badge=document.getElementById('promo-nav-badge');
+  if(newPromos.length>0){badge.textContent=newPromos.length;badge.classList.add('visible');}
+  else badge.classList.remove('visible');
+
+  document.getElementById('promos-count').textContent=promos.length;
+
+  // Render notifications
+  const notifArea=document.getElementById('promo-notif-area');
+  if(newPromos.length>0){
+    notifArea.innerHTML=newPromos.map(p=>`
+      <div class="notif-banner">
+        <div class="nb-icon">\uD83C\uDF89</div>
+        <div class="nb-txt">
+          <strong>NEW PROMO CODE</strong><span class="nb-new">NEW</span><br>
+          Admin just added <strong>${escHtml(p.code)}</strong> \u2014 <strong>${p.discount}%</strong> discount off service charges.<br>
+          You can now use this code when encoding services.
         </div>
-        <span class="pill amber">👕 Folding</span>
+      </div>`).join('');
+    // Mark as seen after display
+    setTimeout(()=>{markAllPromosSeen(promos);badge.classList.remove('visible');},5000);
+  }else notifArea.innerHTML='';
+
+  // Render promo list
+  document.getElementById('promos-list').innerHTML=promos.length?promos.map(p=>`
+    <div class="promo-card">
+      <div class="promo-card-left">
+        <div class="promo-code">${escHtml(p.code)}</div>
+        <div class="promo-disc">${p.discount}% discount \u00B7 Apply during Encode Service</div>
       </div>
-      <div style="margin-top:10px;padding:10px 13px;background:var(--warn-bg);border:1px solid var(--warn-border);border-radius:9px;font-family:'DM Mono',monospace;font-size:.5rem;color:var(--warn)">
-        👕 Ready to fold — click <strong>Fold Done</strong> when finished
+      <div style="display:flex;align-items:center;gap:8px">
+        ${!seen.has(String(p.promo_id))?'<span class="pill amber">New</span>':''}
+        <span class="pill green"><span class="pill-dot"></span>Active</span>
       </div>
-      <div class="qi-meta">
-        <span class="mono-cell">${fmtPHP(o.amount)}</span>
-        ${o.with_dryer ? '<span class="pill teal">💨 Dryer</span>' : ''}
-        ${o.with_downy ? '<span class="pill purple">🌸 Downy</span>' : ''}
-        <button class="btn-success" style="height:30px;font-size:.44rem;padding:0 13px;margin-left:auto"
-          onclick="singleFoldDone(${o.order_id},this)">✅ Fold Done</button>
-      </div>
-    </div>`).join('');
-  document.getElementById('fold-select-all').checked = false;
-  updateFoldBulkBar();
+    </div>`).join(''):'<div class="empty-state"><span class="es-icon">\uD83C\uDFF7\uFE0F</span><span class="es-msg">No active promo codes</span></div>';
 }
 
-function toggleFoldSelectAll() {
-  const checked = document.getElementById('fold-select-all').checked;
-  document.querySelectorAll('.fold-cb').forEach(cb => cb.checked = checked);
-  updateFoldBulkBar();
+// ── ISSUES ──
+async function loadIssues(){
+  const data=await apiFetch('/api/staff/issues');
+  if(!data){document.getElementById('issues-list').innerHTML='<div class="error-row">Failed to load issues.</div>';return;}
+  document.getElementById('issue-count').textContent=data.length;
+  if(!data.length){document.getElementById('issues-list').innerHTML='<div class="empty-state"><span class="es-icon">\u2714\uFE0F</span><span class="es-msg">No issues reported</span></div>';return;}
+  document.getElementById('issues-list').innerHTML=data.map(iss=>`<div class="issue-card"><div class="issue-type-lbl">${ISSUE_TYPE_LABELS[iss.issue_type]||iss.issue_type}</div><div class="issue-desc">${escHtml(iss.description||'')}</div><div class="issue-meta">${iss.order_id?`Order #${iss.order_id} \u00B7 `:''} ${iss.reported_at?new Date(iss.reported_at).toLocaleString():''} \u00B7 <span style="color:${iss.status==='resolved'?'var(--success)':'var(--warn)'}">${(iss.status||'').toUpperCase()}</span></div></div>`).join('');
 }
-
-function updateFoldBulkBar() {
-  const selected = [...document.querySelectorAll('.fold-cb:checked')].length;
-  document.getElementById('fold-bulk-count').textContent = `${selected} selected`;
-  document.getElementById('fold-bulk-bar').classList.toggle('visible', selected > 0);
-}
-
-function clearFoldSelection() {
-  document.querySelectorAll('.fold-cb').forEach(cb => cb.checked = false);
-  document.getElementById('fold-select-all').checked = false;
-  updateFoldBulkBar();
-}
-
-async function singleFoldDone(orderId, btn) {
-  if (btn) { btn.disabled = true; btn.textContent = 'Marking…'; }
-  const res = await apiPut(`/api/staff/orders/fold-done/${orderId}`);
-  if (res && res.ok) {
-    showToast(`✅ Order #${orderId} → Ready for Pickup`, 'success');
-    const item = document.getElementById(`fold-item-${orderId}`);
-    if (item) {
-      item.style.opacity = '0';
-      item.style.transform = 'translateX(20px)';
-      item.style.transition = 'opacity .3s,transform .3s';
-      setTimeout(() => loadFolding(), 320);
-    } else loadFolding();
-  } else {
-    if (btn) { btn.disabled = false; btn.textContent = '✅ Fold Done'; }
-    showToast('❌ ' + (res?.error || 'Failed to mark fold done'), 'error');
-  }
-}
-
-async function bulkFoldDone() {
-  const ids = [...document.querySelectorAll('.fold-cb:checked')].map(cb => Number(cb.dataset.id));
-  if (!ids.length) return;
-  const res = await apiPut('/api/staff/orders/fold-done-bulk', { order_ids: ids });
-  if (res && res.ok) {
-    showToast(`✅ ${res.completed} order(s) moved to Ready for Pickup`, 'success');
-    loadFolding();
-    if (document.getElementById('sec-pickup').classList.contains('active')) loadPickup();
-  } else {
-    showToast('❌ ' + (res?.error || 'Bulk fold failed'), 'error');
-  }
+async function submitIssue(){
+  const type=document.getElementById('iss-type').value,oid=document.getElementById('iss-order-id').value.trim(),desc=document.getElementById('iss-desc').value.trim();
+  if(!desc){showToast('\u26A0\uFE0F Description is required','error');return;}
+  btnLoading('iss-submit-btn');const res=await apiPost('/api/staff/issues/report',{issue_type:type,order_id:oid?Number(oid):null,description:desc});btnRestore('iss-submit-btn');
+  if(res&&res.ok){showToast('\u2705 Issue reported successfully','success');closeModal('add-issue');document.getElementById('iss-order-id').value='';document.getElementById('iss-desc').value='';loadIssues();}
+  else showToast('\u274C '+(res?.error||'Failed to submit issue'),'error');
 }
 
 // ══════════════════════════════════════════════════════════════
-//  READY FOR PICKUP
+//  PROFILE
 // ══════════════════════════════════════════════════════════════
-async function loadPickup() {
-  document.getElementById('pickup-list').innerHTML =
-    '<div class="loading-row"><div class="spinner"></div>Loading pickup queue&hellip;</div>';
-  const data = await apiFetch('/api/staff/tasks');
-  if (!data) {
-    document.getElementById('pickup-list').innerHTML = '<div class="error-row">Failed to load pickup queue.</div>';
-    return;
-  }
-  const pickupOrders = data.filter(o => o.status === 'ready_for_pickup');
-  if (!pickupOrders.length) {
-    document.getElementById('pickup-list').innerHTML =
-      '<div class="empty-state"><span class="es-icon">📦</span><span class="es-msg">No orders waiting for pickup</span></div>';
-    return;
-  }
-  document.getElementById('pickup-list').innerHTML = pickupOrders.map(o => `
-    <div class="pickup-banner" id="pickup-item-${o.order_id}">
-      <div class="pb-icon">📦</div>
-      <div class="pb-txt">
-        <strong style="color:var(--text);font-size:.88rem">${escHtml(o.customer_name || 'Walk-in')}</strong>
-        &mdash; Order #${o.order_id} &middot; TRK: ${escHtml(o.tracking_id || '—')}<br>
-        ${escHtml(SERVICE_RATES[o.service_type]?.label || o.service_type)} &middot; ${o.weight_kg}kg &middot; ${fmtPHP(o.amount)}<br>
-        ${o.customer_email ? `📧 ${escHtml(o.customer_email)} &middot; ` : ''}${o.customer_id ? `🔗 Linked &middot; ` : ''}${o.with_dryer ? '💨 Dryer &middot; ' : ''}${o.with_downy ? '🌸 Downy &middot; ' : ''}<span style="color:var(--orange)">Ready for pickup</span>
-      </div>
-      <div class="pb-btn">
-        ${o.customer_email ? `<button class="btn-primary" style="height:34px;padding:0 16px;font-size:.5rem;white-space:nowrap"
-            onclick="sendPickupEmail(${o.order_id},this)">📧 Send Pickup Email</button>` : ''}
-        <button class="btn-success" style="height:36px;padding:0 18px;font-size:.52rem"
-            onclick="markCompleted(${o.order_id},this)">✔ Mark Completed</button>
-      </div>
-    </div>`).join('');
+async function loadProfile(){
+  const res=await apiFetch('/api/me');
+  if(!res)return;
+  const initial=(res.full_name||'M')[0].toUpperCase();
+  document.getElementById('profile-av-big').textContent=initial;
+  document.getElementById('profile-fullname').textContent=res.full_name||'\u2014';
+  document.getElementById('profile-email-disp').textContent=res.email||'\u2014';
+  document.getElementById('profile-phone-disp').textContent=res.phone||'Not set';
+  document.getElementById('p-fullname').value=res.full_name||'';
+  document.getElementById('p-phone').value=res.phone||'';
+  document.getElementById('p-email').value=res.email||'';
+  if(res.created_at){const dt=new Date(res.created_at);document.getElementById('profile-since').textContent=dt.toLocaleDateString('en-PH',{year:'numeric',month:'long',day:'numeric'});}
 }
 
-async function sendPickupEmail(orderId, btn) {
-  if (btn) { btn.disabled = true; btn.textContent = '📧 Sending…'; }
-  const res = await apiPost(`/api/staff/orders/send-pickup-email/${orderId}`, {});
-  if (res && res.ok) {
-    showToast(`📧 Pickup email sent for Order #${orderId}`, 'success');
-    if (btn) { btn.disabled = true; btn.textContent = '✅ Email Sent'; btn.style.opacity = '.6'; }
-  } else {
-    if (btn) { btn.disabled = false; btn.textContent = '📧 Send Pickup Email'; }
-    showToast('❌ ' + (res?.error || 'Failed to send email'), 'error');
-  }
+async function saveProfile(){
+  const fullName=document.getElementById('p-fullname').value.trim();
+  const phone=document.getElementById('p-phone').value.trim();
+  if(!fullName){showToast('\u26A0\uFE0F Name is required','error');return;}
+  const res=await apiFetch('/api/me/update',{method:'PUT',headers:JSON_HEADERS,body:JSON.stringify({full_name:fullName,phone})});
+  if(res&&res.ok){showToast('\u2705 Profile updated!','success');document.getElementById('sb-name').textContent=fullName;document.getElementById('sb-av').textContent=fullName[0].toUpperCase();document.getElementById('profile-fullname').textContent=fullName;document.getElementById('profile-phone-disp').textContent=phone||'Not set';document.getElementById('profile-av-big').textContent=fullName[0].toUpperCase();}
+  else showToast('\u274C '+(res?.error||'Could not update profile'),'error');
 }
 
-async function markCompleted(orderId, btn) {
-  if (btn) { btn.disabled = true; btn.textContent = 'Completing…'; }
-  const res = await apiPut(`/api/staff/orders/complete/${orderId}`);
-  if (res && res.ok) {
-    showToast(`✅ Order #${orderId} marked Completed!`, 'success');
-    const item = document.getElementById(`pickup-item-${orderId}`);
-    if (item) {
-      item.style.opacity = '0';
-      item.style.transform = 'translateY(-10px)';
-      item.style.transition = 'opacity .3s,transform .3s';
-      setTimeout(() => loadPickup(), 320);
-    } else loadPickup();
-    if (document.getElementById('sec-dashboard').classList.contains('active')) loadDashboard();
-    if (document.getElementById('sec-queue').classList.contains('active'))     loadQueue();
-  } else {
-    if (btn) { btn.disabled = false; btn.textContent = '✔ Mark Completed'; }
-    showToast('❌ ' + (res?.error || 'Failed to complete order'), 'error');
-  }
+function checkPwStrength(pw){
+  const fill=document.getElementById('pw-strength-fill'),lbl=document.getElementById('pw-strength-label');
+  if(!pw){fill.style.width='0%';lbl.textContent='Enter a new password';lbl.style.color='var(--text3)';return;}
+  let score=0;if(pw.length>=8)score++;if(pw.length>=12)score++;if(/[A-Z]/.test(pw))score++;if(/[0-9]/.test(pw))score++;if(/[^A-Za-z0-9]/.test(pw))score++;
+  const configs=[{w:'20%',bg:'var(--danger)',label:'Very weak'},{w:'40%',bg:'var(--danger)',label:'Weak'},{w:'60%',bg:'var(--warn)',label:'Fair'},{w:'80%',bg:'var(--accent)',label:'Good'},{w:'100%',bg:'var(--success)',label:'Strong'}];
+  const c=configs[Math.min(score,4)];fill.style.width=c.w;fill.style.background=c.bg;lbl.textContent=c.label;lbl.style.color=c.bg;
 }
 
-// ══════════════════════════════════════════════════════════════
-//  ISSUES
-// ══════════════════════════════════════════════════════════════
-async function loadIssues() {
-  const data = await apiFetch('/api/staff/issues');
-  if (!data) {
-    document.getElementById('issues-list').innerHTML = '<div class="error-row">Failed to load issues.</div>';
-    return;
-  }
-  document.getElementById('issue-count').textContent = data.length;
-  if (!data.length) {
-    document.getElementById('issues-list').innerHTML =
-      '<div class="empty-state"><span class="es-icon">✔️</span><span class="es-msg">No issues reported</span></div>';
-    return;
-  }
-  document.getElementById('issues-list').innerHTML = data.map(iss => `
-    <div class="issue-card">
-      <div class="issue-type-lbl">${ISSUE_TYPE_LABELS[iss.issue_type] || iss.issue_type}</div>
-      <div class="issue-desc">${escHtml(iss.description || '')}</div>
-      <div class="issue-meta">
-        ${iss.order_id ? `Order #${iss.order_id} · ` : ''}
-        ${iss.reported_at ? new Date(iss.reported_at).toLocaleString() : ''}
-        · <span style="color:${iss.status === 'resolved' ? 'var(--success)' : 'var(--warn)'}">${(iss.status || '').toUpperCase()}</span>
-      </div>
-    </div>`).join('');
+async function changePassword(){
+  const curPw=document.getElementById('p-cur-pw').value,newPw=document.getElementById('p-new-pw').value,confirmPw=document.getElementById('p-confirm-pw').value;
+  if(!curPw||!newPw||!confirmPw){showToast('\u26A0\uFE0F All password fields are required','error');return;}
+  if(newPw!==confirmPw){showToast('\u26A0\uFE0F New passwords do not match','error');return;}
+  if(newPw.length<8){showToast('\u26A0\uFE0F Password must be at least 8 characters','error');return;}
+  const res=await apiFetch('/api/me/change-password',{method:'PUT',headers:JSON_HEADERS,body:JSON.stringify({current_password:curPw,new_password:newPw,confirm_password:confirmPw})});
+  if(res&&res.ok){showToast('\uD83D\uDD12 Password updated!','success');['p-cur-pw','p-new-pw','p-confirm-pw'].forEach(id=>document.getElementById(id).value='');document.getElementById('pw-strength-fill').style.width='0%';document.getElementById('pw-strength-label').textContent='Enter a new password';document.getElementById('pw-strength-label').style.color='var(--text3)';}
+  else showToast('\u274C '+(res?.error||'Could not change password'),'error');
 }
 
-async function submitIssue() {
-  const type  = document.getElementById('iss-type').value;
-  const oid   = document.getElementById('iss-order-id').value.trim();
-  const desc  = document.getElementById('iss-desc').value.trim();
-  if (!desc) { showToast('⚠️ Description is required', 'error'); return; }
-  btnLoading('iss-submit-btn');
-  const res = await apiPost('/api/staff/issues/report', { issue_type: type, order_id: oid ? Number(oid) : null, description: desc });
-  btnRestore('iss-submit-btn');
-  if (res && res.ok) {
-    showToast('✅ Issue reported successfully', 'success');
-    closeModal('add-issue');
-    document.getElementById('iss-order-id').value = '';
-    document.getElementById('iss-desc').value     = '';
-    loadIssues();
-  } else {
-    showToast('❌ ' + (res?.error || 'Failed to submit issue'), 'error');
-  }
-}
+// ── AUTO-REFRESH ──
+setInterval(()=>{
+  const active=document.querySelector('.section.active');if(!active)return;
+  const id=active.id.replace('sec-','');
+  if(SECTION_LOADERS[id])SECTION_LOADERS[id]();
+},60000);
 
-// ══════════════════════════════════════════════════════════════
-//  AUTO-REFRESH (every 60s — only the active section)
-// ══════════════════════════════════════════════════════════════
-setInterval(() => {
-  const active = document.querySelector('.section.active');
-  if (!active) return;
-  const id = active.id.replace('sec-', '');
-  if (SECTION_LOADERS[id]) SECTION_LOADERS[id]();
-}, 60000);
+// Check for new promos every 2 min in background
+setInterval(async()=>{
+  const data=await apiFetch('/api/promos');const promos=data||[];
+  const seen=getSeenPromos();const newCount=promos.filter(p=>!seen.has(String(p.promo_id))).length;
+  const badge=document.getElementById('promo-nav-badge');
+  if(newCount>0){badge.textContent=newCount;badge.classList.add('visible');}
+  else badge.classList.remove('visible');
+},120000);
 
-// ══════════════════════════════════════════════════════════════
-//  BUBBLES (matching customer page)
-// ══════════════════════════════════════════════════════════════
-(function initBubbles() {
-  const canvas = document.getElementById('bubblesCanvas');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  let W, H, bubbles = [];
-  function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
-  resize(); window.addEventListener('resize', resize);
-  const isDark = () => document.documentElement.dataset.theme === 'dark';
-  function makeBubble() {
-    const r = 5 + Math.random() * 22;
-    return { x: Math.random() * W, y: H + r + Math.random() * 200, r, speed: 0.3 + Math.random() * 0.6, drift: (Math.random() - 0.5) * 0.5, wobble: Math.random() * Math.PI * 2, wobbleSpeed: 0.015 + Math.random() * 0.02, opacity: 0.08 + Math.random() * 0.18 };
-  }
-  for (let i = 0; i < 28; i++) { const b = makeBubble(); b.y = Math.random() * H; bubbles.push(b); }
-  function drawBubble(b) {
-    const base = isDark() ? '0,212,245' : '0,180,216';
-    ctx.save(); ctx.globalAlpha = b.opacity;
-    const grad = ctx.createRadialGradient(b.x - b.r * .3, b.y - b.r * .3, b.r * .05, b.x, b.y, b.r);
-    grad.addColorStop(0, 'rgba(255,255,255,0.5)');
-    grad.addColorStop(.5, `rgba(${base},0.07)`);
-    grad.addColorStop(1, `rgba(${base},0.18)`);
-    ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
-    ctx.fillStyle = grad; ctx.fill();
-    ctx.strokeStyle = `rgba(${base},0.3)`; ctx.lineWidth = 1; ctx.stroke();
-    ctx.globalAlpha = b.opacity * .6;
-    ctx.beginPath(); ctx.arc(b.x - b.r * .28, b.y - b.r * .28, b.r * .18, 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(255,255,255,0.8)'; ctx.fill();
-    ctx.restore();
-  }
-  function animate() {
-    ctx.clearRect(0, 0, W, H);
-    bubbles.forEach((b, i) => {
-      b.wobble += b.wobbleSpeed;
-      b.x += b.drift + Math.sin(b.wobble) * .3;
-      b.y -= b.speed;
-      if (b.y + b.r < -10) bubbles[i] = makeBubble();
-      drawBubble(b);
-    });
-    requestAnimationFrame(animate);
-  }
+// ── BUBBLES ──
+(function initBubbles(){
+  const canvas=document.getElementById('bubblesCanvas');if(!canvas)return;
+  const ctx=canvas.getContext('2d');let W,H,bubbles=[];
+  function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
+  resize();window.addEventListener('resize',resize);
+  const isDark=()=>document.documentElement.dataset.theme==='dark';
+  function makeBubble(){const r=5+Math.random()*22;return{x:Math.random()*W,y:H+r+Math.random()*200,r,speed:.3+Math.random()*.6,drift:(Math.random()-.5)*.5,wobble:Math.random()*Math.PI*2,wobbleSpeed:.015+Math.random()*.02,opacity:.08+Math.random()*.18};}
+  for(let i=0;i<28;i++){const b=makeBubble();b.y=Math.random()*H;bubbles.push(b);}
+  function drawBubble(b){const base=isDark()?'0,212,245':'0,180,216';ctx.save();ctx.globalAlpha=b.opacity;const grad=ctx.createRadialGradient(b.x-b.r*.3,b.y-b.r*.3,b.r*.05,b.x,b.y,b.r);grad.addColorStop(0,'rgba(255,255,255,0.5)');grad.addColorStop(.5,`rgba(${base},0.07)`);grad.addColorStop(1,`rgba(${base},0.18)`);ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,Math.PI*2);ctx.fillStyle=grad;ctx.fill();ctx.strokeStyle=`rgba(${base},0.3)`;ctx.lineWidth=1;ctx.stroke();ctx.globalAlpha=b.opacity*.6;ctx.beginPath();ctx.arc(b.x-b.r*.28,b.y-b.r*.28,b.r*.18,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,0.8)';ctx.fill();ctx.restore();}
+  function animate(){ctx.clearRect(0,0,W,H);bubbles.forEach((b,i)=>{b.wobble+=b.wobbleSpeed;b.x+=b.drift+Math.sin(b.wobble)*.3;b.y-=b.speed;if(b.y+b.r<-10)bubbles[i]=makeBubble();drawBubble(b);});requestAnimationFrame(animate);}
   animate();
 })();
 
-// ══════════════════════════════════════════════════════════════
-//  INIT
-// ══════════════════════════════════════════════════════════════
+// ── INIT ──
 loadMe();
 loadDashboard();
-calcPrice(); // Initialize price display
+calcPrice();
+// Check promo notifications on load
+apiFetch('/api/promos').then(data=>{
+  if(!data)return;
+  const seen=getSeenPromos();const newCount=data.filter(p=>!seen.has(String(p.promo_id))).length;
+  if(newCount>0){const badge=document.getElementById('promo-nav-badge');badge.textContent=newCount;badge.classList.add('visible');}
+});
 </script>
 </body>
 </html>
