@@ -1,0 +1,1383 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Super Admin — Laundry Lounge</title>
+<link rel="icon" type="image/png" href="{{ url_for('static', filename='img/icon.png') }}">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--ease:cubic-bezier(0.16,1,0.3,1)}
+
+[data-theme="light"]{
+  --bg:#E8F8FB;--bg2:#D6F1F7;--bg3:#C4EAF4;
+  --surface:rgba(255,255,255,0.88);--surface2:rgba(245,253,255,0.98);
+  --border:rgba(0,150,180,0.13);--border-acc:rgba(0,180,210,0.40);
+  --text:#0A2A35;--text2:#1B5E72;--text3:rgba(27,94,114,0.55);
+  --accent:#00B4D8;--accent2:#0077A8;--accent-glow:rgba(0,180,216,0.18);
+  --danger:#C0392B;--danger-bg:rgba(192,57,43,0.07);--danger-border:rgba(192,57,43,0.22);
+  --success:#0077A8;--success-bg:rgba(0,119,168,0.08);--success-border:rgba(0,119,168,0.22);
+  --warn:#A07010;--warn-bg:rgba(160,112,16,0.08);--warn-border:rgba(160,112,16,0.25);
+  --blue:#1A6FA8;--blue-bg:rgba(26,111,168,0.08);--blue-border:rgba(26,111,168,0.25);
+  --purple:#6A35A0;--purple-bg:rgba(106,53,160,0.07);--purple-border:rgba(106,53,160,0.22);
+  --shadow:0 20px 60px rgba(0,80,120,0.11),0 4px 20px rgba(0,80,120,0.06);
+  --shadow-sm:0 4px 16px rgba(0,80,120,0.07);
+  --input-bg:rgba(255,255,255,0.85);--overlay:rgba(6,22,28,0.48);--sidebar-w:272px;
+}
+[data-theme="dark"]{
+  --bg:#06161C;--bg2:#0C2330;--bg3:#122C3D;
+  --surface:rgba(10,30,42,0.9);--surface2:rgba(14,36,50,0.98);
+  --border:rgba(0,212,245,0.10);--border-acc:rgba(0,212,245,0.35);
+  --text:#D8F4FA;--text2:#80C8DC;--text3:rgba(128,200,220,0.5);
+  --accent:#00D4F5;--accent2:#0099CC;--accent-glow:rgba(0,212,245,0.20);
+  --danger:#E05040;--danger-bg:rgba(224,80,64,0.1);--danger-border:rgba(224,80,64,0.28);
+  --success:#00D4F5;--success-bg:rgba(0,212,245,0.1);--success-border:rgba(0,212,245,0.28);
+  --warn:#D4A030;--warn-bg:rgba(212,160,48,0.1);--warn-border:rgba(212,160,48,0.28);
+  --blue:#40A8D4;--blue-bg:rgba(64,168,212,0.1);--blue-border:rgba(64,168,212,0.28);
+  --purple:#A878E0;--purple-bg:rgba(168,120,224,0.1);--purple-border:rgba(168,120,224,0.28);
+  --shadow:0 20px 60px rgba(0,0,0,0.6),0 4px 20px rgba(0,0,0,0.35);
+  --shadow-sm:0 4px 16px rgba(0,0,0,0.4);
+  --input-bg:rgba(0,0,0,0.3);--overlay:rgba(0,0,0,0.7);--sidebar-w:272px;
+}
+
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;transition:background .4s,color .4s;padding-bottom:48px}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:180px}
+
+.deco-bg{pointer-events:none;position:fixed;inset:0;overflow:hidden;z-index:0}
+.deco-word{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:clamp(5rem,14vw,16rem);line-height:.82;color:var(--text);opacity:.025;position:absolute;white-space:nowrap;user-select:none;letter-spacing:-.02em}
+.deco-word.w1{top:-4%;left:-2%;transform:rotate(-2deg)}
+.deco-word.w2{bottom:-3%;right:-3%;transform:rotate(2deg);font-style:italic}
+@media(max-width:540px){.deco-word{display:none}}
+
+#overlay{position:fixed;inset:0;background:var(--overlay);backdrop-filter:blur(4px);z-index:35;display:none}
+#overlay.visible{display:block}
+
+#sidebar{position:fixed;top:0;left:0;height:100%;width:var(--sidebar-w);z-index:40;background:var(--surface2);border-right:1px solid var(--border);transform:translateX(-100%);transition:transform .32s var(--ease);display:flex;flex-direction:column;overflow-y:auto;overscroll-behavior:contain}
+#sidebar.open{transform:translateX(0)}
+.sb-top{padding:22px 18px 0}
+.sb-brand{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}
+.sb-eyebrow{font-family:'DM Mono',monospace;font-size:.52rem;letter-spacing:.28em;text-transform:uppercase;color:var(--accent);margin-bottom:2px}
+.sb-brand-name{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:1.65rem;letter-spacing:-.01em;color:var(--text);line-height:1}
+.sb-brand-name em{font-style:italic;color:var(--accent)}
+#closeSidebar{width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.85rem;transition:border-color .2s,color .2s}
+#closeSidebar:hover{border-color:var(--accent);color:var(--accent)}
+.nav-sec{font-family:'DM Mono',monospace;font-size:.48rem;letter-spacing:.24em;text-transform:uppercase;color:var(--text3);padding:0 10px;margin:14px 0 4px}
+.nav-link{display:flex;align-items:center;gap:11px;padding:10px 11px;border-radius:11px;font-size:.92rem;font-weight:500;color:var(--text2);border:1px solid transparent;text-decoration:none;min-height:44px;cursor:pointer;transition:background .18s,color .18s,border-color .18s}
+.nav-link:hover{background:var(--surface);color:var(--text)}
+.nav-link.active{background:rgba(0,180,216,.08);color:var(--accent);border-color:var(--border-acc)}
+.nav-icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .18s}
+.nav-icon svg{width:15px;height:15px}
+.nav-link.active .nav-icon{background:rgba(0,180,216,.12)}
+.nav-link:hover:not(.active) .nav-icon{background:var(--bg3)}
+.nav-badge{margin-left:auto;font-family:'DM Mono',monospace;font-size:.4rem;background:var(--danger-bg);color:var(--danger);border:1px solid var(--danger-border);padding:2px 7px;border-radius:10px}
+.sb-bottom{margin-top:auto;padding:16px 18px;border-top:1px solid var(--border)}
+.sb-user-row{display:flex;align-items:center;gap:10px;margin-bottom:11px}
+.sb-avatar{width:38px;height:38px;border-radius:50%;background:rgba(0,180,216,.12);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:1.1rem;color:var(--accent);flex-shrink:0}
+.sb-uname{font-size:1rem;font-weight:600;color:var(--text)}
+.sb-urole{font-family:'DM Mono',monospace;font-size:.48rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.sb-logout{display:flex;align-items:center;justify-content:center;gap:8px;padding:10px;border-radius:10px;background:var(--danger-bg);color:var(--danger);border:1px solid var(--danger-border);font-family:'DM Mono',monospace;font-size:.54rem;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;text-decoration:none;transition:background .2s,transform .15s}
+.sb-logout:hover{background:rgba(192,57,43,.15);transform:translateY(-1px)}
+
+.topbar{position:sticky;top:0;z-index:30;background:var(--surface);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:12px clamp(14px,4vw,28px);transition:background .4s}
+.topbar-left{display:flex;align-items:center;gap:11px}
+#openSidebar{width:40px;height:40px;border-radius:10px;background:var(--surface2);border:1px solid var(--border);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:border-color .2s,transform .15s}
+#openSidebar:hover{border-color:var(--accent);transform:scale(1.05)}
+.tb-eyebrow{font-family:'DM Mono',monospace;font-size:.48rem;letter-spacing:.26em;text-transform:uppercase;color:var(--accent);margin-bottom:1px}
+.tb-name{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:clamp(1.1rem,3vw,1.35rem);color:var(--text);line-height:1}
+.tb-name em{font-style:italic;color:var(--accent)}
+.topbar-right{display:flex;align-items:center;gap:8px}
+.sa-crown{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;background:rgba(0,180,216,.09);border:1px solid var(--border-acc);font-family:'DM Mono',monospace;font-size:.5rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.btn-theme{width:40px;height:40px;border-radius:10px;background:var(--surface2);border:1px solid var(--border);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.95rem;transition:border-color .2s,transform .15s}
+.btn-theme:hover{border-color:var(--accent);transform:scale(1.05)}
+@media(max-width:540px){.sa-crown{display:none}}
+
+#layout{position:relative;z-index:10;min-height:calc(100vh - 64px)}
+#main{max-width:2000px;margin:0 auto;padding:clamp(16px,3.5vw,30px) clamp(14px,4vw,32px)}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes livePulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+.section{display:none}
+.section.active{display:block;animation:fadeUp .38s var(--ease)}
+
+.page-head{margin-bottom:clamp(16px,3vw,24px)}
+.live-tag{display:inline-flex;align-items:center;gap:6px;padding:5px 11px 5px 9px;background:var(--accent);color:#fff;border-radius:4px;font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;margin-bottom:10px}
+.live-dot{width:7px;height:7px;background:rgba(255,255,255,.8);border-radius:50%;animation:livePulse 1.8s ease-in-out infinite}
+.page-title{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:clamp(2.4rem,6vw,3.8rem);letter-spacing:-.02em;color:var(--text);line-height:.92}
+.page-title em{display:block;font-style:italic;font-weight:400;color:var(--accent)}
+.page-sub{font-size:.88rem;color:var(--text3);margin-top:7px;font-weight:300}
+
+.divider{display:flex;align-items:center;gap:11px;margin:clamp(14px,3vw,20px) 0}
+.divider .rule{flex:1;height:1px;background:var(--border)}
+.divider .dia{width:8px;height:8px;border:1px solid var(--accent);transform:rotate(45deg);opacity:.4;flex-shrink:0}
+
+.glass{background:var(--surface);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow-sm);transition:box-shadow .3s,transform .3s,background .4s}
+.glass:hover{box-shadow:var(--shadow);transform:translateY(-2px)}
+.gstatic{background:var(--surface);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow-sm);transition:background .4s}
+.corner{position:absolute;top:-1px;right:-1px;width:44px;height:44px;border-top:2px solid var(--accent);border-right:2px solid var(--accent);border-radius:0 18px 0 0;opacity:.3;pointer-events:none;transition:opacity .2s}
+.glass:hover .corner{opacity:1}
+
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:11px;margin-bottom:clamp(14px,3vw,20px)}
+.stat-card{position:relative;overflow:hidden;border-radius:16px;padding:16px 18px;cursor:default}
+.stat-lbl{font-family:'DM Mono',monospace;font-size:.46rem;letter-spacing:.2em;text-transform:uppercase;color:var(--text3);margin-bottom:5px}
+.stat-val{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,4vw,3.2rem);font-weight:700;color:var(--text);letter-spacing:-.02em;line-height:1}
+.stat-icon{position:absolute;top:13px;right:14px;font-size:1rem;opacity:.28}
+.stat-tag{display:inline-flex;align-items:center;gap:4px;margin-top:5px;font-family:'DM Mono',monospace;font-size:.42rem;padding:3px 8px;border-radius:20px;font-weight:500}
+.stat-tag.up{background:var(--success-bg);color:var(--success)}
+.stat-tag.acc{background:rgba(0,180,216,.08);color:var(--accent)}
+.stat-tag.warn{background:var(--warn-bg);color:var(--warn)}
+.stat-tag.red{background:var(--danger-bg);color:var(--danger)}
+
+.grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin-bottom:14px}
+.card{padding:20px 22px;position:relative;overflow:hidden}
+.card-lbl{font-family:'DM Mono',monospace;font-size:1.46rem;letter-spacing:.22em;text-transform:uppercase;color:var(--text3);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+
+.toolbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px}
+.toolbar-left{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.search-wrap{position:relative}
+.search-wrap svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--text3);pointer-events:none}
+.search-input{height:38px;padding:0 13px 0 33px;border-radius:22px;border:1px solid var(--border);background:var(--input-bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:.84rem;width:195px;outline:none;backdrop-filter:blur(8px);transition:border-color .2s,box-shadow .2s}
+.search-input:focus{border-color:var(--border-acc);box-shadow:0 0 0 3px var(--accent-glow)}
+.search-input::placeholder{color:var(--text3)}
+.filter-select{height:38px;padding:0 13px;border-radius:22px;border:1px solid var(--border);background:var(--input-bg);color:var(--text2);font-family:'DM Mono',monospace;font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;outline:none;cursor:pointer;transition:border-color .2s}
+.filter-select:focus{border-color:var(--border-acc)}
+.filter-select option{background:var(--bg2);color:var(--text)}
+.btn-add{height:38px;padding:0 18px;border-radius:22px;background:var(--accent);color:#fff;border:none;font-family:'DM Mono',monospace;font-size:.52rem;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;gap:6px;transition:opacity .2s,transform .15s,box-shadow .2s}
+.btn-add:hover{opacity:.88;transform:translateY(-1px);box-shadow:0 6px 18px var(--accent-glow)}
+.btn-export{height:38px;padding:0 16px;border-radius:22px;border:1px solid var(--border-acc);background:rgba(0,180,216,.08);color:var(--accent);font-family:'DM Mono',monospace;font-size:.52rem;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;gap:6px;transition:opacity .2s,transform .15s}
+.btn-export:hover{opacity:.88;transform:translateY(-1px)}
+
+.table-card{border-radius:18px;overflow:hidden}
+.table-head-bar{display:flex;align-items:center;justify-content:space-between;padding:15px 20px 12px;border-bottom:1px solid var(--border)}
+.table-lbl{font-family:'DM Mono',monospace;font-size:.46rem;letter-spacing:.22em;text-transform:uppercase;color:var(--text3);display:flex;align-items:center;gap:8px}
+.count-pill{padding:3px 9px;border-radius:20px;background:rgba(0,180,216,.08);border:1px solid var(--border-acc);color:var(--accent);font-size:.42rem;letter-spacing:.1em}
+.table-scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:520px}
+thead th{font-family:'DM Mono',monospace;font-size:.44rem;letter-spacing:.2em;text-transform:uppercase;color:var(--text3);padding:11px 16px;text-align:left;white-space:nowrap;font-weight:400;border-bottom:1px solid var(--border)}
+tbody tr{border-bottom:1px solid var(--border);transition:background .15s}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:rgba(0,180,216,.025)}
+td{padding:12px 16px;vertical-align:middle}
+
+.person-cell{display:flex;align-items:center;gap:10px}
+.p-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:1rem;color:#fff;flex-shrink:0}
+.p-name{font-size:.9rem;font-weight:600;color:var(--text)}
+.p-email{font-family:'DM Mono',monospace;font-size:.46rem;color:var(--text3);letter-spacing:.04em;margin-top:1px}
+
+.pill{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-family:'DM Mono',monospace;font-size:.44rem;letter-spacing:.1em;text-transform:uppercase}
+.pill.green{background:var(--success-bg);color:var(--success);border:1px solid var(--success-border)}
+.pill.red{background:var(--danger-bg);color:var(--danger);border:1px solid var(--danger-border)}
+.pill.purple{background:var(--purple-bg);color:var(--purple);border:1px solid var(--purple-border)}
+.pill.amber{background:var(--warn-bg);color:var(--warn);border:1px solid var(--warn-border)}
+.pill.blue{background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-border)}
+.pill.acc{background:rgba(0,180,216,.08);color:var(--accent);border:1px solid var(--border-acc)}
+.pill-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;background:currentColor}
+.pill.green .pill-dot{animation:livePulse 2s ease-in-out infinite}
+
+.mono-cell{font-family:'DM Mono',monospace;font-size:.52rem;color:var(--text3);letter-spacing:.05em}
+.action-group{display:flex;align-items:center;gap:5px}
+.act-btn{width:30px;height:30px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .2s,color .2s,background .2s}
+.act-btn svg{width:12px;height:12px}
+.act-btn:hover{border-color:var(--border-acc);color:var(--accent);background:rgba(0,180,216,.06)}
+.act-btn.block:hover{border-color:var(--warn-border);color:var(--warn);background:var(--warn-bg)}
+.act-btn.unlock:hover{border-color:var(--success-border);color:var(--success);background:var(--success-bg)}
+
+.inline-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border)}
+.inline-row:last-child{border-bottom:none}
+.ikey{font-family:'DM Mono',monospace;font-size:.95rem;color:var(--text3);letter-spacing:.06em}
+.ival{font-family:'DM Mono',monospace;font-size:.95rem;color:var(--text);font-weight:500}
+
+.log-item{padding:10px 0;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:12px}
+.log-item:last-child{border-bottom:none}
+.log-icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;margin-top:1px}
+.log-icon.info{background:var(--blue-bg);border:1px solid var(--blue-border)}
+.log-icon.warn{background:var(--warn-bg);border:1px solid var(--warn-border)}
+.log-icon.danger{background:var(--danger-bg);border:1px solid var(--danger-border)}
+.log-icon.success{background:var(--success-bg);border:1px solid var(--success-border)}
+.log-msg{font-size:1.22rem;color:var(--text);line-height:1.4}
+.log-meta{font-family:'DM Mono',monospace;font-size:.99rem;color:var(--text3);margin-top:2px;letter-spacing:.04em}
+
+.toggle-wrap{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--border)}
+.toggle-wrap:last-child{border-bottom:none}
+.toggle-label{font-size:.99rem;color:var(--text)}
+.toggle-desc{font-family:'DM Mono',monospace;font-size:.96rem;color:var(--text3);margin-top:2px}
+.toggle{position:relative;width:40px;height:22px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0;position:absolute}
+.toggle-slider{position:absolute;inset:0;background:rgba(0,0,0,.1);border:1px solid var(--border);border-radius:22px;cursor:pointer;transition:background .25s}
+.toggle-slider::before{content:'';position:absolute;width:16px;height:16px;left:2px;bottom:2px;background:#fff;border-radius:50%;transition:transform .25s;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+.toggle input:checked+.toggle-slider{background:var(--accent);border-color:var(--accent)}
+.toggle input:checked+.toggle-slider::before{transform:translateX(18px)}
+
+.prog-row{display:flex;align-items:center;gap:9px;margin-bottom:9px}
+.prog-name{font-size:.8rem;color:var(--text2);flex-shrink:0;min-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.prog-bg{flex:1;height:5px;border-radius:10px;background:rgba(0,180,216,.1);overflow:hidden}
+.prog-fill{height:100%;border-radius:10px;background:linear-gradient(90deg,var(--accent),rgba(0,180,216,.4));transition:width .8s var(--ease)}
+.prog-val{font-family:'DM Mono',monospace;font-size: 1.5rem;color:var(--text3);flex-shrink:0;min-width:28px;text-align:right}
+
+.modal-overlay{position:fixed;inset:0;background:var(--overlay);backdrop-filter:blur(6px);z-index:60;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex}
+.modal{background:var(--surface2);border:1px solid var(--border-acc);border-radius:20px;padding:28px;width:100%;max-width:440px;box-shadow:var(--shadow);animation:fadeUp .3s var(--ease)}
+.modal-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+.modal-ttl{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:1.6rem;color:var(--text)}
+.modal-close{width:30px;height:30px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.85rem;transition:border-color .2s,color .2s}
+.modal-close:hover{border-color:var(--accent);color:var(--accent)}
+.mfield{margin-bottom:14px}
+.mfield label{display:block;font-family:'DM Mono',monospace;font-size:.86rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text3);margin-bottom:7px}
+.mfield input,.mfield select{width:100%;height:40px;border-radius:10px;border:1px solid var(--border);background:var(--input-bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:.88rem;padding:0 13px;outline:none;transition:border-color .2s,box-shadow .2s}
+.mfield input:focus,.mfield select:focus{border-color:var(--border-acc);box-shadow:0 0 0 3px var(--accent-glow)}
+.mfield select option{background:var(--bg2);color:var(--text)}
+.modal-btns{display:flex;gap:8px;margin-top:18px;justify-content:flex-end}
+
+.btn-primary{height:38px;padding:0 20px;border-radius:22px;background:var(--accent);color:#fff;border:none;font-family:'DM Mono',monospace;font-size:.52rem;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;transition:opacity .2s,transform .15s,box-shadow .2s}
+.btn-primary:hover{opacity:.88;transform:translateY(-1px);box-shadow:0 6px 18px var(--accent-glow)}
+.btn-primary:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.btn-ghost{height:38px;padding:0 20px;border-radius:22px;background:transparent;color:var(--text2);border:1px solid var(--border);font-family:'DM Mono',monospace;font-size:.52rem;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;transition:border-color .2s,color .2s}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+.btn-danger{height:38px;padding:0 20px;border-radius:22px;background:var(--danger-bg);color:var(--danger);border:1px solid var(--danger-border);font-family:'DM Mono',monospace;font-size:.52rem;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;transition:background .2s}
+.btn-danger:hover{background:rgba(192,57,43,.15)}
+
+.role-chip{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:6px;font-family:'DM Mono',monospace;font-size:.44rem;letter-spacing:.12em;text-transform:uppercase;font-weight:500}
+.role-chip.superadmin{background:linear-gradient(135deg,rgba(0,180,216,.15),rgba(0,119,168,.08));color:var(--accent);border:1px solid var(--border-acc)}
+.role-chip.admin{background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-border)}
+.role-chip.staff{background:var(--success-bg);color:var(--success);border:1px solid var(--success-border)}
+.role-chip.customer{background:var(--warn-bg);color:var(--warn);border:1px solid var(--warn-border)}
+
+.alert-box{padding:12px 16px;border-radius:11px;font-size:.82rem;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.alert-box.warn{background:var(--warn-bg);border:1px solid var(--warn-border);color:var(--warn)}
+.alert-box.info{background:var(--blue-bg);border:1px solid var(--blue-border);color:var(--blue)}
+.alert-box.danger{background:var(--danger-bg);border:1px solid var(--danger-border);color:var(--danger)}
+
+.emergency-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:11px;margin-top:6px}
+.emg-card{border-radius:13px;padding:16px;border:1px solid var(--border);background:var(--input-bg);cursor:pointer;transition:border-color .2s,background .2s,transform .15s;text-align:left}
+.emg-card:hover{border-color:var(--border-acc);transform:translateY(-2px)}
+.emg-card.danger:hover{border-color:var(--danger-border);background:var(--danger-bg)}
+.emg-icon{font-size:1.4rem;margin-bottom:8px;display:block}
+.emg-title{font-family:'DM Mono',monospace;font-size:.62rem;font-weight:500;color:var(--text);letter-spacing:.06em;margin-bottom:3px}
+.emg-desc{font-size:.76rem;color:var(--text3)}
+
+.backup-info{background:var(--bg3);border-radius:10px;padding:14px;margin-bottom:12px;border:1px solid var(--border)}
+.backup-date{font-family:'DM Mono',monospace;font-size:.82rem;color:var(--text);font-weight:500}
+.backup-meta{font-family:'DM Mono',monospace;font-size:.5rem;color:var(--text3);margin-top:2px}
+.export-group{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.btn-dl{height:36px;padding:0 14px;border-radius:9px;border:1px solid var(--border);background:var(--input-bg);color:var(--text2);font-family:'DM Mono',monospace;font-size:.48rem;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;gap:6px;transition:border-color .2s,color .2s,transform .15s}
+.btn-dl:hover{border-color:var(--border-acc);color:var(--accent);transform:translateY(-1px)}
+
+.restrict-notice{display:flex;align-items:flex-start;gap:11px;padding:12px 16px;background:var(--danger-bg);border:1px solid var(--danger-border);border-radius:11px;margin-bottom:16px}
+
+.toast{position:fixed;bottom:52px;left:50%;transform:translateX(-50%) translateY(12px);padding:10px 20px;border-radius:30px;font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.1em;z-index:100;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;white-space:nowrap;max-width:90vw}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.success{background:var(--success);color:#fff}
+.toast.error{background:var(--danger);color:#fff}
+.toast.info{background:var(--text);color:var(--bg)}
+
+.ticker-wrap{position:fixed;bottom:0;left:0;width:100%;background:var(--accent);overflow:hidden;padding:5px 0;z-index:50}
+.ticker-inner{display:flex;white-space:nowrap;animation:ticker 30s linear infinite}
+.ticker-item{font-family:'DM Mono',monospace;font-size:.52rem;letter-spacing:.2em;text-transform:uppercase;padding:0 24px;color:rgba(255,255,255,.9)}
+.ticker-dot{display:inline-block;width:3px;height:3px;background:rgba(255,255,255,.4);border-radius:50%;vertical-align:middle;margin:0 8px}
+
+.loading-row td{text-align:center;padding:28px;color:var(--text3);font-family:'DM Mono',monospace;font-size:.58rem}
+.empty-state{text-align:center;padding:32px;color:var(--text3);font-family:'DM Mono',monospace;font-size:.58rem}
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
+
+#bubblesCanvas{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+
+/* Account Security */
+.sec-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:22px 24px;box-shadow:var(--shadow-sm)}
+</style>
+</head>
+<body>
+<canvas id="bubblesCanvas" aria-hidden="true"></canvas>
+
+<div class="deco-bg" aria-hidden="true">
+  <div class="deco-word w1">SUPER</div>
+  <div class="deco-word w2">Admin</div>
+</div>
+<div id="overlay"></div>
+
+<aside id="sidebar">
+  <div class="sb-top">
+    <div class="sb-brand">
+      <div>
+        <div class="sb-eyebrow">Super Admin &middot; 2026</div>
+        <div class="sb-brand-name">Laundry <em>Lounge</em></div>
+      </div>
+      <button id="closeSidebar">&#x2715;</button>
+    </div>
+    <p class="nav-sec">Headquarters</p>
+    <nav style="display:flex;flex-direction:column;gap:3px">
+      <a class="nav-link active" onclick="showSection('overview',this)">
+        <span class="nav-icon"><svg viewBox="0 0 16 16" fill="none"><rect x="1.5" y="1.5" width="5.5" height="5.5" rx="1.5" stroke="currentColor" stroke-width="1.2"/><rect x="9" y="1.5" width="5.5" height="5.5" rx="1.5" stroke="currentColor" stroke-width="1.2"/><rect x="1.5" y="9" width="5.5" height="5.5" rx="1.5" stroke="currentColor" stroke-width="1.2"/><rect x="9" y="9" width="5.5" height="5.5" rx="1.5" stroke="currentColor" stroke-width="1.2"/></svg></span>
+        Overview
+      </a>
+    </nav>
+    <p class="nav-sec">Super Controls</p>
+    <nav style="display:flex;flex-direction:column;gap:3px">
+      <a class="nav-link" onclick="showSection('admins',this)">
+        <span class="nav-icon"><svg viewBox="0 0 16 16" fill="none"><circle cx="6" cy="5" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M1.5 13c0-2.5 2-3.5 4.5-3.5s4.5 1 4.5 3.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M11 2l1.5 1.5L15 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        Admin Management
+      </a>
+      <a class="nav-link" onclick="showSection('auditlogs',this)">
+        <span class="nav-icon"><svg viewBox="0 0 16 16" fill="none"><rect x="2.5" y="1.5" width="11" height="13" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M5 5.5h6M5 8h6M5 10.5h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></span>
+        Audit Logs
+        <span class="nav-badge" id="nb-logs">&mdash;</span>
+      </a>
+      <a class="nav-link" onclick="showSection('monitoring',this)">
+        <span class="nav-icon"><svg viewBox="0 0 16 16" fill="none"><path d="M2 13V6l4-3 4 2 4-3v11H2z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg></span>
+        System Monitor
+      </a>
+      <a class="nav-link" onclick="showSection('emergency',this)">
+        <span class="nav-icon"><svg viewBox="0 0 16 16" fill="none"><path d="M8 2L1.5 13h13L8 2z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M8 6v4M8 11.5v.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></span>
+        Emergency Control
+      </a>
+    </nav>
+    <p class="nav-sec">System</p>
+    <nav style="display:flex;flex-direction:column;gap:3px">
+      <a class="nav-link" onclick="showSection('config',this)">
+        <span class="nav-icon"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.2 3.2l1.4 1.4M11.4 11.4l1.4 1.4M3.2 12.8l1.4-1.4M11.4 4.6l1.4-1.4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></span>
+        System Config
+      </a>
+      <a class="nav-link" onclick="showSection('backup',this)">
+        <span class="nav-icon"><svg viewBox="0 0 16 16" fill="none"><path d="M8 2v9M5 8l3 3 3-3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 12h10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span>
+        Backup &amp; Restore
+      </a>
+      <a class="nav-link" onclick="showSection('security',this)">
+        <span class="nav-icon"><svg viewBox="0 0 16 16" fill="none"><path d="M8 1.5L2.5 4v4c0 3 2.5 5.5 5.5 6 3-0.5 5.5-3 5.5-6V4L8 1.5z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M5.5 8l1.8 1.8 3.2-3.2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        Account Security
+      </a>
+      <a class="nav-link" onclick="showSection('users',this)">
+        <span class="nav-icon"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="6" r="3" stroke="currentColor" stroke-width="1.2"/><path d="M2 14c0-3 2.5-5 6-5s6 2 6 5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></span>
+        All Users
+      </a>
+    </nav>
+  </div>
+  <div class="sb-bottom">
+    <div class="sb-user-row">
+      <div class="sb-avatar" id="sb-av">S</div>
+      <div>
+        <div class="sb-uname" id="sb-saname">Super Admin</div>
+        <div class="sb-urole">&#x269B; Root Access</div>
+      </div>
+    </div>
+    <a href="/superadmin/logout" class="sb-logout">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M6 2H3a1 1 0 00-1 1v10a1 1 0 001 1h3M11 11l3-3-3-3M14 8H6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Logout
+    </a>
+  </div>
+</aside>
+
+<header class="topbar">
+  <div class="topbar-left">
+    <button id="openSidebar">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M2 4h14M2 9h14M2 14h14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+    </button>
+    <div>
+      <div class="tb-eyebrow">Super Admin &middot; Laundry Lounge</div>
+      <div class="tb-name">Laundry <em>Lounge</em></div>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <div class="sa-crown" id="sa-crown-badge">&#x1F451; Root Access</div>
+    <button class="btn-theme" onclick="toggleTheme()" id="themeBtn">&#x263E;</button>
+  </div>
+</header>
+
+<div id="layout">
+<div id="main">
+
+<!-- OVERVIEW -->
+<div id="sec-overview" class="section active">
+  <div class="page-head">
+    <div class="live-tag"><div class="live-dot"></div>Live &middot; Headquarters</div>
+    <div class="page-title">System <em>Overview</em></div>
+    <div class="page-sub">Full visibility across all system layers — admins, users, revenue, and activity.</div>
+  </div>
+  <div class="stats-row">
+    <div class="glass stat-card"><div class="corner"></div><div class="stat-icon">&#x1F451;</div><div class="stat-lbl">Admins</div><div class="stat-val" id="ov-admins">&mdash;</div><div class="stat-tag acc">Active</div></div>
+    <div class="glass stat-card"><div class="corner"></div><div class="stat-icon">&#x1F465;</div><div class="stat-lbl">Total Users</div><div class="stat-val" id="ov-users">&mdash;</div><div class="stat-tag acc">System</div></div>
+    <div class="glass stat-card"><div class="corner"></div><div class="stat-icon">&#x1F9D1;&#x200D;&#x1F527;</div><div class="stat-lbl">Staff</div><div class="stat-val" id="ov-staff">&mdash;</div><div class="stat-tag up">On Record</div></div>
+    <div class="glass stat-card"><div class="corner"></div><div class="stat-icon">&#x1F4B0;</div><div class="stat-lbl">Monthly Rev.</div><div class="stat-val" id="ov-revenue">&mdash;</div><div class="stat-tag up">&#x2191; This Month</div></div>
+    <div class="glass stat-card"><div class="corner"></div><div class="stat-icon">&#x1F4CB;</div><div class="stat-lbl">Audit Logs</div><div class="stat-val" id="ov-logs">&mdash;</div><div class="stat-tag warn">Total</div></div>
+  </div>
+  <div class="divider"><div class="rule"></div><div class="dia"></div><div class="rule"></div></div>
+  <div class="grid-2">
+    <div class="gstatic card">
+      <div class="card-lbl">Revenue Summary</div>
+      <div class="inline-row"><span class="ikey">Daily Income</span><span class="ival">&#x20B1;<span id="ov-daily">&mdash;</span></span></div>
+      <div class="inline-row"><span class="ikey">Monthly Income</span><span class="ival">&#x20B1;<span id="ov-monthly">&mdash;</span></span></div>
+      <div class="inline-row"><span class="ikey">Est. Profit (60%)</span><span class="ival">&#x20B1;<span id="ov-profit">&mdash;</span></span></div>
+      <div class="inline-row"><span class="ikey">Active Promos</span><span class="ival" id="ov-promos">&mdash;</span></div>
+    </div>
+    <div class="gstatic card">
+      <div class="card-lbl">Recent Audit Activity</div>
+      <div id="ov-recent-logs"><div class="empty-state"><span class="spinner"></span>Loading&hellip;</div></div>
+    </div>
+  </div>
+  <div class="grid-2">
+    <div class="gstatic card">
+      <div class="card-lbl">Admin Roster</div>
+      <div id="ov-admin-list"><div class="empty-state"><span class="spinner"></span>Loading&hellip;</div></div>
+    </div>
+    <div class="gstatic card">
+      <div class="card-lbl">System Status</div>
+      <div class="toggle-wrap"><div><div class="toggle-label">Maintenance Mode</div><div class="toggle-desc">System shutdown for all users</div></div><label class="toggle"><input type="checkbox" id="cfg-maintenance" onchange="toggleSetting('maintenance_mode',this.checked?'1':'0')"><span class="toggle-slider"></span></label></div>
+      <div class="toggle-wrap"><div><div class="toggle-label">Promo Codes</div><div class="toggle-desc">Enable promo redemptions</div></div><label class="toggle"><input type="checkbox" id="cfg-promos" checked onchange="toggleSetting('promos_enabled',this.checked?'1':'0')"><span class="toggle-slider"></span></label></div>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN MANAGEMENT -->
+<div id="sec-admins" class="section">
+  <div class="page-head">
+    <div class="live-tag"><div class="live-dot"></div>Admin Management</div>
+    <div class="page-title">Admin <em>Control</em></div>
+    <div class="page-sub">Create, edit, activate or deactivate administrator accounts.</div>
+  </div>
+  <div class="divider"><div class="rule"></div><div class="dia"></div><div class="rule"></div></div>
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <div class="search-wrap">
+        <svg viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.3"/><path d="M10 10l3 3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        <input class="search-input" id="adm-search" type="text" placeholder="Search admins&hellip;" oninput="filterTable('adm-tbody',this.value)">
+      </div>
+      <select class="filter-select" id="adm-filter" onchange="filterTableByStatus('adm-tbody',this.value)">
+        <option value="">All Status</option>
+        <option value="active">Active</option>
+        <option value="inactive">Inactive</option>
+      </select>
+    </div>
+    <button class="btn-add" onclick="openModal('add-admin')">
+      <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M8 2v12M2 8h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      Add Admin
+    </button>
+  </div>
+  <div class="gstatic table-card">
+    <div class="table-head-bar">
+      <div class="table-lbl">Administrator Accounts <span class="count-pill" id="adm-count">0 total</span></div>
+    </div>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Administrator</th><th>Status</th><th>Role</th><th>Created</th><th>Actions</th></tr></thead>
+        <tbody id="adm-tbody"><tr class="loading-row"><td colspan="5"><span class="spinner"></span>Loading&hellip;</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- AUDIT LOGS -->
+<div id="sec-auditlogs" class="section">
+  <div class="page-head">
+    <div class="live-tag"><div class="live-dot"></div>Audit Logs</div>
+    <div class="page-title">Audit <em>Trail</em></div>
+    <div class="page-sub">Complete record of all system actions — who did what, and when.</div>
+  </div>
+  <div class="divider"><div class="rule"></div><div class="dia"></div><div class="rule"></div></div>
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <div class="search-wrap">
+        <svg viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.3"/><path d="M10 10l3 3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        <input class="search-input" id="log-search" type="text" placeholder="Search logs&hellip;" oninput="filterTable('log-tbody',this.value)">
+      </div>
+      <select class="filter-select" id="log-filter" onchange="filterTable('log-tbody',document.getElementById('log-search').value,this.value)">
+        <option value="">All Actions</option>
+        <option value="login">Login</option>
+        <option value="create">Create</option>
+        <option value="update">Update</option>
+        <option value="delete">Delete</option>
+        <option value="block">Block</option>
+        <option value="emergency">Emergency</option>
+      </select>
+    </div>
+    <button class="btn-export" onclick="exportLogsCSV()">
+      <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M8 2v9M5 8l3 3 3-3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 12h10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+      Export CSV
+    </button>
+  </div>
+  <div class="gstatic table-card">
+    <div class="table-head-bar">
+      <div class="table-lbl">System Logs <span class="count-pill" id="log-count">0 entries</span></div>
+    </div>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Actor</th><th>Action</th><th>Target</th><th>IP Address</th><th>Timestamp</th></tr></thead>
+        <tbody id="log-tbody"><tr class="loading-row"><td colspan="5"><span class="spinner"></span>Loading&hellip;</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ACCOUNT SECURITY -->
+<div id="sec-security" class="section">
+  <div class="page-head">
+    <div class="live-tag"><div class="live-dot"></div>Account Security</div>
+    <div class="page-title">Account <em>Security</em></div>
+    <div class="page-sub">Change your superadmin password and manage recovery options.</div>
+  </div>
+  <div class="divider"><div class="rule"></div><div class="dia"></div><div class="rule"></div></div>
+  <div class="alert-box info" style="margin-bottom:16px">
+    &#x1F511; <strong>Locked out?</strong> A server administrator can run
+    <code style="font-family:'DM Mono',monospace;background:var(--blue-bg);padding:2px 7px;border-radius:5px;font-size:.8em">flask recover-superadmin</code>
+    in the terminal to reset the password directly.
+  </div>
+  <div class="grid-2">
+    <div class="sec-card">
+      <div class="card-lbl" style="margin-bottom:16px">&#x1F510; Change Password</div>
+      <div class="mfield">
+        <label>Current Password</label>
+        <input type="password" id="sec-cur" placeholder="Your current password">
+      </div>
+      <div class="mfield">
+        <label>New Password <span style="color:var(--text3);font-size:.9em">(min 8 chars)</span></label>
+        <div style="position:relative">
+          <input type="password" id="sec-new" placeholder="New secure password" style="padding-right:40px" oninput="updatePasswordStrength(this.value)">
+          <button onclick="togglePw('sec-new',this)" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text3);cursor:pointer;font-size:.75rem">&#x1F441;</button>
+        </div>
+        <div style="margin-top:6px;height:3px;border-radius:10px;background:var(--border);overflow:hidden"><div id="pw-strength-bar" style="height:100%;width:0%;border-radius:10px;transition:width .3s,background .3s;background:var(--danger)"></div></div>
+        <div id="pw-strength-label" style="font-family:'DM Mono',monospace;font-size:.42rem;color:var(--text3);margin-top:3px;letter-spacing:.08em"></div>
+      </div>
+      <div class="mfield">
+        <label>Confirm New Password</label>
+        <input type="password" id="sec-confirm" placeholder="Repeat new password">
+      </div>
+      <div id="sec-msg" style="display:none;margin-bottom:12px"></div>
+      <button class="btn-primary" id="sec-btn" onclick="changeOwnPassword()" style="width:100%;height:40px;border-radius:10px">Update Password</button>
+    </div>
+    <div class="sec-card">
+      <div class="card-lbl" style="margin-bottom:16px">&#x1F6E1;&#xFE0F; Recovery Options</div>
+      <div style="padding:12px 14px;border-radius:10px;background:var(--bg3);border:1px solid var(--border);margin-bottom:10px">
+        <div style="display:flex;align-items:center;gap:9px;margin-bottom:5px">
+          <span style="font-size:1rem">&#x1F4E7;</span>
+          <span style="font-family:'DM Mono',monospace;font-size:.54rem;letter-spacing:.1em;color:var(--text);font-weight:600;text-transform:uppercase">Email Reset</span>
+          <span class="pill green" style="margin-left:auto">Available</span>
+        </div>
+        <div style="font-size:.76rem;color:var(--text3);line-height:1.5">Use the <strong style="color:var(--text2)">Forgot Password?</strong> link on the login page.</div>
+      </div>
+      <div style="padding:12px 14px;border-radius:10px;background:var(--bg3);border:1px solid var(--border);margin-bottom:10px">
+        <div style="display:flex;align-items:center;gap:9px;margin-bottom:5px">
+          <span style="font-size:1rem">&#x1F5DD;&#xFE0F;</span>
+          <span style="font-family:'DM Mono',monospace;font-size:.54rem;letter-spacing:.1em;color:var(--text);font-weight:600;text-transform:uppercase">Recovery Phrase</span>
+          <span class="pill amber" style="margin-left:auto">Check .env</span>
+        </div>
+        <div style="font-size:.76rem;color:var(--text3);line-height:1.5">Set <code style="font-family:'DM Mono',monospace;background:var(--input-bg);padding:1px 6px;border-radius:4px">SA_RECOVERY_PHRASE</code> in your <code style="font-family:'DM Mono',monospace;background:var(--input-bg);padding:1px 6px;border-radius:4px">.env</code> file.</div>
+      </div>
+      <div style="padding:12px 14px;border-radius:10px;background:var(--bg3);border:1px solid var(--border)">
+        <div style="display:flex;align-items:center;gap:9px;margin-bottom:5px">
+          <span style="font-size:1rem">&#x1F4BB;</span>
+          <span style="font-family:'DM Mono',monospace;font-size:.54rem;letter-spacing:.1em;color:var(--text);font-weight:600;text-transform:uppercase">Terminal CLI</span>
+          <span class="pill blue" style="margin-left:auto">Always Works</span>
+        </div>
+        <div style="background:var(--bg);border:1px solid var(--border-acc);border-radius:8px;padding:9px 12px;font-family:'DM Mono',monospace;font-size:.6rem;color:var(--accent);display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:6px">
+          <span>flask recover-superadmin</span>
+          <button onclick="copyCmd(this)" style="background:rgba(0,180,216,.12);border:1px solid var(--border-acc);border-radius:5px;color:var(--accent);font-family:'DM Mono',monospace;font-size:.4rem;letter-spacing:.12em;text-transform:uppercase;padding:3px 9px;cursor:pointer">Copy</button>
+        </div>
+      </div>
+      <div style="margin-top:14px;padding:14px;border-radius:10px;border:1px solid var(--warn-border);background:var(--warn-bg)">
+        <div style="font-family:'DM Mono',monospace;font-size:.5rem;letter-spacing:.15em;text-transform:uppercase;color:var(--warn);margin-bottom:10px">&#x26A0;&#xFE0F; Emergency Reset</div>
+        <div style="display:grid;gap:8px">
+          <input type="email" id="emg-email" placeholder="superadmin@laundry.com" style="height:34px;border-radius:8px;border:1px solid var(--warn-border);background:var(--input-bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:.82rem;padding:0 11px;outline:none">
+          <input type="password" id="emg-phrase" placeholder="Recovery phrase (from .env)" style="height:34px;border-radius:8px;border:1px solid var(--warn-border);background:var(--input-bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:.82rem;padding:0 11px;outline:none">
+          <button id="emg-btn" onclick="emergencyReset()" style="height:34px;border-radius:8px;background:var(--warn);color:#fff;border:none;font-family:'DM Mono',monospace;font-size:.5rem;letter-spacing:.14em;text-transform:uppercase;cursor:pointer">Send Recovery Email</button>
+          <div id="emg-msg" style="display:none;font-family:'DM Mono',monospace;font-size:.52rem;color:var(--success);letter-spacing:.05em;text-align:center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MONITORING -->
+<div id="sec-monitoring" class="section">
+  <div class="page-head">
+    <div class="live-tag"><div class="live-dot"></div>System Monitor</div>
+    <div class="page-title">Full <em>Monitoring</em></div>
+    <div class="page-sub">Complete system overview — users, transactions, services, and staff performance.</div>
+  </div>
+  <div class="divider"><div class="rule"></div><div class="dia"></div><div class="rule"></div></div>
+  <div class="stats-row">
+    <div class="glass stat-card"><div class="corner"></div><div class="stat-icon">&#x1F9FA;</div><div class="stat-lbl">Today Services</div><div class="stat-val" id="mon-today">&mdash;</div><div class="stat-tag up">&#x2191; Live</div></div>
+    <div class="glass stat-card"><div class="corner"></div><div class="stat-icon">&#x1F4B3;</div><div class="stat-lbl">Daily Revenue</div><div class="stat-val" id="mon-daily">&mdash;</div><div class="stat-tag up">&#x2191; Today</div></div>
+    <div class="glass stat-card"><div class="corner"></div><div class="stat-icon">&#x1F464;</div><div class="stat-lbl">Customers</div><div class="stat-val" id="mon-customers">&mdash;</div><div class="stat-tag acc">Total</div></div>
+    <div class="glass stat-card"><div class="corner"></div><div class="stat-icon">&#x1F381;</div><div class="stat-lbl">Active Promos</div><div class="stat-val" id="mon-promos">&mdash;</div><div class="stat-tag acc">Live</div></div>
+  </div>
+  <div class="grid-2">
+    <div class="gstatic card">
+      <div class="card-lbl">Staff Performance (30 days)</div>
+      <div id="mon-staff-perf"><div class="empty-state"><span class="spinner"></span>Loading&hellip;</div></div>
+    </div>
+    <div class="gstatic card">
+      <div class="card-lbl">Top Service</div>
+      <div id="mon-top-service"><div class="empty-state"><span class="spinner"></span>Loading&hellip;</div></div>
+    </div>
+  </div>
+  <div class="gstatic card">
+    <div class="card-lbl">Blocked Customers</div>
+    <div id="mon-blocked"><div class="empty-state"><span class="spinner"></span>Loading&hellip;</div></div>
+  </div>
+</div>
+
+<!-- EMERGENCY -->
+<div id="sec-emergency" class="section">
+  <div class="page-head">
+    <div class="live-tag"><div class="live-dot"></div>Emergency Control</div>
+    <div class="page-title">Emergency <em>Controls</em></div>
+    <div class="page-sub">Immediate system-wide actions for critical situations. Use with caution.</div>
+  </div>
+  <div class="divider"><div class="rule"></div><div class="dia"></div><div class="rule"></div></div>
+  <div class="alert-box danger">&#x26A0;&#xFE0F; All emergency actions are logged in the audit trail and may be irreversible without manual restoration.</div>
+  <div class="emergency-grid">
+    <button class="emg-card danger" onclick="confirmEmergency('shutdown','Put the system in maintenance mode — all users will be blocked?')">
+      <span class="emg-icon">&#x1F6D1;</span><div class="emg-title">System Shutdown</div><div class="emg-desc">Enable maintenance mode immediately.</div>
+    </button>
+    <button class="emg-card" onclick="confirmEmergency('enable_system','Bring the system back online and restore access for all users?')">
+      <span class="emg-icon">&#x2705;</span><div class="emg-title">Enable System</div><div class="emg-desc">Restore full access and bring online.</div>
+    </button>
+    <button class="emg-card" onclick="confirmEmergency('reset_admin_passwords','Reset all admin passwords? New credentials will be shown once.')">
+      <span class="emg-icon">&#x1F511;</span><div class="emg-title">Reset Admin Passwords</div><div class="emg-desc">Force reset for all administrator accounts.</div>
+    </button>
+    <button class="emg-card" onclick="confirmEmergency('disable_promos','Disable all active promo codes system-wide?')">
+      <span class="emg-icon">&#x1F381;</span><div class="emg-title">Disable All Promos</div><div class="emg-desc">Immediately suspend all promo codes.</div>
+    </button>
+    <button class="emg-card" onclick="confirmEmergency('force_logout','Force logout all currently logged-in users? This invalidates all sessions.')">
+      <span class="emg-icon">&#x1F510;</span><div class="emg-title">Force Logout All</div><div class="emg-desc">Invalidate all active sessions.</div>
+    </button>
+  </div>
+  <div id="emergency-result" style="display:none;margin-top:16px"></div>
+</div>
+
+<!-- SYSTEM CONFIG -->
+<div id="sec-config" class="section">
+  <div class="page-head">
+    <div class="live-tag"><div class="live-dot"></div>System Config</div>
+    <div class="page-title">System <em>Configuration</em></div>
+    <div class="page-sub">Control global system settings, rules, and operating parameters.</div>
+  </div>
+  <div class="divider"><div class="rule"></div><div class="dia"></div><div class="rule"></div></div>
+  <div class="grid-2">
+    <div class="gstatic card">
+      <div class="card-lbl">System Toggles</div>
+      <div class="toggle-wrap"><div><div class="toggle-label">Maintenance Mode</div><div class="toggle-desc">Block all non-admin access</div></div><label class="toggle"><input type="checkbox" id="sys-maintenance" onchange="saveSetting('maintenance_mode',this.checked?'1':'0')"><span class="toggle-slider"></span></label></div>
+      <div class="toggle-wrap"><div><div class="toggle-label">Promo Codes Active</div><div class="toggle-desc">Allow promo redemptions</div></div><label class="toggle"><input type="checkbox" id="sys-promos" checked onchange="saveSetting('promos_enabled',this.checked?'1':'0')"><span class="toggle-slider"></span></label></div>
+    </div>
+    <div class="gstatic card">
+      <div class="card-lbl">Business Hours</div>
+      <div style="display:grid;gap:10px">
+        <div>
+          <label style="font-family:'DM Mono',monospace;font-size:.44rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text3);display:block;margin-bottom:5px">Opening Time</label>
+          <input style="width:100%;height:38px;border-radius:10px;border:1px solid var(--border);background:var(--input-bg);color:var(--text);font-family:'DM Mono',monospace;font-size:.82rem;padding:0 12px;outline:none" id="cfg-open" type="time" value="07:00">
+        </div>
+        <div>
+          <label style="font-family:'DM Mono',monospace;font-size:.44rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text3);display:block;margin-bottom:5px">Closing Time</label>
+          <input style="width:100%;height:38px;border-radius:10px;border:1px solid var(--border);background:var(--input-bg);color:var(--text);font-family:'DM Mono',monospace;font-size:.82rem;padding:0 12px;outline:none" id="cfg-close" type="time" value="21:00">
+        </div>
+        <button class="btn-primary" onclick="saveConfig()">Save Business Hours</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BACKUP -->
+<div id="sec-backup" class="section">
+  <div class="page-head">
+    <div class="live-tag"><div class="live-dot"></div>Backup &amp; Restore</div>
+    <div class="page-title">Data <em>Backup</em></div>
+    <div class="page-sub">Create backup snapshots of the system.</div>
+  </div>
+  <div class="divider"><div class="rule"></div><div class="dia"></div><div class="rule"></div></div>
+  <div class="grid-2">
+    <div class="gstatic card">
+      <div class="card-lbl">Create Backup</div>
+      <div class="backup-info">
+        <div class="backup-date" id="last-backup">No backup recorded</div>
+        <div class="backup-meta">Last backup timestamp</div>
+      </div>
+      <div class="export-group">
+        <button class="btn-add" onclick="createBackup()">
+          <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M8 2v9M5 8l3 3 3-3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 12h10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          Create Backup
+        </button>
+        <a href="/api/admin/export" class="btn-dl">
+          <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M8 2v9M5 8l3 3 3-3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Export Orders CSV
+        </a>
+      </div>
+    </div>
+    <div class="gstatic card">
+      <div class="card-lbl">Backup History</div>
+      <div id="backup-history"><div class="empty-state" style="font-size:.58rem">No backups recorded yet.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ALL USERS -->
+<div id="sec-users" class="section">
+  <div class="page-head">
+    <div class="live-tag"><div class="live-dot"></div>All Users</div>
+    <div class="page-title">User <em>Directory</em></div>
+    <div class="page-sub">Complete list of every account in the system across all roles.</div>
+  </div>
+  <div class="divider"><div class="rule"></div><div class="dia"></div><div class="rule"></div></div>
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <div class="search-wrap">
+        <svg viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.3"/><path d="M10 10l3 3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        <input class="search-input" id="usr-search" type="text" placeholder="Search users&hellip;" oninput="filterTable('usr-tbody',this.value)">
+      </div>
+      <select class="filter-select" id="usr-filter" onchange="filterTableByRole('usr-tbody',this.value)">
+        <option value="">All Roles</option>
+        <option value="superadmin">Superadmin</option>
+        <option value="admin">Admin</option>
+        <option value="staff">Staff</option>
+        <option value="customer">Customer</option>
+      </select>
+    </div>
+  </div>
+  <div class="gstatic table-card">
+    <div class="table-head-bar">
+      <div class="table-lbl">All System Users <span class="count-pill" id="usr-count">0 total</span></div>
+    </div>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>User</th><th>Role</th><th>Status</th><th>Joined</th><th>Actions</th></tr></thead>
+        <tbody id="usr-tbody"><tr class="loading-row"><td colspan="5"><span class="spinner"></span>Loading&hellip;</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+</div>
+</div>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="modal-add-admin">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-ttl">Add Administrator</div>
+      <button class="modal-close" onclick="closeModal('add-admin')">&#x2715;</button>
+    </div>
+    <div class="mfield"><label>Full Name</label><input type="text" id="af-name" placeholder="e.g. Maria Santos"></div>
+    <div class="mfield"><label>Email Address</label><input type="email" id="af-email" placeholder="admin@laundry.com"></div>
+    <div class="mfield"><label>Password (min. 8 characters)</label><input type="password" id="af-pass" placeholder="Secure password"></div>
+    <div class="modal-btns">
+      <button class="btn-ghost" onclick="closeModal('add-admin')">Cancel</button>
+      <button class="btn-primary" id="btn-add-admin" onclick="addAdminSubmit()">Create Admin</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-edit-admin">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-ttl">Edit Administrator</div>
+      <button class="modal-close" onclick="closeModal('edit-admin')">&#x2715;</button>
+    </div>
+    <input type="hidden" id="ef-id">
+    <div class="mfield"><label>Full Name</label><input type="text" id="ef-name"></div>
+    <div class="mfield"><label>Email Address</label><input type="email" id="ef-email"></div>
+    <div class="mfield"><label>Status</label>
+      <select id="ef-status">
+        <option value="active">Active</option>
+        <option value="inactive">Inactive</option>
+      </select>
+    </div>
+    <div class="modal-btns">
+      <button class="btn-ghost" onclick="closeModal('edit-admin')">Cancel</button>
+      <button class="btn-primary" id="btn-edit-admin" onclick="editAdminSubmit()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-confirm">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-ttl">Confirm Action</div>
+      <button class="modal-close" onclick="closeModal('confirm')">&#x2715;</button>
+    </div>
+    <p id="confirm-msg" style="font-size:.88rem;color:var(--text2);line-height:1.6;margin-bottom:18px"></p>
+    <div class="modal-btns">
+      <button class="btn-ghost" onclick="closeModal('confirm')">Cancel</button>
+      <button class="btn-danger" id="confirm-ok-btn">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="ticker-wrap" aria-hidden="true">
+  <div class="ticker-inner">
+    <span class="ticker-item">Super Admin Panel</span><span class="ticker-dot"></span>
+    <span class="ticker-item">Laundry Lounge HQ</span><span class="ticker-dot"></span>
+    <span class="ticker-item">Full System Control &middot; Audit Trail &middot; Emergency Access</span><span class="ticker-dot"></span>
+    <span class="ticker-item">Root Access &middot; 2026</span><span class="ticker-dot"></span>
+    <span class="ticker-item">Super Admin Panel</span><span class="ticker-dot"></span>
+    <span class="ticker-item">Laundry Lounge HQ</span><span class="ticker-dot"></span>
+    <span class="ticker-item">Full System Control &middot; Audit Trail &middot; Emergency Access</span><span class="ticker-dot"></span>
+    <span class="ticker-item">Root Access &middot; 2026</span><span class="ticker-dot"></span>
+  </div>
+</div>
+
+<script>
+// ── THEME ──
+function toggleTheme(){
+  const h=document.documentElement,isDark=h.getAttribute('data-theme')==='dark';
+  h.setAttribute('data-theme',isDark?'light':'dark');
+  document.getElementById('themeBtn').textContent=isDark?'\u263E':'\u2600';
+  localStorage.setItem('sa-theme',isDark?'light':'dark');
+}
+(function(){
+  const t=localStorage.getItem('sa-theme');
+  if(t){document.documentElement.setAttribute('data-theme',t);document.getElementById('themeBtn').textContent=t==='dark'?'\u263E':'\u2600';}
+})();
+
+// ── SIDEBAR ──
+const sidebar=document.getElementById('sidebar'),overlay=document.getElementById('overlay');
+document.getElementById('openSidebar').onclick=()=>{sidebar.classList.add('open');overlay.classList.add('visible')};
+document.getElementById('closeSidebar').onclick=closeSidebar;
+overlay.onclick=closeSidebar;
+function closeSidebar(){sidebar.classList.remove('open');overlay.classList.remove('visible')}
+
+// ── SECTIONS ──
+function showSection(id,el){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
+  document.getElementById('sec-'+id).classList.add('active');
+  if(el)el.classList.add('active');
+  if(window.innerWidth<900)closeSidebar();
+  const loaders={overview:loadOverview,admins:loadAdmins,auditlogs:loadAuditLogs,monitoring:loadMonitoring,users:loadAllUsers,backup:()=>{}};
+  if(loaders[id])loaders[id]();
+}
+
+// ── TOAST ──
+function showToast(msg,type='info'){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.className='toast '+type+' show';
+  setTimeout(()=>t.classList.remove('show'),3500);
+}
+
+// ── MODAL ──
+function openModal(id){document.getElementById('modal-'+id).classList.add('open')}
+function closeModal(id){document.getElementById('modal-'+id).classList.remove('open')}
+
+// ── API HELPER ──
+async function api(url,opts={}){
+  try{
+    const defaults={headers:{'Content-Type':'application/json','X-Requested-With':'XMLHttpRequest'}};
+    const merged={...defaults,...opts};
+    if(opts.body&&typeof opts.body==='object')merged.body=JSON.stringify(opts.body);
+    const r=await fetch(url,merged);
+    const data=await r.json();
+    if(!r.ok)throw new Error(data.error||'Request failed');
+    return {ok:true,data};
+  }catch(e){return {ok:false,error:e.message}}
+}
+
+// ── AVATAR COLORS (teal palette) ──
+const avBg=[
+  'linear-gradient(135deg,#00B4D8,#0077A8)',
+  'linear-gradient(135deg,#0077A8,#005580)',
+  'linear-gradient(135deg,#1A8080,#0F5555)',
+  'linear-gradient(135deg,#40A8D4,#1A6FA8)',
+  'linear-gradient(135deg,#00D4F5,#0099CC)'
+];
+
+// ── FILTER HELPERS ──
+function filterTable(tbodyId,query,actionFilter=''){
+  const q=query.toLowerCase(),af=actionFilter.toLowerCase();
+  document.querySelectorAll('#'+tbodyId+' tr').forEach(r=>{
+    const txt=r.innerText.toLowerCase();
+    r.style.display=((!q||txt.includes(q))&&(!af||txt.includes(af)))?'':'none';
+  });
+}
+function filterTableByStatus(tbodyId,val){
+  document.querySelectorAll('#'+tbodyId+' tr').forEach(r=>{
+    if(!val){r.style.display='';return;}
+    r.style.display=r.innerText.toLowerCase().includes(val)?'':'none';
+  });
+}
+function filterTableByRole(tbodyId,val){
+  document.querySelectorAll('#'+tbodyId+' tr').forEach(r=>{
+    if(!val){r.style.display='';return;}
+    const chip=r.querySelector('.role-chip');
+    if(!chip){r.style.display='none';return;}
+    r.style.display=chip.classList.contains(val)?'':'none';
+  });
+}
+
+function logIconClass(a){
+  if(!a)return 'info';a=a.toLowerCase();
+  if(a.includes('delete')||a.includes('block'))return 'danger';
+  if(a.includes('login'))return 'info';
+  if(a.includes('create')||a.includes('add'))return 'success';
+  if(a.includes('update')||a.includes('edit'))return 'warn';
+  if(a.includes('emergency'))return 'danger';
+  return 'info';
+}
+function logIconEmoji(a){
+  if(!a)return '\u2139\uFE0F';a=a.toLowerCase();
+  if(a.includes('delete'))return '\uD83D\uDDD1\uFE0F';
+  if(a.includes('block'))return '\uD83D\uDEAB';
+  if(a.includes('login'))return '\uD83D\uDD10';
+  if(a.includes('create')||a.includes('add'))return '\u2705';
+  if(a.includes('update'))return '\u270F\uFE0F';
+  if(a.includes('emergency'))return '\u26A0\uFE0F';
+  return '\u2139\uFE0F';
+}
+function formatTime(ts){
+  if(!ts)return '\u2014';
+  try{return new Date(ts).toLocaleString('en-PH',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});}
+  catch{return ts;}
+}
+
+// ── SYSTEM STATUS SYNC ──
+let _lastMaintState=null;
+async function syncSystemStatus(){
+  const res=await api('/api/system/maintenance-status');
+  if(!res.ok)return;
+  const isActive=res.data.maintenance===true;
+  ['cfg-maintenance','sys-maintenance'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)el.checked=isActive;
+  });
+  const crown=document.getElementById('sa-crown-badge');
+  if(crown){
+    if(isActive){
+      crown.style.background='rgba(192,57,43,.12)';
+      crown.style.borderColor='rgba(192,57,43,.35)';
+      crown.style.color='var(--danger)';
+      crown.textContent='\uD83D\uDD27 Maintenance Mode';
+    }else{
+      crown.style.background='';crown.style.borderColor='';crown.style.color='';
+      crown.textContent='\uD83D\uDC51 Root Access';
+    }
+  }
+  if(_lastMaintState!==null&&_lastMaintState!==isActive)
+    showToast(isActive?'\uD83D\uDD27 System is now in maintenance mode':'\u2705 System is back online',isActive?'error':'success');
+  _lastMaintState=isActive;
+}
+setInterval(syncSystemStatus,10000);
+
+// ── OVERVIEW ──
+async function loadOverview(){
+  const [admins,rev,logs,promos,users,perf]=await Promise.all([
+    api('/api/superadmin/admins'),api('/api/admin/revenue'),api('/api/superadmin/audit-logs'),
+    api('/api/promos'),api('/api/superadmin/all-users'),api('/api/admin/staff-performance')
+  ]);
+  if(admins.ok){
+    const list=admins.data||[];
+    document.getElementById('ov-admins').textContent=list.length;
+    document.getElementById('ov-admin-list').innerHTML=list.length?list.slice(0,4).map((a,i)=>`
+      <div class="inline-row">
+        <span style="display:flex;align-items:center;gap:9px">
+          <span style="width:24px;height:24px;border-radius:50%;background:${avBg[i%5]};display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:.75rem;color:#fff;flex-shrink:0">${(a.full_name||'A')[0]}</span>
+          <span class="ikey">${a.full_name||'\u2014'}</span>
+        </span>
+        <span class="pill ${a.status==='active'?'green':'red'}">${a.status||'active'}</span>
+      </div>`).join('')
+    :'<div class="empty-state">No admins found.</div>';
+  }
+  if(rev.ok){
+    const daily=Number(rev.data.daily_income)||0,monthly=Number(rev.data.monthly_income)||0;
+    document.getElementById('ov-revenue').textContent='\u20B1'+(monthly/1000).toFixed(0)+'K';
+    document.getElementById('ov-daily').textContent=daily.toLocaleString();
+    document.getElementById('ov-monthly').textContent=monthly.toLocaleString();
+    document.getElementById('ov-profit').textContent=Math.round(monthly*.6).toLocaleString();
+  }
+  if(logs.ok){
+    const list=logs.data||[];
+    document.getElementById('ov-logs').textContent=list.length;
+    document.getElementById('nb-logs').textContent=list.length;
+    document.getElementById('ov-recent-logs').innerHTML=list.slice(0,4).map(l=>`
+      <div class="log-item">
+        <div class="log-icon ${logIconClass(l.action)}">${logIconEmoji(l.action)}</div>
+        <div><div class="log-msg">${l.actor||'System'} \u2014 ${l.action}</div><div class="log-meta">${l.target||''} \u00B7 ${formatTime(l.timestamp)}</div></div>
+      </div>`).join('')||'<div class="empty-state">No logs yet.</div>';
+  }
+  if(promos.ok)document.getElementById('ov-promos').textContent=(promos.data||[]).length;
+  if(users.ok)document.getElementById('ov-users').textContent=(users.data||[]).length;
+  if(perf.ok)document.getElementById('ov-staff').textContent=(perf.data||[]).length;
+  const settings=await api('/api/system/settings');
+  if(settings.ok){
+    const s=settings.data;const mm=s.maintenance_mode==='1';
+    ['cfg-maintenance','sys-maintenance'].forEach(id=>{const el=document.getElementById(id);if(el)el.checked=mm;});
+    ['cfg-promos','sys-promos'].forEach(id=>{const el=document.getElementById(id);if(el)el.checked=s.promos_enabled!=='0';});
+    _lastMaintState=mm;
+  }
+}
+
+// ── ADMINS ──  (no delete button)
+async function loadAdmins(){
+  const res=await api('/api/superadmin/admins');
+  if(!res.ok){showToast('Failed to load admins','error');return;}
+  const data=res.data||[];
+  document.getElementById('adm-count').textContent=`${data.length} total`;
+  document.getElementById('adm-tbody').innerHTML=data.length?data.map((a,i)=>`
+    <tr>
+      <td><div class="person-cell">
+        <div class="p-avatar" style="background:${avBg[i%5]}">${(a.full_name||'A')[0]}</div>
+        <div><div class="p-name">${a.full_name||'\u2014'}</div><div class="p-email">${a.email||'\u2014'}</div></div>
+      </div></td>
+      <td><span class="pill ${a.status==='active'?'green':'red'}"><span class="pill-dot"></span>${a.status==='active'?'Active':'Inactive'}</span></td>
+      <td><span class="role-chip admin">Admin</span></td>
+      <td><span class="mono-cell">${a.created_at?new Date(a.created_at).toLocaleDateString('en-PH'):'\u2014'}</span></td>
+      <td><div class="action-group">
+        <button class="act-btn" title="Edit" onclick="openEditAdmin(${a.user_id},'${(a.full_name||'').replace(/'/g,"\\'")}','${a.email||''}','${a.status||'active'}')">
+          <svg viewBox="0 0 16 16" fill="none"><path d="M2 11.5V14h2.5l7-7-2.5-2.5-7 7z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M11.5 2L14 4.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+        </button>
+        ${a.status==='active'
+          ?`<button class="act-btn block" title="Deactivate" onclick="toggleAdmin(${a.user_id},'inactive')"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.2"/><path d="M3 8h10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></button>`
+          :`<button class="act-btn unlock" title="Activate" onclick="toggleAdmin(${a.user_id},'active')"><svg viewBox="0 0 16 16" fill="none"><path d="M3 8l4 4 6-7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>`
+        }
+      </div></td>
+    </tr>`).join('')
+  :'<tr><td colspan="5" style="text-align:center;padding:28px;color:var(--text3);font-family:\'DM Mono\',monospace;font-size:.58rem">No administrators found</td></tr>';
+}
+
+function openEditAdmin(id,name,email,status){
+  document.getElementById('ef-id').value=id;
+  document.getElementById('ef-name').value=name;
+  document.getElementById('ef-email').value=email;
+  document.getElementById('ef-status').value=status;
+  openModal('edit-admin');
+}
+async function addAdminSubmit(){
+  const name=document.getElementById('af-name').value.trim();
+  const email=document.getElementById('af-email').value.trim();
+  const password=document.getElementById('af-pass').value;
+  if(!name||!email||!password){showToast('\u26A0\uFE0F Fill all fields','error');return;}
+  if(password.length<8){showToast('Password must be at least 8 characters','error');return;}
+  const btn=document.getElementById('btn-add-admin');
+  btn.textContent='Creating\u2026';btn.disabled=true;
+  const res=await api('/api/superadmin/admins/create',{method:'POST',body:{name,email,password}});
+  btn.textContent='Create Admin';btn.disabled=false;
+  if(res.ok){showToast('\u2705 Admin created','success');closeModal('add-admin');['af-name','af-email','af-pass'].forEach(id=>document.getElementById(id).value='');loadAdmins();}
+  else{showToast('\u274C '+res.error,'error');}
+}
+async function editAdminSubmit(){
+  const id=document.getElementById('ef-id').value;
+  const name=document.getElementById('ef-name').value.trim();
+  const email=document.getElementById('ef-email').value.trim();
+  const status=document.getElementById('ef-status').value;
+  const btn=document.getElementById('btn-edit-admin');
+  btn.textContent='Saving\u2026';btn.disabled=true;
+  const res=await api(`/api/superadmin/admins/update/${id}`,{method:'PUT',body:{name,email,status}});
+  btn.textContent='Save Changes';btn.disabled=false;
+  if(res.ok){showToast('\u2705 Admin updated','success');closeModal('edit-admin');loadAdmins();}
+  else{showToast('\u274C '+res.error,'error');}
+}
+async function toggleAdmin(id,status){
+  const res=await api(`/api/superadmin/admins/toggle/${id}`,{method:'PUT',body:{status}});
+  if(res.ok){showToast(status==='active'?'\u2705 Admin activated':'Admin deactivated','success');loadAdmins();}
+  else{showToast('\u274C '+res.error,'error');}
+}
+
+// ── AUDIT LOGS ──
+let allLogs=[];
+async function loadAuditLogs(){
+  const res=await api('/api/superadmin/audit-logs');
+  if(!res.ok){showToast('Failed to load logs','error');return;}
+  allLogs=res.data||[];
+  document.getElementById('log-count').textContent=`${allLogs.length} entries`;
+  document.getElementById('nb-logs').textContent=allLogs.length;
+  const pillFor=a=>{
+    if(!a)return 'blue';a=a.toLowerCase();
+    if(a.includes('delete'))return 'red';
+    if(a.includes('create')||a.includes('add'))return 'green';
+    if(a.includes('block'))return 'amber';
+    if(a.includes('login'))return 'blue';
+    if(a.includes('emergency'))return 'red';
+    return 'acc';
+  };
+  document.getElementById('log-tbody').innerHTML=allLogs.length?allLogs.map(l=>`
+    <tr>
+      <td><span class="mono-cell">${l.actor||'System'}</span></td>
+      <td><span class="pill ${pillFor(l.action)}">${l.action||'\u2014'}</span></td>
+      <td><span class="mono-cell" style="max-width:180px;display:inline-block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${l.target||''}">${l.target||'\u2014'}</span></td>
+      <td><span class="mono-cell">${l.ip_address||'\u2014'}</span></td>
+      <td><span class="mono-cell">${formatTime(l.timestamp)}</span></td>
+    </tr>`).join('')
+  :'<tr><td colspan="5" style="text-align:center;padding:28px;color:var(--text3);font-family:\'DM Mono\',monospace;font-size:.58rem">No logs found</td></tr>';
+}
+function exportLogsCSV(){
+  if(!allLogs.length){showToast('No logs to export','error');return;}
+  const rows=[['Actor','Action','Target','IP','Timestamp'],...allLogs.map(l=>[l.actor||'',l.action||'',l.target||'',l.ip_address||'',l.timestamp||''])];
+  const csv=rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
+  a.download='audit_logs_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();
+  showToast('\uD83D\uDCCB Logs exported','success');
+}
+
+// ── MONITORING ──
+async function loadMonitoring(){
+  const [ana,rev,promos,cust,perf]=await Promise.all([
+    api('/api/admin/analytics'),api('/api/admin/revenue'),
+    api('/api/promos'),api('/api/customers'),api('/api/admin/staff-performance')
+  ]);
+  if(ana.ok)document.getElementById('mon-today').textContent=ana.data.today_services??'\u2014';
+  if(rev.ok)document.getElementById('mon-daily').textContent='\u20B1'+(Number(rev.data.daily_income)||0).toLocaleString();
+  if(promos.ok)document.getElementById('mon-promos').textContent=(promos.data||[]).length;
+  if(cust.ok){
+    const c=cust.data||[];
+    document.getElementById('mon-customers').textContent=c.length;
+    const blocked=c.filter(x=>x.status==='blocked');
+    document.getElementById('mon-blocked').innerHTML=blocked.length?blocked.map(x=>`
+      <div class="inline-row"><span class="ikey">${x.full_name||'\u2014'} \u00B7 ${x.email||'\u2014'}</span><span class="pill red">Blocked</span></div>`).join('')
+    :'<div class="empty-state">No blocked customers.</div>';
+  }
+  if(perf.ok){
+    const p=perf.data||[];
+    const max=Math.max(...p.map(x=>x.total_services||0))||1;
+    if(ana.ok&&ana.data.top_service){
+      document.getElementById('mon-top-service').innerHTML=`
+        <div class="inline-row"><span class="ikey">Top Service</span><span class="ival">${ana.data.top_service.service_type||'\u2014'}</span></div>
+        <div class="inline-row"><span class="ikey">Total Orders</span><span class="ival">${ana.data.top_service.total||0}</span></div>`;
+    }
+    document.getElementById('mon-staff-perf').innerHTML=p.length?p.map(x=>`
+      <div class="prog-row">
+        <span class="prog-name">${x.full_name}</span>
+        <div class="prog-bg"><div class="prog-fill" style="width:${Math.round((x.total_services||0)/max*100)}%"></div></div>
+        <span class="prog-val">${x.total_services||0}</span>
+      </div>`).join('')
+    :'<div class="empty-state">No staff data.</div>';
+  }
+}
+
+// ── ALL USERS ──
+async function loadAllUsers(){
+  const res=await api('/api/superadmin/all-users');
+  if(!res.ok){showToast('Failed to load users','error');return;}
+  const data=res.data||[];
+  document.getElementById('usr-count').textContent=`${data.length} total`;
+  document.getElementById('usr-tbody').innerHTML=data.length?data.map((u,i)=>`
+    <tr>
+      <td><div class="person-cell">
+        <div class="p-avatar" style="background:${avBg[i%5]}">${(u.full_name||'?')[0]}</div>
+        <div><div class="p-name">${u.full_name||'\u2014'}</div><div class="p-email">${u.email||'\u2014'}</div></div>
+      </div></td>
+      <td><span class="role-chip ${u.role||'customer'}">${u.role||'customer'}</span></td>
+      <td><span class="pill ${u.status==='blocked'?'red':'green'}"><span class="pill-dot"></span>${u.status==='blocked'?'Blocked':'Active'}</span></td>
+      <td><span class="mono-cell">${u.created_at?new Date(u.created_at).toLocaleDateString('en-PH'):'\u2014'}</span></td>
+      <td><div class="action-group">
+        ${u.role==='customer'?(u.status!=='blocked'
+          ?`<button class="act-btn block" title="Block" onclick="blockUser(${u.user_id},'block')"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.2"/><path d="M3 8h10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></button>`
+          :`<button class="act-btn unlock" title="Unblock" onclick="blockUser(${u.user_id},'unblock')"><svg viewBox="0 0 16 16" fill="none"><path d="M3 8l4 4 6-7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>`)
+        :'<span class="mono-cell">\u2014</span>'}
+      </div></td>
+    </tr>`).join('')
+  :'<tr><td colspan="5" style="text-align:center;padding:28px;color:var(--text3)">No users</td></tr>';
+}
+async function blockUser(id,action){
+  const res=await api(`/api/customers/${action}/${id}`,{method:'PUT'});
+  if(res.ok){showToast(action==='block'?'\uD83D\uDEAB User blocked':'\u2705 User unblocked','success');loadAllUsers();}
+  else{showToast('\u274C '+res.error,'error');}
+}
+
+// ── SETTINGS ──
+async function toggleSetting(key,val){
+  const body={};body[key]=val;
+  const res=await api('/api/system/settings',{method:'POST',body});
+  if(!res.ok)showToast('\u274C Failed to save setting','error');
+  else{showToast('\u2705 Setting saved','success');syncSystemStatus();}
+}
+async function saveSetting(key,val){await toggleSetting(key,val);}
+async function saveConfig(){
+  const open=document.getElementById('cfg-open').value;
+  const close=document.getElementById('cfg-close').value;
+  const res=await api('/api/system/settings',{method:'POST',body:{opening_time:open,closing_time:close}});
+  if(res.ok)showToast('\u2705 Business hours saved','success');
+  else showToast('\u274C '+res.error,'error');
+}
+
+// ── EMERGENCY ──
+const EMERGENCY_META={
+  shutdown:{icon:'\uD83D\uDED1',label:'System Shutdown',theme:'danger',desc:'Maintenance mode is now ON. All non-superadmin users are blocked from signing in.'},
+  enable_system:{icon:'\u2705',label:'System Enabled',theme:'success',desc:'Maintenance mode is now OFF. All users can log in normally.'},
+  reset_admin_passwords:{icon:'\uD83D\uDD11',label:'Admin Passwords Reset',theme:'warn',desc:'New temporary passwords generated. Save them immediately.'},
+  disable_promos:{icon:'\uD83C\uDF81',label:'All Promos Disabled',theme:'warn',desc:'All active promo codes have been deactivated system-wide.'},
+  force_logout:{icon:'\uD83D\uDD10',label:'All Sessions Invalidated',theme:'info',desc:'All currently logged-in users will be logged out on their next request.'}
+};
+function renderEmergencyResult(action,serverData){
+  const meta=EMERGENCY_META[action]||{icon:'\u26A1',label:action,theme:'info',desc:''};
+  const themeMap={
+    danger:{bg:'var(--danger-bg)',border:'var(--danger-border)',color:'var(--danger)'},
+    success:{bg:'var(--success-bg)',border:'var(--success-border)',color:'var(--success)'},
+    warn:{bg:'var(--warn-bg)',border:'var(--warn-border)',color:'var(--warn)'},
+    info:{bg:'var(--blue-bg)',border:'var(--blue-border)',color:'var(--blue)'},
+  };
+  const t=themeMap[meta.theme]||themeMap.info;
+  let extra='';
+  if(action==='shutdown'){
+    ['cfg-maintenance','sys-maintenance'].forEach(id=>{const el=document.getElementById(id);if(el)el.checked=true;});
+    _lastMaintState=true;
+    const crown=document.getElementById('sa-crown-badge');
+    if(crown){crown.style.background='rgba(192,57,43,.12)';crown.style.borderColor='rgba(192,57,43,.35)';crown.style.color='var(--danger)';crown.textContent='\uD83D\uDD27 Maintenance Mode';}
+  }
+  if(action==='enable_system'){
+    ['cfg-maintenance','sys-maintenance'].forEach(id=>{const el=document.getElementById(id);if(el)el.checked=false;});
+    _lastMaintState=false;
+    const crown=document.getElementById('sa-crown-badge');
+    if(crown){crown.style.background='';crown.style.borderColor='';crown.style.color='';crown.textContent='\uD83D\uDC51 Root Access';}
+  }
+  if(action==='reset_admin_passwords'&&serverData.reset_summary?.length){
+    extra=`<div style="margin-top:12px;border-radius:8px;overflow:hidden;border:1px solid ${t.border}">
+      <div style="padding:8px 12px;background:${t.bg};font-family:'DM Mono',monospace;font-size:.5rem;letter-spacing:.15em;text-transform:uppercase;color:${t.color}">\u26A0\uFE0F SAVE THESE NOW \u2014 shown once only</div>
+      ${serverData.reset_summary.map(r=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-top:1px solid ${t.border};gap:12px;flex-wrap:wrap"><span style="font-family:'DM Mono',monospace;font-size:.6rem;color:var(--text2)">${r.email}</span><span style="font-family:'DM Mono',monospace;font-size:.7rem;font-weight:600;color:var(--text);background:var(--bg3);padding:3px 10px;border-radius:6px;user-select:all">${r.tmp_password}</span></div>`).join('')}
+    </div>`;
+  }
+  return `<div style="padding:16px 18px;border-radius:12px;background:${t.bg};border:1px solid ${t.border};animation:fadeUp .3s var(--ease)">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+      <span style="font-size:1.2rem">${meta.icon}</span>
+      <span style="font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:${t.color};font-weight:600">${meta.label}</span>
+      <span style="margin-left:auto;font-family:'DM Mono',monospace;font-size:.46rem;color:var(--text3)">${new Date().toLocaleTimeString('en-PH',{hour:'2-digit',minute:'2-digit'})}</span>
+    </div>
+    <div style="font-size:.8rem;color:var(--text2);line-height:1.5">${meta.desc}</div>${extra}
+  </div>`;
+}
+function confirmEmergency(action,msg){
+  confirmAction(msg,async()=>{
+    const resultEl=document.getElementById('emergency-result');
+    resultEl.style.display='block';
+    resultEl.innerHTML=`<div style="padding:14px 18px;border-radius:12px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;gap:10px"><span class="spinner"></span><span style="font-family:'DM Mono',monospace;font-size:.56rem;color:var(--text3);letter-spacing:.1em;text-transform:uppercase">Executing ${action.replace(/_/g,' ')}\u2026</span></div>`;
+    const res=await api(`/api/superadmin/emergency/${action}`,{method:'POST'});
+    if(res.ok){showToast(`\u2705 ${action.replace(/_/g,' ')} executed`,'success');resultEl.innerHTML=renderEmergencyResult(action,res.data);loadAuditLogs();}
+    else{showToast('\u274C '+res.error,'error');resultEl.innerHTML=`<div style="padding:14px 18px;border-radius:12px;background:var(--danger-bg);border:1px solid var(--danger-border)"><span style="font-family:'DM Mono',monospace;font-size:.56rem;color:var(--danger)">\u274C Error: ${res.error}</span></div>`;}
+  });
+}
+
+// ── ACCOUNT SECURITY ──
+function togglePw(inputId,btn){
+  const el=document.getElementById(inputId);
+  const isText=el.type==='text';
+  el.type=isText?'password':'text';
+  btn.textContent=isText?'\uD83D\uDC41':'\uD83D\uDE48';
+}
+function updatePasswordStrength(pw){
+  const bar=document.getElementById('pw-strength-bar');
+  const label=document.getElementById('pw-strength-label');
+  if(!bar||!label)return;
+  let score=0;
+  if(pw.length>=8)score++;if(pw.length>=12)score++;
+  if(/[A-Z]/.test(pw))score++;if(/[0-9]/.test(pw))score++;if(/[^A-Za-z0-9]/.test(pw))score++;
+  const levels=[{pct:'0%',color:'var(--danger)',text:''},{pct:'20%',color:'var(--danger)',text:'Very Weak'},{pct:'40%',color:'var(--warn)',text:'Weak'},{pct:'60%',color:'var(--warn)',text:'Fair'},{pct:'80%',color:'var(--blue)',text:'Strong'},{pct:'100%',color:'var(--success)',text:'Very Strong'}];
+  const l=levels[score]||levels[0];
+  bar.style.width=l.pct;bar.style.background=l.color;
+  label.textContent=l.text;label.style.color=l.color;
+}
+function setSecMsg(msg,type='error'){
+  const el=document.getElementById('sec-msg');if(!el)return;
+  el.style.cssText=`display:block;padding:9px 12px;border-radius:8px;font-size:.8rem;`+
+    (type==='success'?'background:var(--success-bg);border:1px solid var(--success-border);color:var(--success);':'background:var(--danger-bg);border:1px solid var(--danger-border);color:var(--danger);');
+  el.textContent=msg;
+}
+async function changeOwnPassword(){
+  const cur=document.getElementById('sec-cur').value;
+  const newPw=document.getElementById('sec-new').value;
+  const confirm=document.getElementById('sec-confirm').value;
+  const btn=document.getElementById('sec-btn');
+  document.getElementById('sec-msg').style.display='none';
+  if(!cur||!newPw||!confirm){setSecMsg('\u26A0\uFE0F All fields are required.');return;}
+  if(newPw.length<8){setSecMsg('\u26A0\uFE0F Password must be at least 8 characters.');return;}
+  if(newPw!==confirm){setSecMsg('\u26A0\uFE0F New passwords do not match.');return;}
+  btn.textContent='Updating\u2026';btn.disabled=true;
+  const res=await api('/api/superadmin/change-own-password',{method:'POST',body:{current_password:cur,new_password:newPw,confirm_password:confirm}});
+  btn.textContent='Update Password';btn.disabled=false;
+  if(res.ok){setSecMsg('\u2705 Password updated! Please log in again.','success');['sec-cur','sec-new','sec-confirm'].forEach(id=>document.getElementById(id).value='');updatePasswordStrength('');}
+  else{setSecMsg('\u274C '+(res.error||'Failed to update password.'));}
+}
+async function emergencyReset(){
+  const email=document.getElementById('emg-email').value.trim();
+  const phrase=document.getElementById('emg-phrase').value.trim();
+  const btn=document.getElementById('emg-btn');
+  const msgEl=document.getElementById('emg-msg');
+  if(!email||!phrase){showToast('\u26A0\uFE0F Enter both email and recovery phrase.','error');return;}
+  btn.textContent='Sending\u2026';btn.disabled=true;
+  await api('/api/superadmin/request-reset',{method:'POST',body:{email,secret_phrase:phrase}});
+  btn.textContent='Send Recovery Email';btn.disabled=false;
+  if(msgEl){msgEl.style.display='block';msgEl.textContent='\uD83D\uDCE7 If the email and phrase are valid, a reset link has been sent.';}
+  document.getElementById('emg-phrase').value='';
+}
+function copyCmd(btn){
+  navigator.clipboard.writeText('flask recover-superadmin').then(()=>{btn.textContent='Copied!';setTimeout(()=>btn.textContent='Copy',2000);});
+}
+
+// ── BACKUP ──
+const backupHistory=[];
+async function createBackup(){
+  const res=await api('/api/superadmin/backup',{method:'POST'});
+  if(res.ok){
+    const ts=res.data.timestamp||new Date().toLocaleString('en-PH');
+    backupHistory.unshift(ts);
+    document.getElementById('last-backup').textContent=ts;
+    document.getElementById('backup-history').innerHTML=backupHistory.map(b=>`<div class="inline-row"><span class="ikey">${b}</span><span class="pill green">Saved</span></div>`).join('');
+    showToast('\uD83D\uDCBE Backup created','success');
+  }else{showToast('\u274C Backup failed','error');}
+}
+
+// ── CONFIRM ──
+function confirmAction(msg,callback){
+  document.getElementById('confirm-msg').textContent=msg;
+  const btn=document.getElementById('confirm-ok-btn');
+  btn.onclick=()=>{closeModal('confirm');callback();};
+  openModal('confirm');
+}
+
+// ── ME ──
+async function loadMe(){
+  const res=await api('/api/me');
+  if(res.ok&&res.data.full_name){
+    document.getElementById('sb-saname').textContent=res.data.full_name;
+    document.getElementById('sb-av').textContent=res.data.full_name.charAt(0).toUpperCase();
+  }
+}
+
+// ── BUBBLES (matching operator page) ──
+(function initBubbles(){
+  const canvas=document.getElementById('bubblesCanvas');
+  if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  let W,H,bubbles=[];
+  function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
+  resize();window.addEventListener('resize',resize);
+  const isDark=()=>document.documentElement.dataset.theme==='dark';
+  function makeBubble(){
+    const r=5+Math.random()*22;
+    return{x:Math.random()*W,y:H+r+Math.random()*200,r,speed:.3+Math.random()*.6,drift:(Math.random()-.5)*.5,wobble:Math.random()*Math.PI*2,wobbleSpeed:.015+Math.random()*.02,opacity:.08+Math.random()*.18};
+  }
+  for(let i=0;i<28;i++){const b=makeBubble();b.y=Math.random()*H;bubbles.push(b);}
+  function drawBubble(b){
+    const base=isDark()?'0,212,245':'0,180,216';
+    ctx.save();ctx.globalAlpha=b.opacity;
+    const grad=ctx.createRadialGradient(b.x-b.r*.3,b.y-b.r*.3,b.r*.05,b.x,b.y,b.r);
+    grad.addColorStop(0,'rgba(255,255,255,0.5)');
+    grad.addColorStop(.5,`rgba(${base},0.07)`);
+    grad.addColorStop(1,`rgba(${base},0.18)`);
+    ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,Math.PI*2);
+    ctx.fillStyle=grad;ctx.fill();
+    ctx.strokeStyle=`rgba(${base},0.3)`;ctx.lineWidth=1;ctx.stroke();
+    ctx.globalAlpha=b.opacity*.6;
+    ctx.beginPath();ctx.arc(b.x-b.r*.28,b.y-b.r*.28,b.r*.18,0,Math.PI*2);
+    ctx.fillStyle='rgba(255,255,255,0.8)';ctx.fill();
+    ctx.restore();
+  }
+  function animate(){
+    ctx.clearRect(0,0,W,H);
+    bubbles.forEach((b,i)=>{
+      b.wobble+=b.wobbleSpeed;b.x+=b.drift+Math.sin(b.wobble)*.3;b.y-=b.speed;
+      if(b.y+b.r<-10)bubbles[i]=makeBubble();
+      drawBubble(b);
+    });
+    requestAnimationFrame(animate);
+  }
+  animate();
+})();
+
+// ── INIT ──
+loadMe();
+loadOverview();
+syncSystemStatus();
+</script>
+</body>
+</html>
