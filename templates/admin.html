@@ -75,6 +75,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opa
 .nav-icon svg{width:15px;height:15px}
 .nav-link.active .nav-icon{background:rgba(0,180,216,.12)}
 .nav-link:hover:not(.active) .nav-icon{background:var(--bg3)}
+.nav-link.archive-link.active .nav-icon{background:var(--archive-bg)}
 .sb-bottom{margin-top:auto;padding:16px 18px;border-top:1px solid var(--border)}
 .sb-user-row{display:flex;align-items:center;gap:10px;margin-bottom:11px}
 .sb-avatar{width:38px;height:38px;border-radius:50%;background:rgba(0,180,216,.12);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:1.1rem;color:var(--accent);flex-shrink:0}
@@ -204,6 +205,16 @@ td{padding:12px 16px;vertical-align:middle;font-size:.95rem}
 .archive-banner{background:var(--archive-bg);border:1px solid var(--archive-border);border-radius:14px;padding:16px 18px;display:flex;align-items:flex-start;gap:12px;margin-bottom:16px}
 .archive-banner-ico{font-size:1.2rem;flex-shrink:0}
 .archive-banner-text{font-size:.88rem;color:var(--text2);line-height:1.6}
+/* ARCHIVE TABS */
+.archive-tabs{display:flex;gap:0;border:1px solid var(--archive-border);border-radius:12px;overflow:hidden;margin-bottom:20px;background:var(--input-bg)}
+.archive-tab{flex:1;padding:12px 20px;font-family:'DM Mono',monospace;font-size:.56rem;letter-spacing:.18em;text-transform:uppercase;text-align:center;cursor:pointer;border:none;background:transparent;color:var(--text3);transition:background .18s,color .18s;display:flex;align-items:center;justify-content:center;gap:8px}
+.archive-tab:first-child{border-right:1px solid var(--archive-border)}
+.archive-tab.active{background:var(--archive-bg);color:var(--archive);font-weight:500}
+.archive-tab:hover:not(.active){background:rgba(90,62,138,.04);color:var(--archive)}
+.archive-tab-count{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 6px;border-radius:10px;background:var(--archive-bg);border:1px solid var(--archive-border);color:var(--archive);font-size:.46rem;letter-spacing:.06em}
+.archive-tab.active .archive-tab-count{background:rgba(90,62,138,.18)}
+.archive-pane{display:none}
+.archive-pane.active{display:block;animation:fadeUp .28s var(--ease)}
 /* PROFILE */
 .profile-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin-bottom:14px}
 .profile-avatar-wrap{display:flex;flex-direction:column;align-items:center;gap:14px;padding:26px 0 18px}
@@ -324,17 +335,14 @@ td{padding:12px 16px;vertical-align:middle;font-size:.95rem}
         <span class="nav-icon"><svg viewBox="0 0 16 16" fill="none"><circle cx="6" cy="5" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M1.5 13c0-2.5 2-3.5 4.5-3.5s4.5 1 4.5 3.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M11 2l1.5 1.5L15 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
         Staff
       </a>
-      <a class="nav-link archive-link" onclick="showSection('staff-archive',this)" style="padding-left:20px;font-size:.88rem">
-        <span class="nav-icon" style="font-size:.75rem">📦</span>
-        Staff Archive
-      </a>
       <a class="nav-link" onclick="showSection('customers',this)">
         <span class="nav-icon"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="6" r="3" stroke="currentColor" stroke-width="1.2"/><path d="M2 14c0-3 2.5-5 6-5s6 2 6 5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></span>
         Customers
       </a>
-      <a class="nav-link archive-link" onclick="showSection('customers-archive',this)" style="padding-left:20px;font-size:.88rem">
-        <span class="nav-icon" style="font-size:.75rem">📦</span>
-        Customer Archive
+      <!-- MERGED ARCHIVE LINK -->
+      <a class="nav-link archive-link" onclick="showSection('archives',this)">
+        <span class="nav-icon" style="font-size:.85rem">📦</span>
+        Archives
       </a>
       <a class="nav-link" onclick="showSection('promos',this)">
         <span class="nav-icon"><svg viewBox="0 0 16 16" fill="none"><path d="M2 9L9 2h5v5l-7 7-5-5z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><circle cx="11.5" cy="4.5" r="1" fill="currentColor"/></svg></span>
@@ -553,36 +561,6 @@ td{padding:12px 16px;vertical-align:middle;font-size:.95rem}
   </div>
 </div>
 
-<!-- ═══════════ STAFF ARCHIVE ═══════════ -->
-<div id="sec-staff-archive" class="section">
-  <div class="page-head">
-    <div class="live-tag archive">📦 Staff Archive</div>
-    <div class="page-title">Staff <em class="archive-em">Archive</em></div>
-    <div class="page-sub">Archived staff members are removed from the active roster. Restore or permanently delete here.</div>
-  </div>
-  <div class="archive-banner">
-    <div class="archive-banner-ico">📦</div>
-    <div class="archive-banner-text">
-      Archived staff cannot log in and will not appear in staff lists. You can <strong>restore</strong> them to active status or <strong>permanently delete</strong> them — deletion is irreversible and removes all associated data.
-    </div>
-  </div>
-  <div class="toolbar">
-    <div class="toolbar-left">
-      <div class="search-wrap">
-        <svg viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.3"/><path d="M10 10l3 3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
-        <input class="search-input" id="sta-search" type="text" placeholder="Search archived…" oninput="filterTableRows('sta-tbody',this.value)">
-      </div>
-    </div>
-  </div>
-  <div class="gstatic table-card">
-    <div class="table-hdr"><div class="table-lbl">Archived Staff <span class="count-pill archive" id="sta-count">0 archived</span></div></div>
-    <div class="table-scroll">
-      <table><thead><tr><th>Staff Member</th><th>Email</th><th>Archived On</th><th>Actions</th></tr></thead>
-      <tbody id="sta-tbody"><tr class="loading-row"><td colspan="4"><span class="spinner"></span>Loading…</td></tr></tbody></table>
-    </div>
-  </div>
-</div>
-
 <!-- ═══════════ CUSTOMERS ═══════════ -->
 <div id="sec-customers" class="section">
   <div class="page-head">
@@ -611,32 +589,74 @@ td{padding:12px 16px;vertical-align:middle;font-size:.95rem}
   </div>
 </div>
 
-<!-- ═══════════ CUSTOMERS ARCHIVE ═══════════ -->
-<div id="sec-customers-archive" class="section">
+<!-- ═══════════ ARCHIVES (MERGED) ═══════════ -->
+<div id="sec-archives" class="section">
   <div class="page-head">
-    <div class="live-tag archive">📦 Customer Archive</div>
-    <div class="page-title">Customer <em class="archive-em">Archive</em></div>
-    <div class="page-sub">Archived customers cannot log in and are hidden from main listings.</div>
+    <div class="live-tag archive">📦 Archives</div>
+    <div class="page-title">Archived <em class="archive-em">Records</em></div>
+    <div class="page-sub">Archived staff and customers are hidden from active lists. Restore or permanently delete here.</div>
   </div>
+
   <div class="archive-banner">
     <div class="archive-banner-ico">📦</div>
     <div class="archive-banner-text">
-      Archived customers are hidden from the main customer list and cannot log in. You can <strong>restore</strong> them to active status or <strong>permanently delete</strong> them. Permanent deletion is irreversible.
+      Archived accounts cannot log in and are hidden from main listings. You can <strong>restore</strong> them to active status or <strong>permanently delete</strong> them — deletion is irreversible and removes all associated data.
     </div>
   </div>
-  <div class="toolbar">
-    <div class="toolbar-left">
-      <div class="search-wrap">
-        <svg viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.3"/><path d="M10 10l3 3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
-        <input class="search-input" id="cua-search" type="text" placeholder="Search archived…" oninput="filterTableRows('cua-tbody',this.value)">
+
+  <!-- TAB SWITCHER -->
+  <div class="archive-tabs">
+    <button class="archive-tab active" id="arc-tab-staff" onclick="switchArchiveTab('staff')">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><circle cx="6" cy="5" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M1.5 13c0-2.5 2-3.5 4.5-3.5s4.5 1 4.5 3.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M11 2l1.5 1.5L15 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Staff Archive
+      <span class="archive-tab-count" id="arc-staff-count-tab">0</span>
+    </button>
+    <button class="archive-tab" id="arc-tab-customers" onclick="switchArchiveTab('customers')">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="6" r="3" stroke="currentColor" stroke-width="1.2"/><path d="M2 14c0-3 2.5-5 6-5s6 2 6 5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+      Customer Archive
+      <span class="archive-tab-count" id="arc-cust-count-tab">0</span>
+    </button>
+  </div>
+
+  <!-- STAFF ARCHIVE PANE -->
+  <div class="archive-pane active" id="arc-pane-staff">
+    <div class="toolbar">
+      <div class="toolbar-left">
+        <div class="search-wrap">
+          <svg viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.3"/><path d="M10 10l3 3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          <input class="search-input" id="sta-search" type="text" placeholder="Search archived staff…" oninput="filterTableRows('sta-tbody',this.value)">
+        </div>
+      </div>
+    </div>
+    <div class="gstatic table-card">
+      <div class="table-hdr">
+        <div class="table-lbl">Archived Staff <span class="count-pill archive" id="sta-count">0 archived</span></div>
+      </div>
+      <div class="table-scroll">
+        <table><thead><tr><th>Staff Member</th><th>Email</th><th>Archived On</th><th>Actions</th></tr></thead>
+        <tbody id="sta-tbody"><tr class="loading-row"><td colspan="4"><span class="spinner"></span>Loading…</td></tr></tbody></table>
       </div>
     </div>
   </div>
-  <div class="gstatic table-card">
-    <div class="table-hdr"><div class="table-lbl">Archived Customers <span class="count-pill archive" id="cua-count">0 archived</span></div></div>
-    <div class="table-scroll">
-      <table><thead><tr><th>Customer</th><th>Email</th><th>Phone</th><th>Archived On</th><th>Actions</th></tr></thead>
-      <tbody id="cua-tbody"><tr class="loading-row"><td colspan="5"><span class="spinner"></span>Loading…</td></tr></tbody></table>
+
+  <!-- CUSTOMER ARCHIVE PANE -->
+  <div class="archive-pane" id="arc-pane-customers">
+    <div class="toolbar">
+      <div class="toolbar-left">
+        <div class="search-wrap">
+          <svg viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.3"/><path d="M10 10l3 3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          <input class="search-input" id="cua-search" type="text" placeholder="Search archived customers…" oninput="filterTableRows('cua-tbody',this.value)">
+        </div>
+      </div>
+    </div>
+    <div class="gstatic table-card">
+      <div class="table-hdr">
+        <div class="table-lbl">Archived Customers <span class="count-pill archive" id="cua-count">0 archived</span></div>
+      </div>
+      <div class="table-scroll">
+        <table><thead><tr><th>Customer</th><th>Email</th><th>Phone</th><th>Archived On</th><th>Actions</th></tr></thead>
+        <tbody id="cua-tbody"><tr class="loading-row"><td colspan="5"><span class="spinner"></span>Loading…</td></tr></tbody></table>
+      </div>
     </div>
   </div>
 </div>
@@ -834,7 +854,6 @@ td{padding:12px 16px;vertical-align:middle;font-size:.95rem}
   </div>
 </div>
 
-<!-- CONFIRM DELETE MODAL -->
 <div class="modal-overlay" id="modal-confirm-delete">
   <div class="modal" style="max-width:420px">
     <div class="modal-hdr"><div class="modal-ttl" style="color:var(--danger)">⚠️ Permanent Delete</div><button class="modal-close" onclick="closeModal('confirm-delete')">✕</button></div>
@@ -889,11 +908,19 @@ function showSection(id,el){
   if(window.innerWidth<900)closeSidebar();
   const map={
     dashboard:loadDashboard,analytics:loadAnalytics,revenue:loadRevenue,
-    orders:loadOrders,staff:loadStaff,'staff-archive':loadStaffArchive,
-    customers:loadCustomers,'customers-archive':loadCustomersArchive,
-    promos:loadPromos,feedback:loadFeedback,reports:loadReports,profile:loadAdminProfile
+    orders:loadOrders,staff:loadStaff,archives:loadArchives,
+    customers:loadCustomers,promos:loadPromos,feedback:loadFeedback,
+    reports:loadReports,profile:loadAdminProfile
   };
   if(map[id])map[id]();
+}
+
+// ── ARCHIVE TAB SWITCHER ──
+function switchArchiveTab(tab){
+  document.querySelectorAll('.archive-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.archive-pane').forEach(p=>p.classList.remove('active'));
+  document.getElementById('arc-tab-'+tab).classList.add('active');
+  document.getElementById('arc-pane-'+tab).classList.add('active');
 }
 
 // ── TOAST ──
@@ -1040,12 +1067,18 @@ async function loadStaff(){
   if(perf.length)document.getElementById('st-perf-bars').innerHTML=perf.map(p=>`<div class="prog-row"><span class="prog-name">${p.full_name}</span><div class="prog-bg"><div class="prog-fill" style="width:${Math.round((p.total_services||0)/max*100)}%"></div></div><span class="prog-val">${p.total_services||0}</span></div>`).join('');
 }
 
-// ── STAFF ARCHIVE ──
+// ── ARCHIVES (MERGED) ──
+async function loadArchives(){
+  await Promise.all([loadStaffArchive(),loadCustomersArchive()]);
+}
+
 async function loadStaffArchive(){
   const res=await api('/api/staff/archived');
   if(!res.ok){showToast('Failed to load archived staff','error');return;}
   const data=res.data||[];
-  document.getElementById('sta-count').textContent=`${data.length} archived`;
+  const count=data.length;
+  document.getElementById('sta-count').textContent=`${count} archived`;
+  document.getElementById('arc-staff-count-tab').textContent=count;
   document.getElementById('sta-tbody').innerHTML=data.length?data.map((s,i)=>`
     <tr>
       <td><div class="person-cell"><div class="p-avatar" style="background:${avBg[i%5]};opacity:.6">${(s.full_name||'?')[0]}</div><div><div class="p-name" style="opacity:.75">${s.full_name||'—'}</div></div></div></td>
@@ -1062,11 +1095,35 @@ async function loadStaffArchive(){
     </tr>`).join(''):'<tr><td colspan="4" class="loading-row">No archived staff</td></tr>';
 }
 
+async function loadCustomersArchive(){
+  const res=await api('/api/customers/archived');
+  if(!res.ok){showToast('Failed to load archived customers','error');return;}
+  const data=res.data||[];
+  const count=data.length;
+  document.getElementById('cua-count').textContent=`${count} archived`;
+  document.getElementById('arc-cust-count-tab').textContent=count;
+  document.getElementById('cua-tbody').innerHTML=data.length?data.map((c,i)=>`
+    <tr>
+      <td><div class="person-cell"><div class="p-avatar" style="background:${avBg[i%5]};opacity:.6">${(c.full_name||'?')[0]}</div><div><div class="p-name" style="opacity:.75">${c.full_name||'—'}</div></div></div></td>
+      <td><span class="mono-cell">${c.email||'—'}</span></td>
+      <td><span class="mono-cell">${c.phone||'—'}</span></td>
+      <td><span class="mono-cell">${c.archived_at?new Date(c.archived_at).toLocaleDateString('en-PH'):'—'}</span></td>
+      <td><div class="action-group">
+        <button class="act-btn restore" title="Restore" onclick="restoreCustomer(${c.user_id},'${esc(c.full_name)}')">
+          <svg viewBox="0 0 16 16" fill="none"><path d="M3 8l4 4 6-7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="act-btn del" title="Delete Permanently" onclick="showDeleteConfirm('customer',${c.user_id},'${esc(c.full_name)}')">
+          <svg viewBox="0 0 16 16" fill="none"><path d="M2.5 4.5h11M6 4.5V3h4v1.5M5 4.5l.5 9h5l.5-9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div></td>
+    </tr>`).join(''):'<tr><td colspan="5" class="loading-row">No archived customers</td></tr>';
+}
+
 function openEditStaff(id,name,email,status){document.getElementById('ef-id').value=id;document.getElementById('ef-name').value=name;document.getElementById('ef-email').value=email;document.getElementById('ef-status').value=status;document.getElementById('ef-pass').value='';openModal('edit-staff');}
 async function addStaffSubmit(){const name=document.getElementById('sf-name').value.trim();const email=document.getElementById('sf-email').value.trim();const password=document.getElementById('sf-pass').value;if(!name||!email||!password){showToast('⚠️ Fill all fields','error');return;}if(password.length<8){showToast('Password must be at least 8 characters','error');return;}const btn=document.getElementById('btn-add-staff');btn.textContent='Adding…';btn.disabled=true;const res=await api('/api/staff/add',{method:'POST',body:{name,email,password}});btn.textContent='Add Staff';btn.disabled=false;if(res.ok){showToast('✅ Staff member added','success');closeModal('add-staff');document.getElementById('sf-name').value='';document.getElementById('sf-email').value='';document.getElementById('sf-pass').value='';loadStaff();}else{showToast('❌ '+res.error,'error');}}
 async function editStaffSubmit(){const id=document.getElementById('ef-id').value;const name=document.getElementById('ef-name').value.trim();const email=document.getElementById('ef-email').value.trim();const status=document.getElementById('ef-status').value;const newPass=document.getElementById('ef-pass').value;if(!name||!email){showToast('⚠️ Name and email are required','error');return;}if(newPass&&newPass.length<8){showToast('Password must be at least 8 characters','error');return;}const btn=document.getElementById('btn-edit-staff');btn.textContent='Saving…';btn.disabled=true;const payload={name,email,status};if(newPass)payload.password=newPass;const res=await api(`/api/staff/update/${id}`,{method:'PUT',body:payload});btn.textContent='Save Changes';btn.disabled=false;if(res.ok){showToast('✅ Staff updated','success');closeModal('edit-staff');loadStaff();}else{showToast('❌ '+res.error,'error');}}
 async function toggleStaff(id,status){const res=await api(`/api/staff/toggle/${id}`,{method:'PUT',body:{status}});if(res.ok){showToast(status==='active'?'✅ Staff activated':'Staff deactivated','success');loadStaff();}else{showToast('❌ '+res.error,'error');}}
-async function archiveStaff(id,name){if(!confirm(`Archive staff member "${name}"?\n\nThey will be moved to the Staff Archive and cannot log in.`))return;const res=await api(`/api/staff/archive/${id}`,{method:'PUT'});if(res.ok){showToast('📦 Staff archived','success');loadStaff();}else{showToast('❌ '+res.error,'error');}}
+async function archiveStaff(id,name){if(!confirm(`Archive staff member "${name}"?\n\nThey will be moved to the Archives and cannot log in.`))return;const res=await api(`/api/staff/archive/${id}`,{method:'PUT'});if(res.ok){showToast('📦 Staff archived','success');loadStaff();}else{showToast('❌ '+res.error,'error');}}
 async function restoreStaff(id,name){const res=await api(`/api/staff/unarchive/${id}`,{method:'PUT'});if(res.ok){showToast('✅ Staff restored','success');loadStaffArchive();}else{showToast('❌ '+res.error,'error');}}
 
 // ── CUSTOMERS ──
@@ -1090,31 +1147,8 @@ async function loadCustomers(){
     </tr>`).join(''):'<tr><td colspan="5" class="loading-row">No customers found</td></tr>';
 }
 
-// ── CUSTOMERS ARCHIVE ──
-async function loadCustomersArchive(){
-  const res=await api('/api/customers/archived');
-  if(!res.ok){showToast('Failed to load archived customers','error');return;}
-  const data=res.data||[];
-  document.getElementById('cua-count').textContent=`${data.length} archived`;
-  document.getElementById('cua-tbody').innerHTML=data.length?data.map((c,i)=>`
-    <tr>
-      <td><div class="person-cell"><div class="p-avatar" style="background:${avBg[i%5]};opacity:.6">${(c.full_name||'?')[0]}</div><div><div class="p-name" style="opacity:.75">${c.full_name||'—'}</div></div></div></td>
-      <td><span class="mono-cell">${c.email||'—'}</span></td>
-      <td><span class="mono-cell">${c.phone||'—'}</span></td>
-      <td><span class="mono-cell">${c.archived_at?new Date(c.archived_at).toLocaleDateString('en-PH'):'—'}</span></td>
-      <td><div class="action-group">
-        <button class="act-btn restore" title="Restore" onclick="restoreCustomer(${c.user_id},'${esc(c.full_name)}')">
-          <svg viewBox="0 0 16 16" fill="none"><path d="M3 8l4 4 6-7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-        <button class="act-btn del" title="Delete Permanently" onclick="showDeleteConfirm('customer',${c.user_id},'${esc(c.full_name)}')">
-          <svg viewBox="0 0 16 16" fill="none"><path d="M2.5 4.5h11M6 4.5V3h4v1.5M5 4.5l.5 9h5l.5-9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-      </div></td>
-    </tr>`).join(''):'<tr><td colspan="5" class="loading-row">No archived customers</td></tr>';
-}
-
 async function toggleCustomer(id,action){const res=await api(`/api/customers/${action}/${id}`,{method:'PUT'});if(res.ok){showToast(action==='block'?'🚫 Customer blocked':'✅ Customer unblocked','success');loadCustomers();}else{showToast('❌ '+res.error,'error');}}
-async function archiveCustomer(id,name){if(!confirm(`Archive customer "${name}"?\n\nThey will be moved to the Customer Archive and cannot log in.`))return;const res=await api(`/api/customers/archive/${id}`,{method:'PUT'});if(res.ok){showToast('📦 Customer archived','success');loadCustomers();}else{showToast('❌ '+res.error,'error');}}
+async function archiveCustomer(id,name){if(!confirm(`Archive customer "${name}"?\n\nThey will be moved to the Archives and cannot log in.`))return;const res=await api(`/api/customers/archive/${id}`,{method:'PUT'});if(res.ok){showToast('📦 Customer archived','success');loadCustomers();}else{showToast('❌ '+res.error,'error');}}
 async function restoreCustomer(id,name){const res=await api(`/api/customers/unarchive/${id}`,{method:'PUT'});if(res.ok){showToast('✅ Customer restored','success');loadCustomersArchive();}else{showToast('❌ '+res.error,'error');}}
 
 // ── DELETE CONFIRM ──
@@ -1294,7 +1328,7 @@ async function loadMe(){const res=await api('/api/me');if(res.ok&&res.data.full_
 setInterval(()=>{
   const active=document.querySelector('.section.active');if(!active)return;
   const id=active.id.replace('sec-','');
-  const map={dashboard:loadDashboard,analytics:loadAnalytics,revenue:loadRevenue,orders:loadOrders,staff:loadStaff,customers:loadCustomers,promos:loadPromos,feedback:loadFeedback,reports:loadReports};
+  const map={dashboard:loadDashboard,analytics:loadAnalytics,revenue:loadRevenue,orders:loadOrders,staff:loadStaff,customers:loadCustomers,archives:loadArchives,promos:loadPromos,feedback:loadFeedback,reports:loadReports};
   if(map[id])map[id]();
 },60000);
 

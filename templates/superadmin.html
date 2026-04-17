@@ -216,7 +216,7 @@ td{padding:12px 16px;vertical-align:middle}
 .prog-name{font-size:.8rem;color:var(--text2);flex-shrink:0;min-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .prog-bg{flex:1;height:5px;border-radius:10px;background:rgba(0,180,216,.1);overflow:hidden}
 .prog-fill{height:100%;border-radius:10px;background:linear-gradient(90deg,var(--accent),rgba(0,180,216,.4));transition:width .8s var(--ease)}
-.prog-val{font-family:'DM Mono',monospace;font-size: 1.5rem;color:var(--text3);flex-shrink:0;min-width:28px;text-align:right}
+.prog-val{font-family:'DM Mono',monospace;font-size:1.5rem;color:var(--text3);flex-shrink:0;min-width:28px;text-align:right}
 
 .modal-overlay{position:fixed;inset:0;background:var(--overlay);backdrop-filter:blur(6px);z-index:60;display:none;align-items:center;justify-content:center;padding:20px}
 .modal-overlay.open{display:flex}
@@ -266,8 +266,6 @@ td{padding:12px 16px;vertical-align:middle}
 .btn-dl{height:36px;padding:0 14px;border-radius:9px;border:1px solid var(--border);background:var(--input-bg);color:var(--text2);font-family:'DM Mono',monospace;font-size:.48rem;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;gap:6px;transition:border-color .2s,color .2s,transform .15s}
 .btn-dl:hover{border-color:var(--border-acc);color:var(--accent);transform:translateY(-1px)}
 
-.restrict-notice{display:flex;align-items:flex-start;gap:11px;padding:12px 16px;background:var(--danger-bg);border:1px solid var(--danger-border);border-radius:11px;margin-bottom:16px}
-
 .toast{position:fixed;bottom:52px;left:50%;transform:translateX(-50%) translateY(12px);padding:10px 20px;border-radius:30px;font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.1em;z-index:100;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;white-space:nowrap;max-width:90vw}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .toast.success{background:var(--success);color:#fff}
@@ -287,6 +285,94 @@ td{padding:12px 16px;vertical-align:middle}
 
 /* Account Security */
 .sec-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:22px 24px;box-shadow:var(--shadow-sm)}
+
+/* ══ PERMISSION CONTROL ══ */
+.perm-role-tabs{display:flex;gap:0;margin-bottom:20px;border:1px solid var(--border-acc);border-radius:12px;overflow:hidden}
+.perm-tab{flex:1;padding:11px 10px;font-family:'DM Mono',monospace;font-size:.52rem;letter-spacing:.14em;text-transform:uppercase;text-align:center;cursor:pointer;border:none;background:var(--input-bg);color:var(--text3);transition:background .18s,color .18s;display:flex;align-items:center;justify-content:center;gap:6px}
+.perm-tab:not(:last-child){border-right:1px solid var(--border-acc)}
+.perm-tab.active{background:rgba(0,180,216,.1);color:var(--accent);font-weight:500}
+.perm-tab:hover:not(.active){background:rgba(0,180,216,.05);color:var(--text2)}
+.perm-pane{display:none}
+.perm-pane.active{display:block;animation:fadeUp .28s var(--ease)}
+.perm-category{margin-bottom:20px}
+.perm-cat-title{font-family:'DM Mono',monospace;font-size:.52rem;letter-spacing:.22em;text-transform:uppercase;color:var(--text3);margin-bottom:10px;padding-bottom:7px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.perm-cat-icon{font-size:.9rem}
+.perm-item{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-radius:10px;background:var(--input-bg);border:1px solid var(--border);margin-bottom:6px;gap:12px;transition:border-color .2s}
+.perm-item:hover{border-color:var(--border-acc)}
+.perm-item-info{flex:1}
+.perm-item-name{font-size:.88rem;font-weight:600;color:var(--text)}
+.perm-item-desc{font-family:'DM Mono',monospace;font-size:.46rem;color:var(--text3);margin-top:2px;letter-spacing:.04em}
+.perm-item-badge{font-family:'DM Mono',monospace;font-size:.4rem;padding:2px 7px;border-radius:5px;text-transform:uppercase;letter-spacing:.1em;flex-shrink:0}
+.perm-item-badge.inherited{background:rgba(0,180,216,.08);color:var(--accent);border:1px solid var(--border-acc)}
+.perm-item-badge.restricted{background:var(--danger-bg);color:var(--danger);border:1px solid var(--danger-border)}
+.perm-item-badge.granted{background:var(--success-bg);color:var(--success);border:1px solid var(--success-border)}
+.perm-save-bar{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-radius:12px;background:rgba(0,180,216,.06);border:1px solid var(--border-acc);margin-top:16px}
+.perm-save-msg{font-family:'DM Mono',monospace;font-size:.52rem;color:var(--text3);letter-spacing:.08em}
+.role-hierarchy{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.rh-node{display:flex;flex-direction:column;align-items:center;gap:5px;padding:12px 16px;border-radius:12px;border:1px solid var(--border);background:var(--input-bg);min-width:100px;text-align:center}
+.rh-node.superadmin{border-color:var(--border-acc);background:rgba(0,180,216,.06)}
+.rh-node.admin{border-color:var(--blue-border);background:var(--blue-bg)}
+.rh-node.staff{border-color:var(--success-border);background:var(--success-bg)}
+.rh-node.customer{border-color:var(--warn-border);background:var(--warn-bg)}
+.rh-icon{font-size:1.4rem}
+.rh-name{font-family:'DM Mono',monospace;font-size:.5rem;letter-spacing:.14em;text-transform:uppercase;font-weight:500}
+.rh-count{font-family:'DM Mono',monospace;font-size:.42rem;color:var(--text3)}
+.rh-arrow{font-size:1.2rem;color:var(--text3);flex-shrink:0}
+
+/* ══ UI CUSTOMIZER ══ */
+.ui-page-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
+.ui-page-tab{padding:8px 16px;border-radius:22px;font-family:'DM Mono',monospace;font-size:.5rem;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;border:1px solid var(--border);background:var(--input-bg);color:var(--text3);transition:border-color .2s,color .2s,background .2s}
+.ui-page-tab.active{border-color:var(--border-acc);background:rgba(0,180,216,.08);color:var(--accent)}
+.ui-page-tab:hover:not(.active){border-color:var(--border-acc);color:var(--text2)}
+.ui-pane{display:none}
+.ui-pane.active{display:block;animation:fadeUp .28s var(--ease)}
+.color-swatch-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:14px}
+.color-swatch-card{border-radius:12px;border:1px solid var(--border);background:var(--input-bg);padding:14px;transition:border-color .2s}
+.color-swatch-card:hover{border-color:var(--border-acc)}
+.csw-label{font-family:'DM Mono',monospace;font-size:.46rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text3);margin-bottom:9px}
+.csw-row{display:flex;align-items:center;gap:9px}
+.csw-preview{width:32px;height:32px;border-radius:8px;border:1px solid var(--border);flex-shrink:0;cursor:pointer;transition:transform .15s}
+.csw-preview:hover{transform:scale(1.1)}
+.csw-hex{font-family:'DM Mono',monospace;font-size:.58rem;color:var(--text);flex:1;padding:6px 10px;border-radius:7px;border:1px solid var(--border);background:var(--input-bg);outline:none;transition:border-color .2s}
+.csw-hex:focus{border-color:var(--border-acc)}
+.ui-preview-frame{border-radius:14px;border:1px solid var(--border);background:var(--bg2);overflow:hidden;margin-top:14px}
+.upf-header{padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.upf-title{font-family:'DM Mono',monospace;font-size:.5rem;letter-spacing:.18em;text-transform:uppercase;color:var(--text3)}
+.upf-live{display:inline-flex;align-items:center;gap:5px;padding:3px 8px;border-radius:10px;background:rgba(0,180,216,.08);border:1px solid var(--border-acc);font-family:'DM Mono',monospace;font-size:.42rem;color:var(--accent)}
+.upf-body{padding:16px}
+.logo-upload-zone{border:2px dashed var(--border-acc);border-radius:12px;padding:28px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;background:rgba(0,180,216,.02)}
+.logo-upload-zone:hover{border-color:var(--accent);background:rgba(0,180,216,.05)}
+.luz-icon{font-size:2rem;margin-bottom:8px;opacity:.5}
+.luz-label{font-family:'DM Mono',monospace;font-size:.54rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text3)}
+.luz-sub{font-size:.76rem;color:var(--text3);margin-top:4px}
+.logo-preview-box{border-radius:12px;border:1px solid var(--border);background:var(--bg2);padding:20px;text-align:center;display:none}
+.font-option{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:10px;border:1px solid var(--border);background:var(--input-bg);cursor:pointer;margin-bottom:8px;transition:border-color .2s,background .2s}
+.font-option.selected{border-color:var(--border-acc);background:rgba(0,180,216,.07)}
+.font-option:hover:not(.selected){border-color:var(--border-acc)}
+.fo-preview{font-size:1.3rem;min-width:90px;color:var(--text);flex-shrink:0}
+.fo-name{font-family:'DM Mono',monospace;font-size:.54rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text);margin-bottom:2px;font-weight:500}
+.fo-stack{font-size:.72rem;color:var(--text3)}
+.fo-check{width:18px;height:18px;border-radius:50%;border:2px solid var(--border);margin-left:auto;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s,border-color .2s}
+.font-option.selected .fo-check{background:var(--accent);border-color:var(--accent);color:#fff;font-size:.7rem}
+.apply-banner{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-radius:12px;background:rgba(0,180,216,.06);border:1px solid var(--border-acc);margin-top:14px;gap:12px;flex-wrap:wrap}
+.apply-msg{font-family:'DM Mono',monospace;font-size:.52rem;color:var(--text2);letter-spacing:.06em}
+.apply-btns{display:flex;gap:8px}
+.theme-preset-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-bottom:16px}
+.theme-preset{border-radius:12px;border:2px solid transparent;overflow:hidden;cursor:pointer;transition:border-color .2s,transform .15s}
+.theme-preset:hover{transform:translateY(-2px)}
+.theme-preset.selected{border-color:var(--accent)}
+.tp-swatch{height:48px;display:flex}
+.tp-s1{flex:3}
+.tp-s2{flex:2}
+.tp-s3{flex:1}
+.tp-name{font-family:'DM Mono',monospace;font-size:.48rem;letter-spacing:.12em;text-transform:uppercase;padding:8px 10px;background:var(--surface2);color:var(--text);border-top:1px solid var(--border);text-align:center}
+.section-toggle-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px;margin-top:4px}
+.section-toggle-card{border-radius:12px;border:1px solid var(--border);background:var(--input-bg);padding:14px 16px;display:flex;align-items:center;gap:12px;transition:border-color .2s}
+.section-toggle-card:hover{border-color:var(--border-acc)}
+.stc-icon{font-size:1.2rem;flex-shrink:0;width:32px;text-align:center}
+.stc-info{flex:1}
+.stc-name{font-size:.9rem;font-weight:600;color:var(--text);margin-bottom:2px}
+.stc-desc{font-family:'DM Mono',monospace;font-size:.44rem;color:var(--text3)}
 </style>
 </head>
 <body>
@@ -298,6 +384,7 @@ td{padding:12px 16px;vertical-align:middle}
 </div>
 <div id="overlay"></div>
 
+<!-- ══ SIDEBAR ══ -->
 <aside id="sidebar">
   <div class="sb-top">
     <div class="sb-brand">
@@ -320,6 +407,10 @@ td{padding:12px 16px;vertical-align:middle}
         <span class="nav-icon"><svg viewBox="0 0 16 16" fill="none"><circle cx="6" cy="5" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M1.5 13c0-2.5 2-3.5 4.5-3.5s4.5 1 4.5 3.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M11 2l1.5 1.5L15 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
         Admin Management
       </a>
+      <a class="nav-link" onclick="showSection('permissions',this)">
+        <span class="nav-icon"><svg viewBox="0 0 16 16" fill="none"><path d="M8 1.5L2.5 4v4c0 3 2.5 5.5 5.5 6 3-0.5 5.5-3 5.5-6V4L8 1.5z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        Role &amp; Permissions
+      </a>
       <a class="nav-link" onclick="showSection('auditlogs',this)">
         <span class="nav-icon"><svg viewBox="0 0 16 16" fill="none"><rect x="2.5" y="1.5" width="11" height="13" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M5 5.5h6M5 8h6M5 10.5h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></span>
         Audit Logs
@@ -336,6 +427,10 @@ td{padding:12px 16px;vertical-align:middle}
     </nav>
     <p class="nav-sec">System</p>
     <nav style="display:flex;flex-direction:column;gap:3px">
+      <a class="nav-link" onclick="showSection('uicustomizer',this)">
+        <span class="nav-icon"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="3" stroke="currentColor" stroke-width="1.2"/><path d="M8 2v1M8 13v1M2 8h1M13 8h1M3.5 3.5l.7.7M11.8 11.8l.7.7M11.8 4.2l-.7.7M4.2 11.8l-.7.7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></span>
+        UI Customizer
+      </a>
       <a class="nav-link" onclick="showSection('config',this)">
         <span class="nav-icon"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.2 3.2l1.4 1.4M11.4 11.4l1.4 1.4M3.2 12.8l1.4-1.4M11.4 4.6l1.4-1.4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></span>
         System Config
@@ -369,6 +464,7 @@ td{padding:12px 16px;vertical-align:middle}
   </div>
 </aside>
 
+<!-- ══ TOPBAR ══ -->
 <header class="topbar">
   <div class="topbar-left">
     <button id="openSidebar">
@@ -388,7 +484,7 @@ td{padding:12px 16px;vertical-align:middle}
 <div id="layout">
 <div id="main">
 
-<!-- OVERVIEW -->
+<!-- ══════════════ OVERVIEW ══════════════ -->
 <div id="sec-overview" class="section active">
   <div class="page-head">
     <div class="live-tag"><div class="live-dot"></div>Live &middot; Headquarters</div>
@@ -429,7 +525,7 @@ td{padding:12px 16px;vertical-align:middle}
   </div>
 </div>
 
-<!-- ADMIN MANAGEMENT -->
+<!-- ══════════════ ADMIN MANAGEMENT ══════════════ -->
 <div id="sec-admins" class="section">
   <div class="page-head">
     <div class="live-tag"><div class="live-dot"></div>Admin Management</div>
@@ -467,7 +563,553 @@ td{padding:12px 16px;vertical-align:middle}
   </div>
 </div>
 
-<!-- AUDIT LOGS -->
+<!-- ══════════════ ROLE & PERMISSIONS ══════════════ -->
+<div id="sec-permissions" class="section">
+  <div class="page-head">
+    <div class="live-tag"><div class="live-dot"></div>Role &amp; Permissions</div>
+    <div class="page-title">Role <em>Control</em></div>
+    <div class="page-sub">Define what each role can access and perform across the entire system.</div>
+  </div>
+  <div class="divider"><div class="rule"></div><div class="dia"></div><div class="rule"></div></div>
+
+  <div class="alert-box info">
+    &#x2139;&#xFE0F; Super Admin inherits all permissions by default and cannot be restricted. Changes to Admin, Staff, and Customer roles are saved to system settings.
+  </div>
+
+  <!-- Role Hierarchy Visual -->
+  <div class="gstatic card" style="margin-bottom:14px">
+    <div class="card-lbl" style="margin-bottom:14px">Role Hierarchy</div>
+    <div class="role-hierarchy">
+      <div class="rh-node superadmin">
+        <div class="rh-icon">&#x1F451;</div>
+        <div class="rh-name" style="color:var(--accent)">Super Admin</div>
+        <div class="rh-count">Root Access</div>
+      </div>
+      <div class="rh-arrow">&#x2192;</div>
+      <div class="rh-node admin">
+        <div class="rh-icon">&#x1F6E0;&#xFE0F;</div>
+        <div class="rh-name" style="color:var(--blue)">Admin</div>
+        <div class="rh-count" id="rh-admin-count">— users</div>
+      </div>
+      <div class="rh-arrow">&#x2192;</div>
+      <div class="rh-node staff">
+        <div class="rh-icon">&#x1F9D1;&#x200D;&#x1F527;</div>
+        <div class="rh-name" style="color:var(--success)">Staff / Operator</div>
+        <div class="rh-count" id="rh-staff-count">— users</div>
+      </div>
+      <div class="rh-arrow">&#x2192;</div>
+      <div class="rh-node customer">
+        <div class="rh-icon">&#x1F464;</div>
+        <div class="rh-name" style="color:var(--warn)">Customer</div>
+        <div class="rh-count" id="rh-cust-count">— users</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Per-Role Permission Tabs -->
+  <div class="perm-role-tabs">
+    <button class="perm-tab active" id="ptab-admin" onclick="switchPermTab('admin')">&#x1F6E0; Admin</button>
+    <button class="perm-tab" id="ptab-staff" onclick="switchPermTab('staff')">&#x1F9D1;&#x200D;&#x1F527; Staff / Operator</button>
+    <button class="perm-tab" id="ptab-customer" onclick="switchPermTab('customer')">&#x1F464; Customer</button>
+  </div>
+
+  <!-- ADMIN PERMISSIONS -->
+  <div class="perm-pane active" id="ppane-admin">
+    <div class="perm-category">
+      <div class="perm-cat-title"><span class="perm-cat-icon">&#x1F4CA;</span>Analytics &amp; Revenue</div>
+      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">View Dashboard Analytics</div><div class="perm-item-desc">Access service counts, top service, and peak hour data</div></div><span class="perm-item-badge inherited">Inherited</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-admin-analytics" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
+      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">View Revenue Reports</div><div class="perm-item-desc">Daily, monthly income and profit estimates</div></div><span class="perm-item-badge inherited">Inherited</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-admin-revenue" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
+      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">Export Reports (CSV/PDF)</div><div class="perm-item-desc">Download order and revenue data exports</div></div><span class="perm-item-badge granted">Granted</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-admin-export" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
+    </div>
+    <div class="perm-category">
+      <div class="perm-cat-title"><span class="perm-cat-icon">&#x1F9D1;&#x200D;&#x1F4BB;</span>Staff Management</div>
+      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">Add / Remove Staff</div><div class="perm-item-desc">Create and delete staff operator accounts</div></div><span class="perm-item-badge granted">Granted</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-admin-staff-manage" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
+      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">Edit Staff Accounts</div><div class="perm-item-desc">Update name, email, status, and password for staff</div></div><span class="perm-item-badge granted">Granted</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-admin-staff-edit" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
+      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">Archive Staff</div><div class="perm-item-desc">Move staff to archive (soft-delete)</div></div><span class="perm-item-badge granted">Granted</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-admin-staff-archive" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
+    </div>
+    <div class="perm-category">
+      <div class="perm-cat-title"><span class="perm-cat-icon">&#x1F464;</span>Customer Management</div>
+      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">View Customer List</div><div class="perm-item-desc">Access full customer directory</div></div><span class="perm-item-badge inherited">Inherited</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-admin-cust-view" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
+      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">Block / Unblock Customers</div><div class="perm-item-desc">Control customer access to the platform</div></div><span class="perm-item-badge granted">Granted</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-admin-cust-block" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
+      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">Archive / Delete Customers</div><div class="perm-item-desc">Soft-delete or permanently remove customer accounts</div></div><span class="perm-item-badge granted">Granted</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-admin-cust-delete" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
+    </div>
+    <div class="perm-category">
+      <div class="perm-cat-title"><span class="perm-cat-icon">&#x1F381;</span>Promos &amp; Pricing</div>
+      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">Manage Promo Codes</div><div class="perm-item-desc">Create and delete active promo codes</div></div><span class="perm-item-badge granted">Granted</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-admin-promos" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
+      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">Update Service Pricing</div><div class="perm-item-desc">Change per-kg rates for laundry services</div></div><span class="perm-item-badge granted">Granted</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-admin-pricing" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
+    </div>
+    <div class="perm-category">
+      <div class="perm-cat-title"><span class="perm-cat-icon">&#x2699;&#xFE0F;</span>System Settings</div>
+      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">View System Settings</div><div class="perm-item-desc">Access maintenance and config toggles</div></div><span class="perm-item-badge inherited">Inherited</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-admin-settings-view" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
+      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">Modify System Settings</div><div class="perm-item-desc">Toggle maintenance mode, business hours, etc.</div></div><span class="perm-item-badge restricted" id="badge-admin-settings-edit">Restricted</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-admin-settings-edit" onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
+      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">View Customer Feedback</div><div class="perm-item-desc">Read ratings and comments from customers</div></div><span class="perm-item-badge granted">Granted</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-admin-feedback" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
+    </div>
+    <div class="perm-save-bar">
+      <span class="perm-save-msg" id="perm-admin-dirty-msg">No unsaved changes</span>
+      <div style="display:flex;gap:8px">
+        <button class="btn-ghost" onclick="resetPermissions('admin')">Reset to Default</button>
+        <button class="btn-primary" id="perm-admin-save-btn" onclick="savePermissions('admin')">Save Admin Permissions</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STAFF PERMISSIONS -->
+  <div class="perm-pane" id="ppane-staff">
+    <div class="perm-category">
+      <div class="perm-cat-title"><span class="perm-cat-icon">&#x1F3A7;</span>Service Operations</div>
+      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">Encode New Services</div><div class="perm-item-desc">Register walk-in customers and new laundry orders</div></div><span class="perm-item-badge granted">Granted</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-staff-encode" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
+      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">Assign &amp; Start Machines</div><div class="perm-item-desc">Allocate free machines to pending orders</div></div><span class="perm-item-badge granted">Granted</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-staff-assign" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
+      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">Mark Fold Done</div><div class="perm-item-desc">Advance folding orders to Ready for Pickup</div></div><span class="perm-item-badge granted">Granted</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-staff-fold" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
+      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">Mark Orders Complete</div><div class="perm-item-desc">Complete pickup-ready orders upon collection</div></div><span class="perm-item-badge granted">Granted</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-staff-complete" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
+    </div>
+    <div class="perm-category">
+      <div class="perm-cat-title"><span class="perm-cat-icon">&#x1F6E0;&#xFE0F;</span>Machine Control</div>
+      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">View Machine Status</div><div class="perm-item-desc">Monitor all 8 washing machines live</div></div><span class="perm-item-badge inherited">Inherited</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-staff-machines-view" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
+      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">Toggle Maintenance Mode (per machine)</div><div class="perm-item-desc">Set individual machines to maintenance/free state</div></div><span class="perm-item-badge granted">Granted</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-staff-machines-toggle" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
+    </div>
+    <div class="perm-category">
+      <div class="perm-cat-title"><span class="perm-cat-icon">&#x1F381;</span>Promos</div>
+      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">View Active Promo Codes</div><div class="perm-item-desc">See all promo codes available for encoding</div></div><span class="perm-item-badge inherited">Inherited</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-staff-promos-view" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
+      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">Apply Promo Codes</div><div class="perm-item-desc">Use promo codes during service encoding</div></div><span class="perm-item-badge granted">Granted</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-staff-promos-apply" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
+    </div>
+    <div class="perm-category">
+      <div class="perm-cat-title"><span class="perm-cat-icon">&#x26A0;&#xFE0F;</span>Issue Reporting</div>
+      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">Submit Issue Reports</div><div class="perm-item-desc">Report machine malfunctions, lost or damaged items</div></div><span class="perm-item-badge granted">Granted</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-staff-issues" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
+      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">Send Pickup Emails</div><div class="perm-item-desc">Trigger customer notification emails for ready orders</div></div><span class="perm-item-badge granted">Granted</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-staff-email" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
+    </div>
+    <div class="perm-save-bar">
+      <span class="perm-save-msg" id="perm-staff-dirty-msg">No unsaved changes</span>
+      <div style="display:flex;gap:8px">
+        <button class="btn-ghost" onclick="resetPermissions('staff')">Reset to Default</button>
+        <button class="btn-primary" id="perm-staff-save-btn" onclick="savePermissions('staff')">Save Staff Permissions</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CUSTOMER PERMISSIONS -->
+  <div class="perm-pane" id="ppane-customer">
+    <div class="perm-category">
+      <div class="perm-cat-title"><span class="perm-cat-icon">&#x1F4F1;</span>Customer Portal Access</div>
+      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">View Live Order Status</div><div class="perm-item-desc">Real-time tracking dashboard with timers</div></div><span class="perm-item-badge inherited">Inherited</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-cust-status" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
+      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">View Transaction History</div><div class="perm-item-desc">Past and active laundry service records</div></div><span class="perm-item-badge inherited">Inherited</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-cust-history" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
+      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">Download Service Receipts</div><div class="perm-item-desc">Print or save PDF receipts for completed orders</div></div><span class="perm-item-badge granted">Granted</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-cust-receipts" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
+      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">Submit Feedback &amp; Ratings</div><div class="perm-item-desc">Rate and review completed laundry services</div></div><span class="perm-item-badge granted">Granted</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-cust-feedback" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
+    </div>
+    <div class="perm-category">
+      <div class="perm-cat-title"><span class="perm-cat-icon">&#x1F464;</span>Account Management</div>
+      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">Edit Profile Information</div><div class="perm-item-desc">Update full name and phone number</div></div><span class="perm-item-badge granted">Granted</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-cust-profile" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
+      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">Change Password</div><div class="perm-item-desc">Update own account password</div></div><span class="perm-item-badge granted">Granted</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-cust-changepass" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
+      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">Self-Registration</div><div class="perm-item-desc">Allow new customers to create accounts on login page</div></div><span class="perm-item-badge granted">Granted</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-cust-register" checked onchange="saveSetting('allow_registration',document.getElementById('perm-cust-register').checked?'1':'0')"><span class="toggle-slider"></span></label></div>
+    </div>
+    <div class="perm-save-bar">
+      <span class="perm-save-msg" id="perm-customer-dirty-msg">No unsaved changes</span>
+      <div style="display:flex;gap:8px">
+        <button class="btn-ghost" onclick="resetPermissions('customer')">Reset to Default</button>
+        <button class="btn-primary" id="perm-customer-save-btn" onclick="savePermissions('customer')">Save Customer Permissions</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ UI CUSTOMIZER ══════════════ -->
+<div id="sec-uicustomizer" class="section">
+  <div class="page-head">
+    <div class="live-tag"><div class="live-dot"></div>UI Customizer</div>
+    <div class="page-title">Interface <em>Customizer</em></div>
+    <div class="page-sub">Customize colors, branding, fonts, and layout visibility for all system pages.</div>
+  </div>
+  <div class="divider"><div class="rule"></div><div class="dia"></div><div class="rule"></div></div>
+
+  <div class="alert-box warn">
+    &#x26A0;&#xFE0F; UI customization changes affect what all users see. Theme changes require a page refresh to apply system-wide. Customizations are saved to system settings.
+  </div>
+
+  <!-- Page Tabs -->
+  <div class="ui-page-tabs">
+    <button class="ui-page-tab active" id="uitab-global" onclick="switchUITab('global')">&#x1F310; Global</button>
+    <button class="ui-page-tab" id="uitab-login" onclick="switchUITab('login')">&#x1F511; Login Page</button>
+    <button class="ui-page-tab" id="uitab-customer" onclick="switchUITab('customer')">&#x1F9BA; Customer Portal</button>
+    <button class="ui-page-tab" id="uitab-operator" onclick="switchUITab('operator')">&#x2699; Operator Panel</button>
+    <button class="ui-page-tab" id="uitab-admin" onclick="switchUITab('admin')">&#x1F6E0; Admin Panel</button>
+  </div>
+
+  <!-- GLOBAL TAB -->
+  <div class="ui-pane active" id="uipane-global">
+    <div class="grid-2">
+      <div class="gstatic card">
+        <div class="card-lbl" style="margin-bottom:14px">Theme Presets</div>
+        <div class="theme-preset-grid">
+          <div class="theme-preset selected" id="tp-teal" onclick="applyPreset('teal')">
+            <div class="tp-swatch"><div class="tp-s1" style="background:#00B4D8"></div><div class="tp-s2" style="background:#E8F8FB"></div><div class="tp-s3" style="background:#0077A8"></div></div>
+            <div class="tp-name">Ocean Teal <span style="font-size:.4rem;color:var(--accent)">(Default)</span></div>
+          </div>
+          <div class="theme-preset" id="tp-navy" onclick="applyPreset('navy')">
+            <div class="tp-swatch"><div class="tp-s1" style="background:#1A3A7A"></div><div class="tp-s2" style="background:#E6EFF8"></div><div class="tp-s3" style="background:#0C244A"></div></div>
+            <div class="tp-name">Deep Navy</div>
+          </div>
+          <div class="theme-preset" id="tp-emerald" onclick="applyPreset('emerald')">
+            <div class="tp-swatch"><div class="tp-s1" style="background:#059669"></div><div class="tp-s2" style="background:#ECFDF5"></div><div class="tp-s3" style="background:#065F46"></div></div>
+            <div class="tp-name">Emerald Fresh</div>
+          </div>
+          <div class="theme-preset" id="tp-violet" onclick="applyPreset('violet')">
+            <div class="tp-swatch"><div class="tp-s1" style="background:#7C3AED"></div><div class="tp-s2" style="background:#F5F3FF"></div><div class="tp-s3" style="background:#4C1D95"></div></div>
+            <div class="tp-name">Royal Violet</div>
+          </div>
+          <div class="theme-preset" id="tp-rose" onclick="applyPreset('rose')">
+            <div class="tp-swatch"><div class="tp-s1" style="background:#E11D48"></div><div class="tp-s2" style="background:#FFF1F2"></div><div class="tp-s3" style="background:#881337"></div></div>
+            <div class="tp-name">Rose Red</div>
+          </div>
+          <div class="theme-preset" id="tp-amber" onclick="applyPreset('amber')">
+            <div class="tp-swatch"><div class="tp-s1" style="background:#D97706"></div><div class="tp-s2" style="background:#FFFBEB"></div><div class="tp-s3" style="background:#92400E"></div></div>
+            <div class="tp-name">Warm Amber</div>
+          </div>
+        </div>
+        <div class="perm-save-bar" style="margin-top:4px">
+          <span class="perm-save-msg">Selected: <span id="preset-name-display">Ocean Teal</span></span>
+          <button class="btn-primary" onclick="saveThemePreset()">Apply Theme</button>
+        </div>
+      </div>
+
+      <div class="gstatic card">
+        <div class="card-lbl" style="margin-bottom:14px">Brand &amp; Logo</div>
+        <div class="mfield">
+          <label>System / Brand Name</label>
+          <input type="text" id="ui-brand-name" placeholder="Laundry Lounge" value="Laundry Lounge" oninput="previewBrand()">
+        </div>
+        <div class="mfield">
+          <label>System Tagline</label>
+          <input type="text" id="ui-tagline" placeholder="Your Local Laundry Partner" value="Your Local Laundry Partner">
+        </div>
+        <div class="mfield">
+          <label>Year / Est. Label</label>
+          <input type="text" id="ui-year" placeholder="2026" value="2026">
+        </div>
+        <div class="mfield">
+          <label>Location / Branch</label>
+          <input type="text" id="ui-location" placeholder="Sta. Rosa, Nueva Ecija" value="Sta. Rosa, Nueva Ecija">
+        </div>
+        <div style="display:flex;justify-content:flex-end;margin-top:8px">
+          <button class="btn-primary" onclick="saveBrandSettings()">Save Brand Settings</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="gstatic card">
+        <div class="card-lbl" style="margin-bottom:14px">Custom Accent Colors</div>
+        <div class="color-swatch-grid">
+          <div class="color-swatch-card">
+            <div class="csw-label">Primary Accent</div>
+            <div class="csw-row">
+              <input type="color" class="csw-preview" id="color-accent" value="#00B4D8" oninput="updateColorPreview('accent',this.value)">
+              <input type="text" class="csw-hex" id="color-accent-hex" value="#00B4D8" placeholder="#00B4D8" oninput="syncColorPicker('accent',this.value)">
+            </div>
+          </div>
+          <div class="color-swatch-card">
+            <div class="csw-label">Secondary Accent</div>
+            <div class="csw-row">
+              <input type="color" class="csw-preview" id="color-accent2" value="#0077A8" oninput="updateColorPreview('accent2',this.value)">
+              <input type="text" class="csw-hex" id="color-accent2-hex" value="#0077A8" placeholder="#0077A8" oninput="syncColorPicker('accent2',this.value)">
+            </div>
+          </div>
+          <div class="color-swatch-card">
+            <div class="csw-label">Background</div>
+            <div class="csw-row">
+              <input type="color" class="csw-preview" id="color-bg" value="#E8F8FB" oninput="updateColorPreview('bg',this.value)">
+              <input type="text" class="csw-hex" id="color-bg-hex" value="#E8F8FB" placeholder="#E8F8FB" oninput="syncColorPicker('bg',this.value)">
+            </div>
+          </div>
+          <div class="color-swatch-card">
+            <div class="csw-label">Text Color</div>
+            <div class="csw-row">
+              <input type="color" class="csw-preview" id="color-text" value="#0A2A35" oninput="updateColorPreview('text',this.value)">
+              <input type="text" class="csw-hex" id="color-text-hex" value="#0A2A35" placeholder="#0A2A35" oninput="syncColorPicker('text',this.value)">
+            </div>
+          </div>
+        </div>
+        <div class="apply-banner">
+          <span class="apply-msg">Custom colors override the selected theme preset</span>
+          <div class="apply-btns">
+            <button class="btn-ghost" onclick="resetCustomColors()">Reset Colors</button>
+            <button class="btn-primary" onclick="applyCustomColors()">Apply Colors</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="gstatic card">
+        <div class="card-lbl" style="margin-bottom:14px">Global Font</div>
+        <div class="font-option selected" id="font-dmsans" onclick="selectFont('dmsans')">
+          <div class="fo-preview" style="font-family:'DM Sans',sans-serif">Aa</div>
+          <div><div class="fo-name">DM Sans</div><div class="fo-stack">Clean, modern — current default</div></div>
+          <div class="fo-check">&#x2713;</div>
+        </div>
+        <div class="font-option" id="font-inter" onclick="selectFont('inter')">
+          <div class="fo-preview" style="font-family:'Inter',sans-serif">Aa</div>
+          <div><div class="fo-name">Inter</div><div class="fo-stack">Tech-forward, high legibility</div></div>
+          <div class="fo-check"></div>
+        </div>
+        <div class="font-option" id="font-poppins" onclick="selectFont('poppins')">
+          <div class="fo-preview" style="font-family:'Poppins',sans-serif">Aa</div>
+          <div><div class="fo-name">Poppins</div><div class="fo-stack">Geometric, friendly, rounded</div></div>
+          <div class="fo-check"></div>
+        </div>
+        <div class="font-option" id="font-lato" onclick="selectFont('lato')">
+          <div class="fo-preview" style="font-family:'Lato',sans-serif">Aa</div>
+          <div><div class="fo-name">Lato</div><div class="fo-stack">Neutral, minimal, universal</div></div>
+          <div class="fo-check"></div>
+        </div>
+        <div class="apply-banner" style="margin-top:8px">
+          <span class="apply-msg">Selected: <strong id="font-name-display">DM Sans</strong></span>
+          <button class="btn-primary" onclick="saveFont()">Apply Font</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOGIN PAGE TAB -->
+  <div class="ui-pane" id="uipane-login">
+    <div class="grid-2">
+      <div class="gstatic card">
+        <div class="card-lbl" style="margin-bottom:14px">Login Page Content</div>
+        <div class="mfield">
+          <label>Main Headline (Line 1)</label>
+          <input type="text" id="login-h1" value="Fresher." placeholder="Fresher.">
+        </div>
+        <div class="mfield">
+          <label>Main Headline (Line 2)</label>
+          <input type="text" id="login-h2" value="Faster." placeholder="Faster.">
+        </div>
+        <div class="mfield">
+          <label>Main Headline (Italic Line)</label>
+          <input type="text" id="login-h3" value="Better." placeholder="Better.">
+        </div>
+        <div class="mfield">
+          <label>Card Welcome Text</label>
+          <input type="text" id="login-welcome" value="Welcome back" placeholder="Welcome back">
+        </div>
+        <div class="mfield">
+          <label>Card Subtitle</label>
+          <input type="text" id="login-sub" value="Sign in — your role is detected automatically">
+        </div>
+        <div style="display:flex;justify-content:flex-end">
+          <button class="btn-primary" onclick="saveLoginPage()">Save Login Content</button>
+        </div>
+      </div>
+      <div class="gstatic card">
+        <div class="card-lbl" style="margin-bottom:14px">Feature Points</div>
+        <div class="mfield"><label>Feature 1</label><input type="text" id="login-f1" value="Real-time Laundry Tracking"></div>
+        <div class="mfield"><label>Feature 2</label><input type="text" id="login-f2" value="Sales &amp; Expense Reports"></div>
+        <div class="mfield"><label>Feature 3</label><input type="text" id="login-f3" value="Customer Management"></div>
+        <div class="mfield"><label>Feature 4</label><input type="text" id="login-f4" value="Fast Service Processing"></div>
+        <div style="display:flex;justify-content:flex-end">
+          <button class="btn-primary" onclick="saveLoginFeatures()">Save Features</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="gstatic card" style="margin-bottom:14px">
+      <div class="card-lbl" style="margin-bottom:14px">Ticker Bar Messages</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px">
+        <div class="mfield"><label>Ticker Item 1</label><input type="text" id="ticker-1" value="Fast Pickup"></div>
+        <div class="mfield"><label>Ticker Item 2</label><input type="text" id="ticker-2" value="Laundry Tracking"></div>
+        <div class="mfield"><label>Ticker Item 3</label><input type="text" id="ticker-3" value="Smooth Service"></div>
+        <div class="mfield"><label>Ticker Item 4</label><input type="text" id="ticker-4" value="Same-Day Service"></div>
+        <div class="mfield"><label>Ticker Item 5</label><input type="text" id="ticker-5" value="Fresh Every Time"></div>
+        <div class="mfield"><label>Ticker Item 6</label><input type="text" id="ticker-6" value="Laundry Lounge"></div>
+      </div>
+      <div style="display:flex;justify-content:flex-end;margin-top:8px">
+        <button class="btn-primary" onclick="saveTicker()">Save Ticker Items</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CUSTOMER PORTAL TAB -->
+  <div class="ui-pane" id="uipane-customer">
+    <div class="grid-2">
+      <div class="gstatic card">
+        <div class="card-lbl" style="margin-bottom:14px">Customer Portal Layout</div>
+        <div class="section-toggle-grid">
+          <div class="section-toggle-card">
+            <div class="stc-icon">&#x1F4CA;</div>
+            <div class="stc-info"><div class="stc-name">Dashboard</div><div class="stc-desc">Overview stats + active order cards</div></div>
+            <label class="toggle"><input type="checkbox" id="cu-sec-dashboard" checked onchange="markUIDirty()"><span class="toggle-slider"></span></label>
+          </div>
+          <div class="section-toggle-card">
+            <div class="stc-icon">&#x23F1;&#xFE0F;</div>
+            <div class="stc-info"><div class="stc-name">Live Status</div><div class="stc-desc">Real-time order tracking &amp; timers</div></div>
+            <label class="toggle"><input type="checkbox" id="cu-sec-status" checked onchange="markUIDirty()"><span class="toggle-slider"></span></label>
+          </div>
+          <div class="section-toggle-card">
+            <div class="stc-icon">&#x1F4CB;</div>
+            <div class="stc-info"><div class="stc-name">Transaction History</div><div class="stc-desc">Past orders &amp; receipts</div></div>
+            <label class="toggle"><input type="checkbox" id="cu-sec-history" checked onchange="markUIDirty()"><span class="toggle-slider"></span></label>
+          </div>
+          <div class="section-toggle-card">
+            <div class="stc-icon">&#x2B50;</div>
+            <div class="stc-info"><div class="stc-name">Feedback Section</div><div class="stc-desc">Star ratings &amp; review submission</div></div>
+            <label class="toggle"><input type="checkbox" id="cu-sec-feedback" checked onchange="markUIDirty()"><span class="toggle-slider"></span></label>
+          </div>
+          <div class="section-toggle-card">
+            <div class="stc-icon">&#x1F464;</div>
+            <div class="stc-info"><div class="stc-name">My Profile</div><div class="stc-desc">Account info &amp; password change</div></div>
+            <label class="toggle"><input type="checkbox" id="cu-sec-profile" checked onchange="markUIDirty()"><span class="toggle-slider"></span></label>
+          </div>
+          <div class="section-toggle-card">
+            <div class="stc-icon">&#x1F514;</div>
+            <div class="stc-info"><div class="stc-name">Notifications Bell</div><div class="stc-desc">Real-time status change alerts</div></div>
+            <label class="toggle"><input type="checkbox" id="cu-notif" checked onchange="markUIDirty()"><span class="toggle-slider"></span></label>
+          </div>
+        </div>
+      </div>
+      <div class="gstatic card">
+        <div class="card-lbl" style="margin-bottom:14px">Customer Portal Text</div>
+        <div class="mfield"><label>Page Title (Main)</label><input type="text" id="cu-title" value="Welcome Back"></div>
+        <div class="mfield"><label>Dashboard Sub-Greeting</label><input type="text" id="cu-greeting" value="Here's your laundry status at a glance."></div>
+        <div class="mfield"><label>No-Order Message</label><input type="text" id="cu-noorder" value="No active service right now."></div>
+        <div class="mfield"><label>Ticker Text</label><input type="text" id="cu-ticker" value="Laundry Lounge · Monitor Your Laundry Live · Wash · Dry · Fold"></div>
+        <div style="display:flex;justify-content:flex-end;margin-top:8px">
+          <button class="btn-primary" onclick="saveCustomerUI()">Save Customer UI</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OPERATOR PANEL TAB -->
+  <div class="ui-pane" id="uipane-operator">
+    <div class="grid-2">
+      <div class="gstatic card">
+        <div class="card-lbl" style="margin-bottom:14px">Operator Panel Sections</div>
+        <div class="section-toggle-grid">
+          <div class="section-toggle-card">
+            <div class="stc-icon">&#x1F4CA;</div>
+            <div class="stc-info"><div class="stc-name">Dashboard</div><div class="stc-desc">Machine overview + stats</div></div>
+            <label class="toggle"><input type="checkbox" id="op-sec-dashboard" checked onchange="markUIDirty()"><span class="toggle-slider"></span></label>
+          </div>
+          <div class="section-toggle-card">
+            <div class="stc-icon">&#x1FAE7;</div>
+            <div class="stc-info"><div class="stc-name">Machines</div><div class="stc-desc">8-unit machine status view</div></div>
+            <label class="toggle"><input type="checkbox" id="op-sec-machines" checked onchange="markUIDirty()"><span class="toggle-slider"></span></label>
+          </div>
+          <div class="section-toggle-card">
+            <div class="stc-icon">&#x1F4CB;</div>
+            <div class="stc-info"><div class="stc-name">Service Queue</div><div class="stc-desc">Queue management + assign/start</div></div>
+            <label class="toggle"><input type="checkbox" id="op-sec-queue" checked onchange="markUIDirty()"><span class="toggle-slider"></span></label>
+          </div>
+          <div class="section-toggle-card">
+            <div class="stc-icon">&#x270F;&#xFE0F;</div>
+            <div class="stc-info"><div class="stc-name">Encode Service</div><div class="stc-desc">New order registration form</div></div>
+            <label class="toggle"><input type="checkbox" id="op-sec-encode" checked onchange="markUIDirty()"><span class="toggle-slider"></span></label>
+          </div>
+          <div class="section-toggle-card">
+            <div class="stc-icon">&#x1F455;</div>
+            <div class="stc-info"><div class="stc-name">Folding Queue</div><div class="stc-desc">Post-wash fold management</div></div>
+            <label class="toggle"><input type="checkbox" id="op-sec-folding" checked onchange="markUIDirty()"><span class="toggle-slider"></span></label>
+          </div>
+          <div class="section-toggle-card">
+            <div class="stc-icon">&#x1F4E6;</div>
+            <div class="stc-info"><div class="stc-name">Ready for Pickup</div><div class="stc-desc">Pickup &amp; completion screen</div></div>
+            <label class="toggle"><input type="checkbox" id="op-sec-pickup" checked onchange="markUIDirty()"><span class="toggle-slider"></span></label>
+          </div>
+          <div class="section-toggle-card">
+            <div class="stc-icon">&#x1F381;</div>
+            <div class="stc-info"><div class="stc-name">Promos View</div><div class="stc-desc">Active promo code list</div></div>
+            <label class="toggle"><input type="checkbox" id="op-sec-promos" checked onchange="markUIDirty()"><span class="toggle-slider"></span></label>
+          </div>
+          <div class="section-toggle-card">
+            <div class="stc-icon">&#x26A0;&#xFE0F;</div>
+            <div class="stc-info"><div class="stc-name">Issue Reports</div><div class="stc-desc">Submit machine/item issues</div></div>
+            <label class="toggle"><input type="checkbox" id="op-sec-issues" checked onchange="markUIDirty()"><span class="toggle-slider"></span></label>
+          </div>
+        </div>
+      </div>
+      <div class="gstatic card">
+        <div class="card-lbl" style="margin-bottom:14px">Operator Panel Text</div>
+        <div class="mfield"><label>Panel Title</label><input type="text" id="op-title" value="Machine Operator"></div>
+        <div class="mfield"><label>Eyebrow Label</label><input type="text" id="op-eyebrow" value="Operator Portal · 2026"></div>
+        <div class="mfield"><label>Top Badge</label><input type="text" id="op-badge" value="Operator Access"></div>
+        <div class="mfield"><label>Logout Label</label><input type="text" id="op-logout" value="Logout"></div>
+        <div style="display:flex;justify-content:flex-end;margin-top:8px">
+          <button class="btn-primary" onclick="saveOperatorUI()">Save Operator UI</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADMIN PANEL TAB -->
+  <div class="ui-pane" id="uipane-admin">
+    <div class="grid-2">
+      <div class="gstatic card">
+        <div class="card-lbl" style="margin-bottom:14px">Admin Panel Sections</div>
+        <div class="section-toggle-grid">
+          <div class="section-toggle-card">
+            <div class="stc-icon">&#x1F4CA;</div>
+            <div class="stc-info"><div class="stc-name">Dashboard</div><div class="stc-desc">Charts, stats &amp; revenue overview</div></div>
+            <label class="toggle"><input type="checkbox" id="adm-sec-dashboard" checked onchange="markUIDirty()"><span class="toggle-slider"></span></label>
+          </div>
+          <div class="section-toggle-card">
+            <div class="stc-icon">&#x1F4C8;</div>
+            <div class="stc-info"><div class="stc-name">Analytics</div><div class="stc-desc">Service breakdown &amp; trends</div></div>
+            <label class="toggle"><input type="checkbox" id="adm-sec-analytics" checked onchange="markUIDirty()"><span class="toggle-slider"></span></label>
+          </div>
+          <div class="section-toggle-card">
+            <div class="stc-icon">&#x1F4B0;</div>
+            <div class="stc-info"><div class="stc-name">Revenue</div><div class="stc-desc">Income charts &amp; profit data</div></div>
+            <label class="toggle"><input type="checkbox" id="adm-sec-revenue" checked onchange="markUIDirty()"><span class="toggle-slider"></span></label>
+          </div>
+          <div class="section-toggle-card">
+            <div class="stc-icon">&#x1F9D2;&#x200D;&#x1F4BB;</div>
+            <div class="stc-info"><div class="stc-name">Service Status</div><div class="stc-desc">Real-time order monitoring</div></div>
+            <label class="toggle"><input type="checkbox" id="adm-sec-orders" checked onchange="markUIDirty()"><span class="toggle-slider"></span></label>
+          </div>
+          <div class="section-toggle-card">
+            <div class="stc-icon">&#x1F9D1;&#x200D;&#x1F4BB;</div>
+            <div class="stc-info"><div class="stc-name">Staff Management</div><div class="stc-desc">Add, edit &amp; manage operators</div></div>
+            <label class="toggle"><input type="checkbox" id="adm-sec-staff" checked onchange="markUIDirty()"><span class="toggle-slider"></span></label>
+          </div>
+          <div class="section-toggle-card">
+            <div class="stc-icon">&#x1F464;</div>
+            <div class="stc-info"><div class="stc-name">Customers</div><div class="stc-desc">Customer directory &amp; actions</div></div>
+            <label class="toggle"><input type="checkbox" id="adm-sec-customers" checked onchange="markUIDirty()"><span class="toggle-slider"></span></label>
+          </div>
+          <div class="section-toggle-card">
+            <div class="stc-icon">&#x1F4E6;</div>
+            <div class="stc-info"><div class="stc-name">Archives</div><div class="stc-desc">Archived staff &amp; customers</div></div>
+            <label class="toggle"><input type="checkbox" id="adm-sec-archives" checked onchange="markUIDirty()"><span class="toggle-slider"></span></label>
+          </div>
+          <div class="section-toggle-card">
+            <div class="stc-icon">&#x2B50;</div>
+            <div class="stc-info"><div class="stc-name">Customer Feedback</div><div class="stc-desc">Ratings &amp; reviews viewer</div></div>
+            <label class="toggle"><input type="checkbox" id="adm-sec-feedback" checked onchange="markUIDirty()"><span class="toggle-slider"></span></label>
+          </div>
+          <div class="section-toggle-card">
+            <div class="stc-icon">&#x1F4C4;</div>
+            <div class="stc-info"><div class="stc-name">Reports</div><div class="stc-desc">Export CSV/PDF reports</div></div>
+            <label class="toggle"><input type="checkbox" id="adm-sec-reports" checked onchange="markUIDirty()"><span class="toggle-slider"></span></label>
+          </div>
+        </div>
+      </div>
+      <div class="gstatic card">
+        <div class="card-lbl" style="margin-bottom:14px">Admin Panel Text</div>
+        <div class="mfield"><label>Panel Title</label><input type="text" id="adm-title" value="Admin Panel"></div>
+        <div class="mfield"><label>Eyebrow Label</label><input type="text" id="adm-eyebrow" value="Admin Panel · 2026"></div>
+        <div class="mfield"><label>Top Badge Label</label><input type="text" id="adm-badge" value="Admin Access"></div>
+        <div class="mfield"><label>Dashboard Greeting</label><input type="text" id="adm-greeting" value="Welcome back. Here's today's operational overview."></div>
+        <div style="display:flex;justify-content:flex-end;margin-top:8px">
+          <button class="btn-primary" onclick="saveAdminUI()">Save Admin UI</button>
+        </div>
+      </div>
+    </div>
+    <div class="apply-banner">
+      <span class="apply-msg">&#x26A0;&#xFE0F; All section visibility changes take effect immediately on next login. Disabled sections are hidden from navigation.</span>
+      <div class="apply-btns">
+        <button class="btn-ghost" onclick="resetAdminSections()">Reset All Sections</button>
+        <button class="btn-primary" onclick="saveAllUISettings()">Save All UI Settings</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ AUDIT LOGS ══════════════ -->
 <div id="sec-auditlogs" class="section">
   <div class="page-head">
     <div class="live-tag"><div class="live-dot"></div>Audit Logs</div>
@@ -509,7 +1151,7 @@ td{padding:12px 16px;vertical-align:middle}
   </div>
 </div>
 
-<!-- ACCOUNT SECURITY -->
+<!-- ══════════════ ACCOUNT SECURITY ══════════════ -->
 <div id="sec-security" class="section">
   <div class="page-head">
     <div class="live-tag"><div class="live-dot"></div>Account Security</div>
@@ -548,46 +1190,25 @@ td{padding:12px 16px;vertical-align:middle}
     <div class="sec-card">
       <div class="card-lbl" style="margin-bottom:16px">&#x1F6E1;&#xFE0F; Recovery Options</div>
       <div style="padding:12px 14px;border-radius:10px;background:var(--bg3);border:1px solid var(--border);margin-bottom:10px">
-        <div style="display:flex;align-items:center;gap:9px;margin-bottom:5px">
-          <span style="font-size:1rem">&#x1F4E7;</span>
-          <span style="font-family:'DM Mono',monospace;font-size:.54rem;letter-spacing:.1em;color:var(--text);font-weight:600;text-transform:uppercase">Email Reset</span>
-          <span class="pill green" style="margin-left:auto">Available</span>
-        </div>
+        <div style="display:flex;align-items:center;gap:9px;margin-bottom:5px"><span style="font-size:1rem">&#x1F4E7;</span><span style="font-family:'DM Mono',monospace;font-size:.54rem;letter-spacing:.1em;color:var(--text);font-weight:600;text-transform:uppercase">Email Reset</span><span class="pill green" style="margin-left:auto">Available</span></div>
         <div style="font-size:.76rem;color:var(--text3);line-height:1.5">Use the <strong style="color:var(--text2)">Forgot Password?</strong> link on the login page.</div>
       </div>
       <div style="padding:12px 14px;border-radius:10px;background:var(--bg3);border:1px solid var(--border);margin-bottom:10px">
-        <div style="display:flex;align-items:center;gap:9px;margin-bottom:5px">
-          <span style="font-size:1rem">&#x1F5DD;&#xFE0F;</span>
-          <span style="font-family:'DM Mono',monospace;font-size:.54rem;letter-spacing:.1em;color:var(--text);font-weight:600;text-transform:uppercase">Recovery Phrase</span>
-          <span class="pill amber" style="margin-left:auto">Check .env</span>
-        </div>
+        <div style="display:flex;align-items:center;gap:9px;margin-bottom:5px"><span style="font-size:1rem">&#x1F5DD;&#xFE0F;</span><span style="font-family:'DM Mono',monospace;font-size:.54rem;letter-spacing:.1em;color:var(--text);font-weight:600;text-transform:uppercase">Recovery Phrase</span><span class="pill amber" style="margin-left:auto">Check .env</span></div>
         <div style="font-size:.76rem;color:var(--text3);line-height:1.5">Set <code style="font-family:'DM Mono',monospace;background:var(--input-bg);padding:1px 6px;border-radius:4px">SA_RECOVERY_PHRASE</code> in your <code style="font-family:'DM Mono',monospace;background:var(--input-bg);padding:1px 6px;border-radius:4px">.env</code> file.</div>
       </div>
       <div style="padding:12px 14px;border-radius:10px;background:var(--bg3);border:1px solid var(--border)">
-        <div style="display:flex;align-items:center;gap:9px;margin-bottom:5px">
-          <span style="font-size:1rem">&#x1F4BB;</span>
-          <span style="font-family:'DM Mono',monospace;font-size:.54rem;letter-spacing:.1em;color:var(--text);font-weight:600;text-transform:uppercase">Terminal CLI</span>
-          <span class="pill blue" style="margin-left:auto">Always Works</span>
-        </div>
+        <div style="display:flex;align-items:center;gap:9px;margin-bottom:5px"><span style="font-size:1rem">&#x1F4BB;</span><span style="font-family:'DM Mono',monospace;font-size:.54rem;letter-spacing:.1em;color:var(--text);font-weight:600;text-transform:uppercase">Terminal CLI</span><span class="pill blue" style="margin-left:auto">Always Works</span></div>
         <div style="background:var(--bg);border:1px solid var(--border-acc);border-radius:8px;padding:9px 12px;font-family:'DM Mono',monospace;font-size:.6rem;color:var(--accent);display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:6px">
           <span>flask recover-superadmin</span>
           <button onclick="copyCmd(this)" style="background:rgba(0,180,216,.12);border:1px solid var(--border-acc);border-radius:5px;color:var(--accent);font-family:'DM Mono',monospace;font-size:.4rem;letter-spacing:.12em;text-transform:uppercase;padding:3px 9px;cursor:pointer">Copy</button>
-        </div>
-      </div>
-      <div style="margin-top:14px;padding:14px;border-radius:10px;border:1px solid var(--warn-border);background:var(--warn-bg)">
-        <div style="font-family:'DM Mono',monospace;font-size:.5rem;letter-spacing:.15em;text-transform:uppercase;color:var(--warn);margin-bottom:10px">&#x26A0;&#xFE0F; Emergency Reset</div>
-        <div style="display:grid;gap:8px">
-          <input type="email" id="emg-email" placeholder="superadmin@laundry.com" style="height:34px;border-radius:8px;border:1px solid var(--warn-border);background:var(--input-bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:.82rem;padding:0 11px;outline:none">
-          <input type="password" id="emg-phrase" placeholder="Recovery phrase (from .env)" style="height:34px;border-radius:8px;border:1px solid var(--warn-border);background:var(--input-bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:.82rem;padding:0 11px;outline:none">
-          <button id="emg-btn" onclick="emergencyReset()" style="height:34px;border-radius:8px;background:var(--warn);color:#fff;border:none;font-family:'DM Mono',monospace;font-size:.5rem;letter-spacing:.14em;text-transform:uppercase;cursor:pointer">Send Recovery Email</button>
-          <div id="emg-msg" style="display:none;font-family:'DM Mono',monospace;font-size:.52rem;color:var(--success);letter-spacing:.05em;text-align:center"></div>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- MONITORING -->
+<!-- ══════════════ MONITORING ══════════════ -->
 <div id="sec-monitoring" class="section">
   <div class="page-head">
     <div class="live-tag"><div class="live-dot"></div>System Monitor</div>
@@ -617,7 +1238,7 @@ td{padding:12px 16px;vertical-align:middle}
   </div>
 </div>
 
-<!-- EMERGENCY -->
+<!-- ══════════════ EMERGENCY ══════════════ -->
 <div id="sec-emergency" class="section">
   <div class="page-head">
     <div class="live-tag"><div class="live-dot"></div>Emergency Control</div>
@@ -646,7 +1267,7 @@ td{padding:12px 16px;vertical-align:middle}
   <div id="emergency-result" style="display:none;margin-top:16px"></div>
 </div>
 
-<!-- SYSTEM CONFIG -->
+<!-- ══════════════ SYSTEM CONFIG ══════════════ -->
 <div id="sec-config" class="section">
   <div class="page-head">
     <div class="live-tag"><div class="live-dot"></div>System Config</div>
@@ -677,7 +1298,7 @@ td{padding:12px 16px;vertical-align:middle}
   </div>
 </div>
 
-<!-- BACKUP -->
+<!-- ══════════════ BACKUP ══════════════ -->
 <div id="sec-backup" class="section">
   <div class="page-head">
     <div class="live-tag"><div class="live-dot"></div>Backup &amp; Restore</div>
@@ -710,7 +1331,7 @@ td{padding:12px 16px;vertical-align:middle}
   </div>
 </div>
 
-<!-- ALL USERS -->
+<!-- ══════════════ ALL USERS ══════════════ -->
 <div id="sec-users" class="section">
   <div class="page-head">
     <div class="live-tag"><div class="live-dot"></div>All Users</div>
@@ -746,10 +1367,10 @@ td{padding:12px 16px;vertical-align:middle}
   </div>
 </div>
 
-</div>
-</div>
+</div><!-- end #main -->
+</div><!-- end #layout -->
 
-<!-- MODALS -->
+<!-- ══ MODALS ══ -->
 <div class="modal-overlay" id="modal-add-admin">
   <div class="modal">
     <div class="modal-hdr">
@@ -776,10 +1397,7 @@ td{padding:12px 16px;vertical-align:middle}
     <div class="mfield"><label>Full Name</label><input type="text" id="ef-name"></div>
     <div class="mfield"><label>Email Address</label><input type="email" id="ef-email"></div>
     <div class="mfield"><label>Status</label>
-      <select id="ef-status">
-        <option value="active">Active</option>
-        <option value="inactive">Inactive</option>
-      </select>
+      <select id="ef-status"><option value="active">Active</option><option value="inactive">Inactive</option></select>
     </div>
     <div class="modal-btns">
       <button class="btn-ghost" onclick="closeModal('edit-admin')">Cancel</button>
@@ -808,11 +1426,11 @@ td{padding:12px 16px;vertical-align:middle}
   <div class="ticker-inner">
     <span class="ticker-item">Super Admin Panel</span><span class="ticker-dot"></span>
     <span class="ticker-item">Laundry Lounge HQ</span><span class="ticker-dot"></span>
-    <span class="ticker-item">Full System Control &middot; Audit Trail &middot; Emergency Access</span><span class="ticker-dot"></span>
+    <span class="ticker-item">Full System Control &middot; Role Permissions &middot; UI Customizer</span><span class="ticker-dot"></span>
     <span class="ticker-item">Root Access &middot; 2026</span><span class="ticker-dot"></span>
     <span class="ticker-item">Super Admin Panel</span><span class="ticker-dot"></span>
     <span class="ticker-item">Laundry Lounge HQ</span><span class="ticker-dot"></span>
-    <span class="ticker-item">Full System Control &middot; Audit Trail &middot; Emergency Access</span><span class="ticker-dot"></span>
+    <span class="ticker-item">Full System Control &middot; Role Permissions &middot; UI Customizer</span><span class="ticker-dot"></span>
     <span class="ticker-item">Root Access &middot; 2026</span><span class="ticker-dot"></span>
   </div>
 </div>
@@ -844,7 +1462,7 @@ function showSection(id,el){
   document.getElementById('sec-'+id).classList.add('active');
   if(el)el.classList.add('active');
   if(window.innerWidth<900)closeSidebar();
-  const loaders={overview:loadOverview,admins:loadAdmins,auditlogs:loadAuditLogs,monitoring:loadMonitoring,users:loadAllUsers,backup:()=>{}};
+  const loaders={overview:loadOverview,admins:loadAdmins,auditlogs:loadAuditLogs,monitoring:loadMonitoring,users:loadAllUsers,permissions:loadPermissions,backup:()=>{}};
   if(loaders[id])loaders[id]();
 }
 
@@ -873,14 +1491,8 @@ async function api(url,opts={}){
   }catch(e){return {ok:false,error:e.message}}
 }
 
-// ── AVATAR COLORS (teal palette) ──
-const avBg=[
-  'linear-gradient(135deg,#00B4D8,#0077A8)',
-  'linear-gradient(135deg,#0077A8,#005580)',
-  'linear-gradient(135deg,#1A8080,#0F5555)',
-  'linear-gradient(135deg,#40A8D4,#1A6FA8)',
-  'linear-gradient(135deg,#00D4F5,#0099CC)'
-];
+// ── AVATAR COLORS ──
+const avBg=['linear-gradient(135deg,#00B4D8,#0077A8)','linear-gradient(135deg,#0077A8,#005580)','linear-gradient(135deg,#1A8080,#0F5555)','linear-gradient(135deg,#40A8D4,#1A6FA8)','linear-gradient(135deg,#00D4F5,#0099CC)'];
 
 // ── FILTER HELPERS ──
 function filterTable(tbodyId,query,actionFilter=''){
@@ -905,30 +1517,9 @@ function filterTableByRole(tbodyId,val){
   });
 }
 
-function logIconClass(a){
-  if(!a)return 'info';a=a.toLowerCase();
-  if(a.includes('delete')||a.includes('block'))return 'danger';
-  if(a.includes('login'))return 'info';
-  if(a.includes('create')||a.includes('add'))return 'success';
-  if(a.includes('update')||a.includes('edit'))return 'warn';
-  if(a.includes('emergency'))return 'danger';
-  return 'info';
-}
-function logIconEmoji(a){
-  if(!a)return '\u2139\uFE0F';a=a.toLowerCase();
-  if(a.includes('delete'))return '\uD83D\uDDD1\uFE0F';
-  if(a.includes('block'))return '\uD83D\uDEAB';
-  if(a.includes('login'))return '\uD83D\uDD10';
-  if(a.includes('create')||a.includes('add'))return '\u2705';
-  if(a.includes('update'))return '\u270F\uFE0F';
-  if(a.includes('emergency'))return '\u26A0\uFE0F';
-  return '\u2139\uFE0F';
-}
-function formatTime(ts){
-  if(!ts)return '\u2014';
-  try{return new Date(ts).toLocaleString('en-PH',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});}
-  catch{return ts;}
-}
+function logIconClass(a){if(!a)return 'info';a=a.toLowerCase();if(a.includes('delete')||a.includes('block'))return 'danger';if(a.includes('login'))return 'info';if(a.includes('create')||a.includes('add'))return 'success';if(a.includes('update')||a.includes('edit'))return 'warn';if(a.includes('emergency'))return 'danger';return 'info';}
+function logIconEmoji(a){if(!a)return '\u2139\uFE0F';a=a.toLowerCase();if(a.includes('delete'))return '\uD83D\uDDD1\uFE0F';if(a.includes('block'))return '\uD83D\uDEAB';if(a.includes('login'))return '\uD83D\uDD10';if(a.includes('create')||a.includes('add'))return '\u2705';if(a.includes('update'))return '\u270F\uFE0F';if(a.includes('emergency'))return '\u26A0\uFE0F';return '\u2139\uFE0F';}
+function formatTime(ts){if(!ts)return '\u2014';try{return new Date(ts).toLocaleString('en-PH',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});}catch{return ts;}}
 
 // ── SYSTEM STATUS SYNC ──
 let _lastMaintState=null;
@@ -936,77 +1527,35 @@ async function syncSystemStatus(){
   const res=await api('/api/system/maintenance-status');
   if(!res.ok)return;
   const isActive=res.data.maintenance===true;
-  ['cfg-maintenance','sys-maintenance'].forEach(id=>{
-    const el=document.getElementById(id);
-    if(el)el.checked=isActive;
-  });
+  ['cfg-maintenance','sys-maintenance'].forEach(id=>{const el=document.getElementById(id);if(el)el.checked=isActive;});
   const crown=document.getElementById('sa-crown-badge');
   if(crown){
-    if(isActive){
-      crown.style.background='rgba(192,57,43,.12)';
-      crown.style.borderColor='rgba(192,57,43,.35)';
-      crown.style.color='var(--danger)';
-      crown.textContent='\uD83D\uDD27 Maintenance Mode';
-    }else{
-      crown.style.background='';crown.style.borderColor='';crown.style.color='';
-      crown.textContent='\uD83D\uDC51 Root Access';
-    }
+    if(isActive){crown.style.background='rgba(192,57,43,.12)';crown.style.borderColor='rgba(192,57,43,.35)';crown.style.color='var(--danger)';crown.textContent='\uD83D\uDD27 Maintenance Mode';}
+    else{crown.style.background='';crown.style.borderColor='';crown.style.color='';crown.textContent='\uD83D\uDC51 Root Access';}
   }
-  if(_lastMaintState!==null&&_lastMaintState!==isActive)
-    showToast(isActive?'\uD83D\uDD27 System is now in maintenance mode':'\u2705 System is back online',isActive?'error':'success');
+  if(_lastMaintState!==null&&_lastMaintState!==isActive)showToast(isActive?'\uD83D\uDD27 System is now in maintenance mode':'\u2705 System is back online',isActive?'error':'success');
   _lastMaintState=isActive;
 }
 setInterval(syncSystemStatus,10000);
 
 // ── OVERVIEW ──
 async function loadOverview(){
-  const [admins,rev,logs,promos,users,perf]=await Promise.all([
-    api('/api/superadmin/admins'),api('/api/admin/revenue'),api('/api/superadmin/audit-logs'),
-    api('/api/promos'),api('/api/superadmin/all-users'),api('/api/admin/staff-performance')
-  ]);
+  const [admins,rev,logs,promos,users,perf]=await Promise.all([api('/api/superadmin/admins'),api('/api/admin/revenue'),api('/api/superadmin/audit-logs'),api('/api/promos'),api('/api/superadmin/all-users'),api('/api/admin/staff-performance')]);
   if(admins.ok){
     const list=admins.data||[];
     document.getElementById('ov-admins').textContent=list.length;
-    document.getElementById('ov-admin-list').innerHTML=list.length?list.slice(0,4).map((a,i)=>`
-      <div class="inline-row">
-        <span style="display:flex;align-items:center;gap:9px">
-          <span style="width:24px;height:24px;border-radius:50%;background:${avBg[i%5]};display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:.75rem;color:#fff;flex-shrink:0">${(a.full_name||'A')[0]}</span>
-          <span class="ikey">${a.full_name||'\u2014'}</span>
-        </span>
-        <span class="pill ${a.status==='active'?'green':'red'}">${a.status||'active'}</span>
-      </div>`).join('')
-    :'<div class="empty-state">No admins found.</div>';
+    document.getElementById('ov-admin-list').innerHTML=list.length?list.slice(0,4).map((a,i)=>`<div class="inline-row"><span style="display:flex;align-items:center;gap:9px"><span style="width:24px;height:24px;border-radius:50%;background:${avBg[i%5]};display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:.75rem;color:#fff;flex-shrink:0">${(a.full_name||'A')[0]}</span><span class="ikey">${a.full_name||'\u2014'}</span></span><span class="pill ${a.status==='active'?'green':'red'}">${a.status||'active'}</span></div>`).join(''):'<div class="empty-state">No admins found.</div>';
   }
-  if(rev.ok){
-    const daily=Number(rev.data.daily_income)||0,monthly=Number(rev.data.monthly_income)||0;
-    document.getElementById('ov-revenue').textContent='\u20B1'+(monthly/1000).toFixed(0)+'K';
-    document.getElementById('ov-daily').textContent=daily.toLocaleString();
-    document.getElementById('ov-monthly').textContent=monthly.toLocaleString();
-    document.getElementById('ov-profit').textContent=Math.round(monthly*.6).toLocaleString();
-  }
-  if(logs.ok){
-    const list=logs.data||[];
-    document.getElementById('ov-logs').textContent=list.length;
-    document.getElementById('nb-logs').textContent=list.length;
-    document.getElementById('ov-recent-logs').innerHTML=list.slice(0,4).map(l=>`
-      <div class="log-item">
-        <div class="log-icon ${logIconClass(l.action)}">${logIconEmoji(l.action)}</div>
-        <div><div class="log-msg">${l.actor||'System'} \u2014 ${l.action}</div><div class="log-meta">${l.target||''} \u00B7 ${formatTime(l.timestamp)}</div></div>
-      </div>`).join('')||'<div class="empty-state">No logs yet.</div>';
-  }
+  if(rev.ok){const daily=Number(rev.data.daily_income)||0,monthly=Number(rev.data.monthly_income)||0;document.getElementById('ov-revenue').textContent='\u20B1'+(monthly/1000).toFixed(0)+'K';document.getElementById('ov-daily').textContent=daily.toLocaleString();document.getElementById('ov-monthly').textContent=monthly.toLocaleString();document.getElementById('ov-profit').textContent=Math.round(monthly*.6).toLocaleString();}
+  if(logs.ok){const list=logs.data||[];document.getElementById('ov-logs').textContent=list.length;document.getElementById('nb-logs').textContent=list.length;document.getElementById('ov-recent-logs').innerHTML=list.slice(0,4).map(l=>`<div class="log-item"><div class="log-icon ${logIconClass(l.action)}">${logIconEmoji(l.action)}</div><div><div class="log-msg">${l.actor||'System'} \u2014 ${l.action}</div><div class="log-meta">${l.target||''} \u00B7 ${formatTime(l.timestamp)}</div></div></div>`).join('')||'<div class="empty-state">No logs yet.</div>';}
   if(promos.ok)document.getElementById('ov-promos').textContent=(promos.data||[]).length;
   if(users.ok)document.getElementById('ov-users').textContent=(users.data||[]).length;
   if(perf.ok)document.getElementById('ov-staff').textContent=(perf.data||[]).length;
   const settings=await api('/api/system/settings');
-  if(settings.ok){
-    const s=settings.data;const mm=s.maintenance_mode==='1';
-    ['cfg-maintenance','sys-maintenance'].forEach(id=>{const el=document.getElementById(id);if(el)el.checked=mm;});
-    ['cfg-promos','sys-promos'].forEach(id=>{const el=document.getElementById(id);if(el)el.checked=s.promos_enabled!=='0';});
-    _lastMaintState=mm;
-  }
+  if(settings.ok){const s=settings.data;const mm=s.maintenance_mode==='1';['cfg-maintenance','sys-maintenance'].forEach(id=>{const el=document.getElementById(id);if(el)el.checked=mm;});['cfg-promos','sys-promos'].forEach(id=>{const el=document.getElementById(id);if(el)el.checked=s.promos_enabled!=='0';});_lastMaintState=mm;}
 }
 
-// ── ADMINS ──  (no delete button)
+// ── ADMINS ──
 async function loadAdmins(){
   const res=await api('/api/superadmin/admins');
   if(!res.ok){showToast('Failed to load admins','error');return;}
@@ -1014,10 +1563,7 @@ async function loadAdmins(){
   document.getElementById('adm-count').textContent=`${data.length} total`;
   document.getElementById('adm-tbody').innerHTML=data.length?data.map((a,i)=>`
     <tr>
-      <td><div class="person-cell">
-        <div class="p-avatar" style="background:${avBg[i%5]}">${(a.full_name||'A')[0]}</div>
-        <div><div class="p-name">${a.full_name||'\u2014'}</div><div class="p-email">${a.email||'\u2014'}</div></div>
-      </div></td>
+      <td><div class="person-cell"><div class="p-avatar" style="background:${avBg[i%5]}">${(a.full_name||'A')[0]}</div><div><div class="p-name">${a.full_name||'\u2014'}</div><div class="p-email">${a.email||'\u2014'}</div></div></div></td>
       <td><span class="pill ${a.status==='active'?'green':'red'}"><span class="pill-dot"></span>${a.status==='active'?'Active':'Inactive'}</span></td>
       <td><span class="role-chip admin">Admin</span></td>
       <td><span class="mono-cell">${a.created_at?new Date(a.created_at).toLocaleDateString('en-PH'):'\u2014'}</span></td>
@@ -1034,42 +1580,71 @@ async function loadAdmins(){
   :'<tr><td colspan="5" style="text-align:center;padding:28px;color:var(--text3);font-family:\'DM Mono\',monospace;font-size:.58rem">No administrators found</td></tr>';
 }
 
-function openEditAdmin(id,name,email,status){
-  document.getElementById('ef-id').value=id;
-  document.getElementById('ef-name').value=name;
-  document.getElementById('ef-email').value=email;
-  document.getElementById('ef-status').value=status;
-  openModal('edit-admin');
+function openEditAdmin(id,name,email,status){document.getElementById('ef-id').value=id;document.getElementById('ef-name').value=name;document.getElementById('ef-email').value=email;document.getElementById('ef-status').value=status;openModal('edit-admin');}
+async function addAdminSubmit(){const name=document.getElementById('af-name').value.trim();const email=document.getElementById('af-email').value.trim();const password=document.getElementById('af-pass').value;if(!name||!email||!password){showToast('\u26A0\uFE0F Fill all fields','error');return;}if(password.length<8){showToast('Password must be at least 8 characters','error');return;}const btn=document.getElementById('btn-add-admin');btn.textContent='Creating\u2026';btn.disabled=true;const res=await api('/api/superadmin/admins/create',{method:'POST',body:{name,email,password}});btn.textContent='Create Admin';btn.disabled=false;if(res.ok){showToast('\u2705 Admin created','success');closeModal('add-admin');['af-name','af-email','af-pass'].forEach(id=>document.getElementById(id).value='');loadAdmins();}else{showToast('\u274C '+res.error,'error');}}
+async function editAdminSubmit(){const id=document.getElementById('ef-id').value;const name=document.getElementById('ef-name').value.trim();const email=document.getElementById('ef-email').value.trim();const status=document.getElementById('ef-status').value;const btn=document.getElementById('btn-edit-admin');btn.textContent='Saving\u2026';btn.disabled=true;const res=await api(`/api/superadmin/admins/update/${id}`,{method:'PUT',body:{name,email,status}});btn.textContent='Save Changes';btn.disabled=false;if(res.ok){showToast('\u2705 Admin updated','success');closeModal('edit-admin');loadAdmins();}else{showToast('\u274C '+res.error,'error');}}
+async function toggleAdmin(id,status){const res=await api(`/api/superadmin/admins/toggle/${id}`,{method:'PUT',body:{status}});if(res.ok){showToast(status==='active'?'\u2705 Admin activated':'Admin deactivated','success');loadAdmins();}else{showToast('\u274C '+res.error,'error');}}
+
+// ── PERMISSIONS ──
+let _permDirtyRole='';
+function switchPermTab(role){
+  document.querySelectorAll('.perm-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.perm-pane').forEach(p=>p.classList.remove('active'));
+  document.getElementById('ptab-'+role).classList.add('active');
+  document.getElementById('ppane-'+role).classList.add('active');
 }
-async function addAdminSubmit(){
-  const name=document.getElementById('af-name').value.trim();
-  const email=document.getElementById('af-email').value.trim();
-  const password=document.getElementById('af-pass').value;
-  if(!name||!email||!password){showToast('\u26A0\uFE0F Fill all fields','error');return;}
-  if(password.length<8){showToast('Password must be at least 8 characters','error');return;}
-  const btn=document.getElementById('btn-add-admin');
-  btn.textContent='Creating\u2026';btn.disabled=true;
-  const res=await api('/api/superadmin/admins/create',{method:'POST',body:{name,email,password}});
-  btn.textContent='Create Admin';btn.disabled=false;
-  if(res.ok){showToast('\u2705 Admin created','success');closeModal('add-admin');['af-name','af-email','af-pass'].forEach(id=>document.getElementById(id).value='');loadAdmins();}
-  else{showToast('\u274C '+res.error,'error');}
+function markPermDirty(){
+  const activePane=document.querySelector('.perm-pane.active');
+  if(!activePane)return;
+  const role=activePane.id.replace('ppane-','');
+  const msgEl=document.getElementById(`perm-${role}-dirty-msg`);
+  if(msgEl)msgEl.textContent='\u26A0\uFE0F Unsaved changes — click Save to apply.';
+  if(msgEl)msgEl.style.color='var(--warn)';
 }
-async function editAdminSubmit(){
-  const id=document.getElementById('ef-id').value;
-  const name=document.getElementById('ef-name').value.trim();
-  const email=document.getElementById('ef-email').value.trim();
-  const status=document.getElementById('ef-status').value;
-  const btn=document.getElementById('btn-edit-admin');
-  btn.textContent='Saving\u2026';btn.disabled=true;
-  const res=await api(`/api/superadmin/admins/update/${id}`,{method:'PUT',body:{name,email,status}});
-  btn.textContent='Save Changes';btn.disabled=false;
-  if(res.ok){showToast('\u2705 Admin updated','success');closeModal('edit-admin');loadAdmins();}
-  else{showToast('\u274C '+res.error,'error');}
+async function loadPermissions(){
+  const users=await api('/api/superadmin/all-users');
+  if(users.ok){
+    const all=users.data||[];
+    const adminCount=all.filter(u=>u.role==='admin').length;
+    const staffCount=all.filter(u=>u.role==='staff').length;
+    const custCount=all.filter(u=>u.role==='customer').length;
+    const rha=document.getElementById('rh-admin-count');const rhs=document.getElementById('rh-staff-count');const rhc=document.getElementById('rh-cust-count');
+    if(rha)rha.textContent=adminCount+' user'+(adminCount!==1?'s':'');
+    if(rhs)rhs.textContent=staffCount+' user'+(staffCount!==1?'s':'');
+    if(rhc)rhc.textContent=custCount+' user'+(custCount!==1?'s':'');
+  }
+  const settings=await api('/api/system/settings');
+  if(settings.ok){
+    const s=settings.data;
+    if(s.allow_registration!==undefined){const el=document.getElementById('perm-cust-register');if(el)el.checked=s.allow_registration!=='0';}
+    if(s.perm_admin)try{const p=JSON.parse(s.perm_admin);Object.entries(p).forEach(([k,v])=>{const el=document.getElementById('perm-admin-'+k);if(el)el.checked=v;});}catch(e){}
+    if(s.perm_staff)try{const p=JSON.parse(s.perm_staff);Object.entries(p).forEach(([k,v])=>{const el=document.getElementById('perm-staff-'+k);if(el)el.checked=v;});}catch(e){}
+    if(s.perm_customer)try{const p=JSON.parse(s.perm_customer);Object.entries(p).forEach(([k,v])=>{const el=document.getElementById('perm-cust-'+k);if(el)el.checked=v;});}catch(e){}
+  }
 }
-async function toggleAdmin(id,status){
-  const res=await api(`/api/superadmin/admins/toggle/${id}`,{method:'PUT',body:{status}});
-  if(res.ok){showToast(status==='active'?'\u2705 Admin activated':'Admin deactivated','success');loadAdmins();}
-  else{showToast('\u274C '+res.error,'error');}
+async function savePermissions(role){
+  const prefixMap={admin:'perm-admin-',staff:'perm-staff-',customer:'perm-cust-'};
+  const prefix=prefixMap[role];
+  const perms={};
+  document.querySelectorAll(`[id^="${prefix}"]`).forEach(el=>{if(el.type==='checkbox'){const key=el.id.replace(prefix,'');perms[key]=el.checked;}});
+  const settingKey=`perm_${role}`;
+  const body={};body[settingKey]=JSON.stringify(perms);
+  const res=await api('/api/system/settings',{method:'POST',body});
+  if(res.ok){
+    showToast(`\u2705 ${role.charAt(0).toUpperCase()+role.slice(1)} permissions saved`,'success');
+    const msgEl=document.getElementById(`perm-${role}-dirty-msg`);
+    if(msgEl){msgEl.textContent='Permissions saved successfully.';msgEl.style.color='var(--success)';}
+  } else {showToast('\u274C '+res.error,'error');}
+}
+function resetPermissions(role){
+  const defaultsAdmin={analytics:true,revenue:true,export:true,'staff-manage':true,'staff-edit':true,'staff-archive':true,'cust-view':true,'cust-block':true,'cust-delete':true,promos:true,pricing:true,'settings-view':true,'settings-edit':false,feedback:true};
+  const defaultsStaff={encode:true,assign:true,fold:true,complete:true,'machines-view':true,'machines-toggle':true,'promos-view':true,'promos-apply':true,issues:true,email:true};
+  const defaultsCustomer={status:true,history:true,receipts:true,feedback:true,profile:true,changepass:true,register:true};
+  const map={admin:defaultsAdmin,staff:defaultsStaff,customer:defaultsCustomer};
+  const prefix={admin:'perm-admin-',staff:'perm-staff-',customer:'perm-cust-'}[role];
+  const defaults=map[role]||{};
+  Object.entries(defaults).forEach(([k,v])=>{const el=document.getElementById(prefix+k);if(el)el.checked=v;});
+  markPermDirty();showToast('Defaults restored — click Save to apply','info');
 }
 
 // ── AUDIT LOGS ──
@@ -1080,15 +1655,7 @@ async function loadAuditLogs(){
   allLogs=res.data||[];
   document.getElementById('log-count').textContent=`${allLogs.length} entries`;
   document.getElementById('nb-logs').textContent=allLogs.length;
-  const pillFor=a=>{
-    if(!a)return 'blue';a=a.toLowerCase();
-    if(a.includes('delete'))return 'red';
-    if(a.includes('create')||a.includes('add'))return 'green';
-    if(a.includes('block'))return 'amber';
-    if(a.includes('login'))return 'blue';
-    if(a.includes('emergency'))return 'red';
-    return 'acc';
-  };
+  const pillFor=a=>{if(!a)return 'blue';a=a.toLowerCase();if(a.includes('delete'))return 'red';if(a.includes('create')||a.includes('add'))return 'green';if(a.includes('block'))return 'amber';if(a.includes('login'))return 'blue';if(a.includes('emergency'))return 'red';return 'acc';};
   document.getElementById('log-tbody').innerHTML=allLogs.length?allLogs.map(l=>`
     <tr>
       <td><span class="mono-cell">${l.actor||'System'}</span></td>
@@ -1103,45 +1670,25 @@ function exportLogsCSV(){
   if(!allLogs.length){showToast('No logs to export','error');return;}
   const rows=[['Actor','Action','Target','IP','Timestamp'],...allLogs.map(l=>[l.actor||'',l.action||'',l.target||'',l.ip_address||'',l.timestamp||''])];
   const csv=rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
-  const a=document.createElement('a');
-  a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
-  a.download='audit_logs_'+new Date().toISOString().slice(0,10)+'.csv';
-  a.click();
+  const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.download='audit_logs_'+new Date().toISOString().slice(0,10)+'.csv';a.click();
   showToast('\uD83D\uDCCB Logs exported','success');
 }
 
 // ── MONITORING ──
 async function loadMonitoring(){
-  const [ana,rev,promos,cust,perf]=await Promise.all([
-    api('/api/admin/analytics'),api('/api/admin/revenue'),
-    api('/api/promos'),api('/api/customers'),api('/api/admin/staff-performance')
-  ]);
+  const [ana,rev,promos,cust,perf]=await Promise.all([api('/api/admin/analytics'),api('/api/admin/revenue'),api('/api/promos'),api('/api/customers'),api('/api/admin/staff-performance')]);
   if(ana.ok)document.getElementById('mon-today').textContent=ana.data.today_services??'\u2014';
   if(rev.ok)document.getElementById('mon-daily').textContent='\u20B1'+(Number(rev.data.daily_income)||0).toLocaleString();
   if(promos.ok)document.getElementById('mon-promos').textContent=(promos.data||[]).length;
   if(cust.ok){
-    const c=cust.data||[];
-    document.getElementById('mon-customers').textContent=c.length;
+    const c=cust.data||[];document.getElementById('mon-customers').textContent=c.length;
     const blocked=c.filter(x=>x.status==='blocked');
-    document.getElementById('mon-blocked').innerHTML=blocked.length?blocked.map(x=>`
-      <div class="inline-row"><span class="ikey">${x.full_name||'\u2014'} \u00B7 ${x.email||'\u2014'}</span><span class="pill red">Blocked</span></div>`).join('')
-    :'<div class="empty-state">No blocked customers.</div>';
+    document.getElementById('mon-blocked').innerHTML=blocked.length?blocked.map(x=>`<div class="inline-row"><span class="ikey">${x.full_name||'\u2014'} \u00B7 ${x.email||'\u2014'}</span><span class="pill red">Blocked</span></div>`).join(''):'<div class="empty-state">No blocked customers.</div>';
   }
   if(perf.ok){
-    const p=perf.data||[];
-    const max=Math.max(...p.map(x=>x.total_services||0))||1;
-    if(ana.ok&&ana.data.top_service){
-      document.getElementById('mon-top-service').innerHTML=`
-        <div class="inline-row"><span class="ikey">Top Service</span><span class="ival">${ana.data.top_service.service_type||'\u2014'}</span></div>
-        <div class="inline-row"><span class="ikey">Total Orders</span><span class="ival">${ana.data.top_service.total||0}</span></div>`;
-    }
-    document.getElementById('mon-staff-perf').innerHTML=p.length?p.map(x=>`
-      <div class="prog-row">
-        <span class="prog-name">${x.full_name}</span>
-        <div class="prog-bg"><div class="prog-fill" style="width:${Math.round((x.total_services||0)/max*100)}%"></div></div>
-        <span class="prog-val">${x.total_services||0}</span>
-      </div>`).join('')
-    :'<div class="empty-state">No staff data.</div>';
+    const p=perf.data||[];const max=Math.max(...p.map(x=>x.total_services||0))||1;
+    if(ana.ok&&ana.data.top_service){document.getElementById('mon-top-service').innerHTML=`<div class="inline-row"><span class="ikey">Top Service</span><span class="ival">${ana.data.top_service.service_type||'\u2014'}</span></div><div class="inline-row"><span class="ikey">Total Orders</span><span class="ival">${ana.data.top_service.total||0}</span></div>`;}
+    document.getElementById('mon-staff-perf').innerHTML=p.length?p.map(x=>`<div class="prog-row"><span class="prog-name">${x.full_name}</span><div class="prog-bg"><div class="prog-fill" style="width:${Math.round((x.total_services||0)/max*100)}%"></div></div><span class="prog-val">${x.total_services||0}</span></div>`).join(''):'<div class="empty-state">No staff data.</div>';
   }
 }
 
@@ -1153,10 +1700,7 @@ async function loadAllUsers(){
   document.getElementById('usr-count').textContent=`${data.length} total`;
   document.getElementById('usr-tbody').innerHTML=data.length?data.map((u,i)=>`
     <tr>
-      <td><div class="person-cell">
-        <div class="p-avatar" style="background:${avBg[i%5]}">${(u.full_name||'?')[0]}</div>
-        <div><div class="p-name">${u.full_name||'\u2014'}</div><div class="p-email">${u.email||'\u2014'}</div></div>
-      </div></td>
+      <td><div class="person-cell"><div class="p-avatar" style="background:${avBg[i%5]}">${(u.full_name||'?')[0]}</div><div><div class="p-name">${u.full_name||'\u2014'}</div><div class="p-email">${u.email||'\u2014'}</div></div></div></td>
       <td><span class="role-chip ${u.role||'customer'}">${u.role||'customer'}</span></td>
       <td><span class="pill ${u.status==='blocked'?'red':'green'}"><span class="pill-dot"></span>${u.status==='blocked'?'Blocked':'Active'}</span></td>
       <td><span class="mono-cell">${u.created_at?new Date(u.created_at).toLocaleDateString('en-PH'):'\u2014'}</span></td>
@@ -1169,78 +1713,29 @@ async function loadAllUsers(){
     </tr>`).join('')
   :'<tr><td colspan="5" style="text-align:center;padding:28px;color:var(--text3)">No users</td></tr>';
 }
-async function blockUser(id,action){
-  const res=await api(`/api/customers/${action}/${id}`,{method:'PUT'});
-  if(res.ok){showToast(action==='block'?'\uD83D\uDEAB User blocked':'\u2705 User unblocked','success');loadAllUsers();}
-  else{showToast('\u274C '+res.error,'error');}
-}
+async function blockUser(id,action){const res=await api(`/api/customers/${action}/${id}`,{method:'PUT'});if(res.ok){showToast(action==='block'?'\uD83D\uDEAB User blocked':'\u2705 User unblocked','success');loadAllUsers();}else{showToast('\u274C '+res.error,'error');}}
 
 // ── SETTINGS ──
-async function toggleSetting(key,val){
-  const body={};body[key]=val;
-  const res=await api('/api/system/settings',{method:'POST',body});
-  if(!res.ok)showToast('\u274C Failed to save setting','error');
-  else{showToast('\u2705 Setting saved','success');syncSystemStatus();}
-}
+async function toggleSetting(key,val){const body={};body[key]=val;const res=await api('/api/system/settings',{method:'POST',body});if(!res.ok)showToast('\u274C Failed to save setting','error');else{showToast('\u2705 Setting saved','success');syncSystemStatus();}}
 async function saveSetting(key,val){await toggleSetting(key,val);}
-async function saveConfig(){
-  const open=document.getElementById('cfg-open').value;
-  const close=document.getElementById('cfg-close').value;
-  const res=await api('/api/system/settings',{method:'POST',body:{opening_time:open,closing_time:close}});
-  if(res.ok)showToast('\u2705 Business hours saved','success');
-  else showToast('\u274C '+res.error,'error');
-}
+async function saveConfig(){const open=document.getElementById('cfg-open').value;const close=document.getElementById('cfg-close').value;const res=await api('/api/system/settings',{method:'POST',body:{opening_time:open,closing_time:close}});if(res.ok)showToast('\u2705 Business hours saved','success');else showToast('\u274C '+res.error,'error');}
 
 // ── EMERGENCY ──
-const EMERGENCY_META={
-  shutdown:{icon:'\uD83D\uDED1',label:'System Shutdown',theme:'danger',desc:'Maintenance mode is now ON. All non-superadmin users are blocked from signing in.'},
-  enable_system:{icon:'\u2705',label:'System Enabled',theme:'success',desc:'Maintenance mode is now OFF. All users can log in normally.'},
-  reset_admin_passwords:{icon:'\uD83D\uDD11',label:'Admin Passwords Reset',theme:'warn',desc:'New temporary passwords generated. Save them immediately.'},
-  disable_promos:{icon:'\uD83C\uDF81',label:'All Promos Disabled',theme:'warn',desc:'All active promo codes have been deactivated system-wide.'},
-  force_logout:{icon:'\uD83D\uDD10',label:'All Sessions Invalidated',theme:'info',desc:'All currently logged-in users will be logged out on their next request.'}
-};
+const EMERGENCY_META={shutdown:{icon:'\uD83D\uDED1',label:'System Shutdown',theme:'danger',desc:'Maintenance mode is now ON.'},enable_system:{icon:'\u2705',label:'System Enabled',theme:'success',desc:'Maintenance mode is now OFF.'},reset_admin_passwords:{icon:'\uD83D\uDD11',label:'Admin Passwords Reset',theme:'warn',desc:'New temporary passwords generated.'},disable_promos:{icon:'\uD83C\uDF81',label:'All Promos Disabled',theme:'warn',desc:'All promo codes deactivated.'},force_logout:{icon:'\uD83D\uDD10',label:'All Sessions Invalidated',theme:'info',desc:'All active sessions invalidated.'}};
 function renderEmergencyResult(action,serverData){
   const meta=EMERGENCY_META[action]||{icon:'\u26A1',label:action,theme:'info',desc:''};
-  const themeMap={
-    danger:{bg:'var(--danger-bg)',border:'var(--danger-border)',color:'var(--danger)'},
-    success:{bg:'var(--success-bg)',border:'var(--success-border)',color:'var(--success)'},
-    warn:{bg:'var(--warn-bg)',border:'var(--warn-border)',color:'var(--warn)'},
-    info:{bg:'var(--blue-bg)',border:'var(--blue-border)',color:'var(--blue)'},
-  };
+  const themeMap={danger:{bg:'var(--danger-bg)',border:'var(--danger-border)',color:'var(--danger)'},success:{bg:'var(--success-bg)',border:'var(--success-border)',color:'var(--success)'},warn:{bg:'var(--warn-bg)',border:'var(--warn-border)',color:'var(--warn)'},info:{bg:'var(--blue-bg)',border:'var(--blue-border)',color:'var(--blue)'}};
   const t=themeMap[meta.theme]||themeMap.info;
   let extra='';
-  if(action==='shutdown'){
-    ['cfg-maintenance','sys-maintenance'].forEach(id=>{const el=document.getElementById(id);if(el)el.checked=true;});
-    _lastMaintState=true;
-    const crown=document.getElementById('sa-crown-badge');
-    if(crown){crown.style.background='rgba(192,57,43,.12)';crown.style.borderColor='rgba(192,57,43,.35)';crown.style.color='var(--danger)';crown.textContent='\uD83D\uDD27 Maintenance Mode';}
-  }
-  if(action==='enable_system'){
-    ['cfg-maintenance','sys-maintenance'].forEach(id=>{const el=document.getElementById(id);if(el)el.checked=false;});
-    _lastMaintState=false;
-    const crown=document.getElementById('sa-crown-badge');
-    if(crown){crown.style.background='';crown.style.borderColor='';crown.style.color='';crown.textContent='\uD83D\uDC51 Root Access';}
-  }
-  if(action==='reset_admin_passwords'&&serverData.reset_summary?.length){
-    extra=`<div style="margin-top:12px;border-radius:8px;overflow:hidden;border:1px solid ${t.border}">
-      <div style="padding:8px 12px;background:${t.bg};font-family:'DM Mono',monospace;font-size:.5rem;letter-spacing:.15em;text-transform:uppercase;color:${t.color}">\u26A0\uFE0F SAVE THESE NOW \u2014 shown once only</div>
-      ${serverData.reset_summary.map(r=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-top:1px solid ${t.border};gap:12px;flex-wrap:wrap"><span style="font-family:'DM Mono',monospace;font-size:.6rem;color:var(--text2)">${r.email}</span><span style="font-family:'DM Mono',monospace;font-size:.7rem;font-weight:600;color:var(--text);background:var(--bg3);padding:3px 10px;border-radius:6px;user-select:all">${r.tmp_password}</span></div>`).join('')}
-    </div>`;
-  }
-  return `<div style="padding:16px 18px;border-radius:12px;background:${t.bg};border:1px solid ${t.border};animation:fadeUp .3s var(--ease)">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
-      <span style="font-size:1.2rem">${meta.icon}</span>
-      <span style="font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:${t.color};font-weight:600">${meta.label}</span>
-      <span style="margin-left:auto;font-family:'DM Mono',monospace;font-size:.46rem;color:var(--text3)">${new Date().toLocaleTimeString('en-PH',{hour:'2-digit',minute:'2-digit'})}</span>
-    </div>
-    <div style="font-size:.8rem;color:var(--text2);line-height:1.5">${meta.desc}</div>${extra}
-  </div>`;
+  if(action==='shutdown'){['cfg-maintenance','sys-maintenance'].forEach(id=>{const el=document.getElementById(id);if(el)el.checked=true;});_lastMaintState=true;}
+  if(action==='enable_system'){['cfg-maintenance','sys-maintenance'].forEach(id=>{const el=document.getElementById(id);if(el)el.checked=false;});_lastMaintState=false;}
+  if(action==='reset_admin_passwords'&&serverData.reset_summary?.length){extra=`<div style="margin-top:12px;border-radius:8px;overflow:hidden;border:1px solid ${t.border}"><div style="padding:8px 12px;background:${t.bg};font-family:'DM Mono',monospace;font-size:.5rem;letter-spacing:.15em;text-transform:uppercase;color:${t.color}">\u26A0\uFE0F SAVE THESE NOW</div>${serverData.reset_summary.map(r=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-top:1px solid ${t.border};gap:12px"><span style="font-family:'DM Mono',monospace;font-size:.6rem;color:var(--text2)">${r.email}</span><span style="font-family:'DM Mono',monospace;font-size:.7rem;font-weight:600;color:var(--text);background:var(--bg3);padding:3px 10px;border-radius:6px">${r.tmp_password}</span></div>`).join('')}</div>`;}
+  return `<div style="padding:16px 18px;border-radius:12px;background:${t.bg};border:1px solid ${t.border};animation:fadeUp .3s var(--ease)"><div style="display:flex;align-items:center;gap:10px;margin-bottom:6px"><span style="font-size:1.2rem">${meta.icon}</span><span style="font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:${t.color};font-weight:600">${meta.label}</span></div><div style="font-size:.8rem;color:var(--text2)">${meta.desc}</div>${extra}</div>`;
 }
 function confirmEmergency(action,msg){
   confirmAction(msg,async()=>{
-    const resultEl=document.getElementById('emergency-result');
-    resultEl.style.display='block';
-    resultEl.innerHTML=`<div style="padding:14px 18px;border-radius:12px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;gap:10px"><span class="spinner"></span><span style="font-family:'DM Mono',monospace;font-size:.56rem;color:var(--text3);letter-spacing:.1em;text-transform:uppercase">Executing ${action.replace(/_/g,' ')}\u2026</span></div>`;
+    const resultEl=document.getElementById('emergency-result');resultEl.style.display='block';
+    resultEl.innerHTML=`<div style="padding:14px 18px;border-radius:12px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;gap:10px"><span class="spinner"></span><span style="font-family:'DM Mono',monospace;font-size:.56rem;color:var(--text3)">Executing\u2026</span></div>`;
     const res=await api(`/api/superadmin/emergency/${action}`,{method:'POST'});
     if(res.ok){showToast(`\u2705 ${action.replace(/_/g,' ')} executed`,'success');resultEl.innerHTML=renderEmergencyResult(action,res.data);loadAuditLogs();}
     else{showToast('\u274C '+res.error,'error');resultEl.innerHTML=`<div style="padding:14px 18px;border-radius:12px;background:var(--danger-bg);border:1px solid var(--danger-border)"><span style="font-family:'DM Mono',monospace;font-size:.56rem;color:var(--danger)">\u274C Error: ${res.error}</span></div>`;}
@@ -1248,129 +1743,155 @@ function confirmEmergency(action,msg){
 }
 
 // ── ACCOUNT SECURITY ──
-function togglePw(inputId,btn){
-  const el=document.getElementById(inputId);
-  const isText=el.type==='text';
-  el.type=isText?'password':'text';
-  btn.textContent=isText?'\uD83D\uDC41':'\uD83D\uDE48';
-}
-function updatePasswordStrength(pw){
-  const bar=document.getElementById('pw-strength-bar');
-  const label=document.getElementById('pw-strength-label');
-  if(!bar||!label)return;
-  let score=0;
-  if(pw.length>=8)score++;if(pw.length>=12)score++;
-  if(/[A-Z]/.test(pw))score++;if(/[0-9]/.test(pw))score++;if(/[^A-Za-z0-9]/.test(pw))score++;
-  const levels=[{pct:'0%',color:'var(--danger)',text:''},{pct:'20%',color:'var(--danger)',text:'Very Weak'},{pct:'40%',color:'var(--warn)',text:'Weak'},{pct:'60%',color:'var(--warn)',text:'Fair'},{pct:'80%',color:'var(--blue)',text:'Strong'},{pct:'100%',color:'var(--success)',text:'Very Strong'}];
-  const l=levels[score]||levels[0];
-  bar.style.width=l.pct;bar.style.background=l.color;
-  label.textContent=l.text;label.style.color=l.color;
-}
-function setSecMsg(msg,type='error'){
-  const el=document.getElementById('sec-msg');if(!el)return;
-  el.style.cssText=`display:block;padding:9px 12px;border-radius:8px;font-size:.8rem;`+
-    (type==='success'?'background:var(--success-bg);border:1px solid var(--success-border);color:var(--success);':'background:var(--danger-bg);border:1px solid var(--danger-border);color:var(--danger);');
-  el.textContent=msg;
-}
-async function changeOwnPassword(){
-  const cur=document.getElementById('sec-cur').value;
-  const newPw=document.getElementById('sec-new').value;
-  const confirm=document.getElementById('sec-confirm').value;
-  const btn=document.getElementById('sec-btn');
-  document.getElementById('sec-msg').style.display='none';
-  if(!cur||!newPw||!confirm){setSecMsg('\u26A0\uFE0F All fields are required.');return;}
-  if(newPw.length<8){setSecMsg('\u26A0\uFE0F Password must be at least 8 characters.');return;}
-  if(newPw!==confirm){setSecMsg('\u26A0\uFE0F New passwords do not match.');return;}
-  btn.textContent='Updating\u2026';btn.disabled=true;
-  const res=await api('/api/superadmin/change-own-password',{method:'POST',body:{current_password:cur,new_password:newPw,confirm_password:confirm}});
-  btn.textContent='Update Password';btn.disabled=false;
-  if(res.ok){setSecMsg('\u2705 Password updated! Please log in again.','success');['sec-cur','sec-new','sec-confirm'].forEach(id=>document.getElementById(id).value='');updatePasswordStrength('');}
-  else{setSecMsg('\u274C '+(res.error||'Failed to update password.'));}
-}
-async function emergencyReset(){
-  const email=document.getElementById('emg-email').value.trim();
-  const phrase=document.getElementById('emg-phrase').value.trim();
-  const btn=document.getElementById('emg-btn');
-  const msgEl=document.getElementById('emg-msg');
-  if(!email||!phrase){showToast('\u26A0\uFE0F Enter both email and recovery phrase.','error');return;}
-  btn.textContent='Sending\u2026';btn.disabled=true;
-  await api('/api/superadmin/request-reset',{method:'POST',body:{email,secret_phrase:phrase}});
-  btn.textContent='Send Recovery Email';btn.disabled=false;
-  if(msgEl){msgEl.style.display='block';msgEl.textContent='\uD83D\uDCE7 If the email and phrase are valid, a reset link has been sent.';}
-  document.getElementById('emg-phrase').value='';
-}
-function copyCmd(btn){
-  navigator.clipboard.writeText('flask recover-superadmin').then(()=>{btn.textContent='Copied!';setTimeout(()=>btn.textContent='Copy',2000);});
-}
+function togglePw(inputId,btn){const el=document.getElementById(inputId);const isText=el.type==='text';el.type=isText?'password':'text';btn.textContent=isText?'\uD83D\uDC41':'\uD83D\uDE48';}
+function updatePasswordStrength(pw){const bar=document.getElementById('pw-strength-bar');const label=document.getElementById('pw-strength-label');if(!bar||!label)return;let score=0;if(pw.length>=8)score++;if(pw.length>=12)score++;if(/[A-Z]/.test(pw))score++;if(/[0-9]/.test(pw))score++;if(/[^A-Za-z0-9]/.test(pw))score++;const levels=[{pct:'0%',color:'var(--danger)',text:''},{pct:'20%',color:'var(--danger)',text:'Very Weak'},{pct:'40%',color:'var(--warn)',text:'Weak'},{pct:'60%',color:'var(--warn)',text:'Fair'},{pct:'80%',color:'var(--blue)',text:'Strong'},{pct:'100%',color:'var(--success)',text:'Very Strong'}];const l=levels[score]||levels[0];bar.style.width=l.pct;bar.style.background=l.color;label.textContent=l.text;label.style.color=l.color;}
+function setSecMsg(msg,type='error'){const el=document.getElementById('sec-msg');if(!el)return;el.style.cssText=`display:block;padding:9px 12px;border-radius:8px;font-size:.8rem;`+(type==='success'?'background:var(--success-bg);border:1px solid var(--success-border);color:var(--success);':'background:var(--danger-bg);border:1px solid var(--danger-border);color:var(--danger);');el.textContent=msg;}
+async function changeOwnPassword(){const cur=document.getElementById('sec-cur').value;const newPw=document.getElementById('sec-new').value;const confirm=document.getElementById('sec-confirm').value;const btn=document.getElementById('sec-btn');document.getElementById('sec-msg').style.display='none';if(!cur||!newPw||!confirm){setSecMsg('\u26A0\uFE0F All fields are required.');return;}if(newPw.length<8){setSecMsg('\u26A0\uFE0F Password must be at least 8 characters.');return;}if(newPw!==confirm){setSecMsg('\u26A0\uFE0F New passwords do not match.');return;}btn.textContent='Updating\u2026';btn.disabled=true;const res=await api('/api/superadmin/change-own-password',{method:'POST',body:{current_password:cur,new_password:newPw,confirm_password:confirm}});btn.textContent='Update Password';btn.disabled=false;if(res.ok){setSecMsg('\u2705 Password updated! Please log in again.','success');['sec-cur','sec-new','sec-confirm'].forEach(id=>document.getElementById(id).value='');updatePasswordStrength('');}else{setSecMsg('\u274C '+(res.error||'Failed to update password.'));}}
+function copyCmd(btn){navigator.clipboard.writeText('flask recover-superadmin').then(()=>{btn.textContent='Copied!';setTimeout(()=>btn.textContent='Copy',2000);});}
 
 // ── BACKUP ──
 const backupHistory=[];
 async function createBackup(){
   const res=await api('/api/superadmin/backup',{method:'POST'});
-  if(res.ok){
-    const ts=res.data.timestamp||new Date().toLocaleString('en-PH');
-    backupHistory.unshift(ts);
-    document.getElementById('last-backup').textContent=ts;
-    document.getElementById('backup-history').innerHTML=backupHistory.map(b=>`<div class="inline-row"><span class="ikey">${b}</span><span class="pill green">Saved</span></div>`).join('');
-    showToast('\uD83D\uDCBE Backup created','success');
-  }else{showToast('\u274C Backup failed','error');}
+  if(res.ok){const ts=res.data.timestamp||new Date().toLocaleString('en-PH');backupHistory.unshift(ts);document.getElementById('last-backup').textContent=ts;document.getElementById('backup-history').innerHTML=backupHistory.map(b=>`<div class="inline-row"><span class="ikey">${b}</span><span class="pill green">Saved</span></div>`).join('');showToast('\uD83D\uDCBE Backup created','success');}else{showToast('\u274C Backup failed','error');}
 }
 
 // ── CONFIRM ──
-function confirmAction(msg,callback){
-  document.getElementById('confirm-msg').textContent=msg;
-  const btn=document.getElementById('confirm-ok-btn');
-  btn.onclick=()=>{closeModal('confirm');callback();};
-  openModal('confirm');
+function confirmAction(msg,callback){document.getElementById('confirm-msg').textContent=msg;const btn=document.getElementById('confirm-ok-btn');btn.onclick=()=>{closeModal('confirm');callback();};openModal('confirm');}
+
+// ══════════════════════════════════════════════════
+//  UI CUSTOMIZER
+// ══════════════════════════════════════════════════
+
+function switchUITab(tab){
+  document.querySelectorAll('.ui-page-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.ui-pane').forEach(p=>p.classList.remove('active'));
+  document.getElementById('uitab-'+tab).classList.add('active');
+  document.getElementById('uipane-'+tab).classList.add('active');
 }
 
-// ── ME ──
-async function loadMe(){
-  const res=await api('/api/me');
-  if(res.ok&&res.data.full_name){
-    document.getElementById('sb-saname').textContent=res.data.full_name;
-    document.getElementById('sb-av').textContent=res.data.full_name.charAt(0).toUpperCase();
+let _selectedPreset='teal';
+const PRESETS={
+  teal:{name:'Ocean Teal',accent:'#00B4D8',accent2:'#0077A8',bg:'#E8F8FB',text:'#0A2A35'},
+  navy:{name:'Deep Navy',accent:'#1A6FA8',accent2:'#0C244A',bg:'#E6EFF8',text:'#0A1E30'},
+  emerald:{name:'Emerald Fresh',accent:'#059669',accent2:'#065F46',bg:'#ECFDF5',text:'#052e16'},
+  violet:{name:'Royal Violet',accent:'#7C3AED',accent2:'#4C1D95',bg:'#F5F3FF',text:'#1e0a40'},
+  rose:{name:'Rose Red',accent:'#E11D48',accent2:'#881337',bg:'#FFF1F2',text:'#3b0015'},
+  amber:{name:'Warm Amber',accent:'#D97706',accent2:'#92400E',bg:'#FFFBEB',text:'#451a03'}
+};
+
+function applyPreset(name){
+  _selectedPreset=name;
+  document.querySelectorAll('.theme-preset').forEach(p=>p.classList.remove('selected'));
+  document.getElementById('tp-'+name)?.classList.add('selected');
+  const disp=document.getElementById('preset-name-display');
+  if(disp)disp.textContent=PRESETS[name]?.name||name;
+  const preset=PRESETS[name];
+  if(preset){
+    const fields={accent:'color-accent',accent2:'color-accent2',bg:'color-bg',text:'color-text'};
+    Object.entries(fields).forEach(([key,id])=>{
+      const picker=document.getElementById(id);const hex=document.getElementById(id+'-hex');
+      if(picker)picker.value=preset[key];if(hex)hex.value=preset[key];
+    });
   }
 }
 
-// ── BUBBLES (matching operator page) ──
+async function saveThemePreset(){
+  const preset=PRESETS[_selectedPreset];
+  if(!preset){showToast('No preset selected','error');return;}
+  const body={ui_theme_preset:_selectedPreset,ui_accent:preset.accent,ui_accent2:preset.accent2,ui_bg:preset.bg,ui_text:preset.text};
+  const res=await api('/api/system/settings',{method:'POST',body});
+  if(res.ok){showToast(`\u2705 Theme "${preset.name}" applied — refresh pages to see changes`,'success');}
+  else{showToast('\u274C '+res.error,'error');}
+}
+
+function updateColorPreview(key,val){const hex=document.getElementById('color-'+key+'-hex');if(hex)hex.value=val;}
+function syncColorPicker(key,val){if(val.match(/^#[0-9a-fA-F]{6}$/)){const picker=document.getElementById('color-'+key);if(picker)picker.value=val;}}
+function resetCustomColors(){applyPreset(_selectedPreset);showToast('Colors reset to preset','info');}
+async function applyCustomColors(){
+  const accent=document.getElementById('color-accent').value;
+  const accent2=document.getElementById('color-accent2').value;
+  const bg=document.getElementById('color-bg').value;
+  const text=document.getElementById('color-text').value;
+  const res=await api('/api/system/settings',{method:'POST',body:{ui_accent:accent,ui_accent2:accent2,ui_bg:bg,ui_text:text}});
+  if(res.ok){showToast('\u2705 Custom colors saved — refresh to apply','success');}
+  else{showToast('\u274C '+res.error,'error');}
+}
+
+let _selectedFont='dmsans';
+const FONT_NAMES={dmsans:'DM Sans',inter:'Inter',poppins:'Poppins',lato:'Lato'};
+function selectFont(font){
+  _selectedFont=font;
+  document.querySelectorAll('.font-option').forEach(f=>f.classList.remove('selected'));
+  document.querySelectorAll('.font-option .fo-check').forEach(f=>f.textContent='');
+  const optEl=document.getElementById('font-'+font);if(optEl){optEl.classList.add('selected');const chk=optEl.querySelector('.fo-check');if(chk)chk.textContent='\u2713';}
+  const disp=document.getElementById('font-name-display');if(disp)disp.textContent=FONT_NAMES[font]||font;
+}
+async function saveFont(){
+  const res=await api('/api/system/settings',{method:'POST',body:{ui_font:_selectedFont}});
+  if(res.ok){showToast(`\u2705 Font "${FONT_NAMES[_selectedFont]}" saved — refresh to apply`,'success');}
+  else{showToast('\u274C '+res.error,'error');}
+}
+
+async function saveBrandSettings(){
+  const body={ui_brand_name:document.getElementById('ui-brand-name').value,ui_tagline:document.getElementById('ui-tagline').value,ui_year:document.getElementById('ui-year').value,ui_location:document.getElementById('ui-location').value};
+  const res=await api('/api/system/settings',{method:'POST',body});
+  if(res.ok){showToast('\u2705 Brand settings saved','success');}else{showToast('\u274C '+res.error,'error');}
+}
+async function saveLoginPage(){
+  const body={login_h1:document.getElementById('login-h1').value,login_h2:document.getElementById('login-h2').value,login_h3:document.getElementById('login-h3').value,login_welcome:document.getElementById('login-welcome').value,login_sub:document.getElementById('login-sub').value};
+  const res=await api('/api/system/settings',{method:'POST',body});
+  if(res.ok){showToast('\u2705 Login page content saved','success');}else{showToast('\u274C '+res.error,'error');}
+}
+async function saveLoginFeatures(){
+  const body={login_f1:document.getElementById('login-f1').value,login_f2:document.getElementById('login-f2').value,login_f3:document.getElementById('login-f3').value,login_f4:document.getElementById('login-f4').value};
+  const res=await api('/api/system/settings',{method:'POST',body});
+  if(res.ok){showToast('\u2705 Feature points saved','success');}else{showToast('\u274C '+res.error,'error');}
+}
+async function saveTicker(){
+  const body={};for(let i=1;i<=6;i++){const el=document.getElementById('ticker-'+i);if(el)body['ui_ticker_'+i]=el.value;}
+  const res=await api('/api/system/settings',{method:'POST',body});
+  if(res.ok){showToast('\u2705 Ticker items saved','success');}else{showToast('\u274C '+res.error,'error');}
+}
+
+let _uiDirty=false;
+function markUIDirty(){_uiDirty=true;}
+async function saveCustomerUI(){
+  const body={cu_sec_dashboard:document.getElementById('cu-sec-dashboard')?.checked?'1':'0',cu_sec_status:document.getElementById('cu-sec-status')?.checked?'1':'0',cu_sec_history:document.getElementById('cu-sec-history')?.checked?'1':'0',cu_sec_feedback:document.getElementById('cu-sec-feedback')?.checked?'1':'0',cu_sec_profile:document.getElementById('cu-sec-profile')?.checked?'1':'0',cu_notif:document.getElementById('cu-notif')?.checked?'1':'0',cu_title:document.getElementById('cu-title')?.value,cu_greeting:document.getElementById('cu-greeting')?.value,cu_noorder:document.getElementById('cu-noorder')?.value,cu_ticker:document.getElementById('cu-ticker')?.value};
+  const res=await api('/api/system/settings',{method:'POST',body});
+  if(res.ok){showToast('\u2705 Customer portal UI saved','success');_uiDirty=false;}else{showToast('\u274C '+res.error,'error');}
+}
+async function saveOperatorUI(){
+  const keys=['dashboard','machines','queue','encode','folding','pickup','promos','issues'];
+  const body={};keys.forEach(k=>{const el=document.getElementById('op-sec-'+k);if(el)body['op_sec_'+k]=el.checked?'1':'0';});
+  body.op_title=document.getElementById('op-title')?.value;body.op_eyebrow=document.getElementById('op-eyebrow')?.value;body.op_badge=document.getElementById('op-badge')?.value;body.op_logout=document.getElementById('op-logout')?.value;
+  const res=await api('/api/system/settings',{method:'POST',body});
+  if(res.ok){showToast('\u2705 Operator panel UI saved','success');_uiDirty=false;}else{showToast('\u274C '+res.error,'error');}
+}
+async function saveAdminUI(){
+  const keys=['dashboard','analytics','revenue','orders','staff','customers','archives','feedback','reports'];
+  const body={};keys.forEach(k=>{const el=document.getElementById('adm-sec-'+k);if(el)body['adm_sec_'+k]=el.checked?'1':'0';});
+  body.adm_title=document.getElementById('adm-title')?.value;body.adm_eyebrow=document.getElementById('adm-eyebrow')?.value;body.adm_badge=document.getElementById('adm-badge')?.value;body.adm_greeting=document.getElementById('adm-greeting')?.value;
+  const res=await api('/api/system/settings',{method:'POST',body});
+  if(res.ok){showToast('\u2705 Admin panel UI saved','success');_uiDirty=false;}else{showToast('\u274C '+res.error,'error');}
+}
+function resetAdminSections(){const keys=['dashboard','analytics','revenue','orders','staff','customers','archives','feedback','reports'];keys.forEach(k=>{const el=document.getElementById('adm-sec-'+k);if(el)el.checked=true;});showToast('All sections re-enabled','info');}
+async function saveAllUISettings(){await saveCustomerUI();await saveOperatorUI();await saveAdminUI();showToast('\u2705 All UI settings saved','success');}
+
+// ── ME ──
+async function loadMe(){const res=await api('/api/me');if(res.ok&&res.data.full_name){document.getElementById('sb-saname').textContent=res.data.full_name;document.getElementById('sb-av').textContent=res.data.full_name.charAt(0).toUpperCase();}}
+
+// ── BUBBLES ──
 (function initBubbles(){
-  const canvas=document.getElementById('bubblesCanvas');
-  if(!canvas)return;
-  const ctx=canvas.getContext('2d');
-  let W,H,bubbles=[];
+  const canvas=document.getElementById('bubblesCanvas');if(!canvas)return;
+  const ctx=canvas.getContext('2d');let W,H,bubbles=[];
   function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
   resize();window.addEventListener('resize',resize);
   const isDark=()=>document.documentElement.dataset.theme==='dark';
-  function makeBubble(){
-    const r=5+Math.random()*22;
-    return{x:Math.random()*W,y:H+r+Math.random()*200,r,speed:.3+Math.random()*.6,drift:(Math.random()-.5)*.5,wobble:Math.random()*Math.PI*2,wobbleSpeed:.015+Math.random()*.02,opacity:.08+Math.random()*.18};
-  }
+  function makeBubble(){const r=5+Math.random()*22;return{x:Math.random()*W,y:H+r+Math.random()*200,r,speed:.3+Math.random()*.6,drift:(Math.random()-.5)*.5,wobble:Math.random()*Math.PI*2,wobbleSpeed:.015+Math.random()*.02,opacity:.08+Math.random()*.18};}
   for(let i=0;i<28;i++){const b=makeBubble();b.y=Math.random()*H;bubbles.push(b);}
-  function drawBubble(b){
-    const base=isDark()?'0,212,245':'0,180,216';
-    ctx.save();ctx.globalAlpha=b.opacity;
-    const grad=ctx.createRadialGradient(b.x-b.r*.3,b.y-b.r*.3,b.r*.05,b.x,b.y,b.r);
-    grad.addColorStop(0,'rgba(255,255,255,0.5)');
-    grad.addColorStop(.5,`rgba(${base},0.07)`);
-    grad.addColorStop(1,`rgba(${base},0.18)`);
-    ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,Math.PI*2);
-    ctx.fillStyle=grad;ctx.fill();
-    ctx.strokeStyle=`rgba(${base},0.3)`;ctx.lineWidth=1;ctx.stroke();
-    ctx.globalAlpha=b.opacity*.6;
-    ctx.beginPath();ctx.arc(b.x-b.r*.28,b.y-b.r*.28,b.r*.18,0,Math.PI*2);
-    ctx.fillStyle='rgba(255,255,255,0.8)';ctx.fill();
-    ctx.restore();
-  }
-  function animate(){
-    ctx.clearRect(0,0,W,H);
-    bubbles.forEach((b,i)=>{
-      b.wobble+=b.wobbleSpeed;b.x+=b.drift+Math.sin(b.wobble)*.3;b.y-=b.speed;
-      if(b.y+b.r<-10)bubbles[i]=makeBubble();
-      drawBubble(b);
-    });
-    requestAnimationFrame(animate);
-  }
+  function drawBubble(b){const base=isDark()?'0,212,245':'0,180,216';ctx.save();ctx.globalAlpha=b.opacity;const grad=ctx.createRadialGradient(b.x-b.r*.3,b.y-b.r*.3,b.r*.05,b.x,b.y,b.r);grad.addColorStop(0,'rgba(255,255,255,0.5)');grad.addColorStop(.5,`rgba(${base},0.07)`);grad.addColorStop(1,`rgba(${base},0.18)`);ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,Math.PI*2);ctx.fillStyle=grad;ctx.fill();ctx.strokeStyle=`rgba(${base},0.3)`;ctx.lineWidth=1;ctx.stroke();ctx.globalAlpha=b.opacity*.6;ctx.beginPath();ctx.arc(b.x-b.r*.28,b.y-b.r*.28,b.r*.18,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,0.8)';ctx.fill();ctx.restore();}
+  function animate(){ctx.clearRect(0,0,W,H);bubbles.forEach((b,i)=>{b.wobble+=b.wobbleSpeed;b.x+=b.drift+Math.sin(b.wobble)*.3;b.y-=b.speed;if(b.y+b.r<-10)bubbles[i]=makeBubble();drawBubble(b);});requestAnimationFrame(animate);}
   animate();
 })();
 

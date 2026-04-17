@@ -1,6 +1,6 @@
 """
 hardcoded account for superadmin/developer
-email= superadmin@laundry.com
+email= adminmanagement1200@gmail.com
 pass = StrongPass#2026!
 Laundry Lounge Management System — Flask Backend
 app.py  (Audited & updated — production-grade)
@@ -18,6 +18,7 @@ NEW in this revision:
   FIX2.  Customer list excludes archived users.
   FIX3.  Staff list excludes archived users.
 """
+import json  # already imported in your app.py
 from flask_mail import Mail, Message as MailMessage
 import threading
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -54,7 +55,7 @@ app.permanent_session_lifetime = timedelta(days=7)
 app.config["MYSQL_HOST"] = os.environ.get("MYSQL_HOST", "localhost")
 app.config["MYSQL_USER"] = os.environ.get("MYSQL_USER", "root")
 app.config["MYSQL_PASSWORD"] = os.environ.get("MYSQL_PASSWORD", "")
-app.config["MYSQL_DB"] = os.environ.get("MYSQL_DB", "llms_db")
+app.config["MYSQL_DB"] = os.environ.get("MYSQL_DB", "llms_db_2026")
 app.config["MYSQL_CURSORCLASS"] = "DictCursor"
 
 mysql = MySQL(app)
@@ -84,9 +85,9 @@ mail = Mail(app)
 
 # ─── Constants ──────────────────────────────────────────────────
 MACHINE_CAPACITY = 8
-WASH_SECS = 1 * 60      # 1 minute per stage (dev mode; real = 44*60)
-DRY_SECS = 1 * 60
-DOWNY_SECS = 1 * 60
+WASH_SECS = 10 * 60      # 1 minute per stage (dev mode; real = 44*60)
+DRY_SECS = 5 * 60
+DOWNY_SECS = 5 * 60
 DRYER_SURCHARGE = 20.0
 
 SERVICE_RATES = {
@@ -96,6 +97,136 @@ SERVICE_RATES = {
     "heavy_wash":  {"label": "Heavy Wash (Comforter)", "rate": 75},
     "soak_whites": {"label": "Soak for Whites",        "rate": 50},
 }
+
+UI_DEFAULTS = {
+    # ── Theme ──────────────────────────────────────────────────
+    "ui_theme_preset":  "teal",
+    "ui_accent":        "#00B4D8",
+    "ui_accent2":       "#0077A8",
+    "ui_bg":            "#E8F8FB",
+    "ui_text":          "#0A2A35",
+    "ui_font":          "dmsans",
+
+    # ── Brand ──────────────────────────────────────────────────
+    "ui_brand_name":    "Laundry Lounge",
+    "ui_tagline":       "Your Local Laundry Partner",
+    "ui_year":          "2026",
+    "ui_location":      "Sta. Rosa, Nueva Ecija",
+
+    # ── Login page content ─────────────────────────────────────
+    "login_h1":         "Fresher.",
+    "login_h2":         "Faster.",
+    "login_h3":         "Better.",
+    "login_welcome":    "Welcome back",
+    "login_sub":        "Sign in — your role is detected automatically",
+    "login_f1":         "Real-time Laundry Tracking",
+    "login_f2":         "Sales & Expense Reports",
+    "login_f3":         "Customer Management",
+    "login_f4":         "Fast Service Processing",
+
+    # ── Ticker items ───────────────────────────────────────────
+    "ui_ticker_1":      "Fast Pickup",
+    "ui_ticker_2":      "Laundry Tracking",
+    "ui_ticker_3":      "Smooth Service",
+    "ui_ticker_4":      "Same-Day Service",
+    "ui_ticker_5":      "Fresh Every Time",
+    "ui_ticker_6":      "Laundry Lounge",
+
+    # ── Customer portal sections ───────────────────────────────
+    "cu_sec_dashboard": "1",
+    "cu_sec_status":    "1",
+    "cu_sec_history":   "1",
+    "cu_sec_feedback":  "1",
+    "cu_sec_profile":   "1",
+    "cu_notif":         "1",
+    "cu_title":         "Welcome Back",
+    "cu_greeting":      "Here's your laundry status at a glance.",
+    "cu_noorder":       "No active service right now.",
+    "cu_ticker":        "Laundry Lounge · Monitor Your Laundry Live · Wash · Dry · Fold",
+
+    # ── Operator panel sections ────────────────────────────────
+    "op_sec_dashboard": "1",
+    "op_sec_machines":  "1",
+    "op_sec_queue":     "1",
+    "op_sec_encode":    "1",
+    "op_sec_folding":   "1",
+    "op_sec_pickup":    "1",
+    "op_sec_promos":    "1",
+    "op_sec_issues":    "1",
+    "op_title":         "Machine Operator",
+    "op_eyebrow":       "Operator Portal · 2026",
+    "op_badge":         "Operator Access",
+    "op_logout":        "Logout",
+
+    # ── Admin panel sections ────────────────────────────────────
+    "adm_sec_dashboard":  "1",
+    "adm_sec_analytics":  "1",
+    "adm_sec_revenue":    "1",
+    "adm_sec_orders":     "1",
+    "adm_sec_staff":      "1",
+    "adm_sec_customers":  "1",
+    "adm_sec_archives":   "1",
+    "adm_sec_feedback":   "1",
+    "adm_sec_reports":    "1",
+    "adm_title":          "Admin Panel",
+    "adm_eyebrow":        "Admin Panel · 2026",
+    "adm_badge":          "Admin Access",
+    "adm_greeting":       "Welcome back. Here's today's operational overview.",
+
+    # ── Role permissions (stored as JSON strings) ──────────────
+    "perm_admin": json.dumps({
+        "analytics":     True,
+        "revenue":       True,
+        "export":        True,
+        "staff-manage":  True,
+        "staff-edit":    True,
+        "staff-archive": True,
+        "cust-view":     True,
+        "cust-block":    True,
+        "cust-delete":   True,
+        "promos":        True,
+        "pricing":       True,
+        "settings-view": True,
+        "settings-edit": False,
+        "feedback":      True,
+    }),
+    "perm_staff": json.dumps({
+        "encode":           True,
+        "assign":           True,
+        "fold":             True,
+        "complete":         True,
+        "machines-view":    True,
+        "machines-toggle":  True,
+        "promos-view":      True,
+        "promos-apply":     True,
+        "issues":           True,
+        "email":            True,
+    }),
+    "perm_customer": json.dumps({
+        "status":      True,
+        "history":     True,
+        "receipts":    True,
+        "feedback":    True,
+        "profile":     True,
+        "changepass":  True,
+        "register":    True,
+    }),
+}
+
+
+def get_ui_settings() -> dict:
+    """
+    Return every system_settings row merged on top of UI_DEFAULTS.
+    DB values always win; missing DB rows fall back to the default.
+    Safe to call from any route that has an active app context.
+    """
+    rows = query(
+        "SELECT setting_key, setting_value FROM system_settings") or []
+    db_vals = {r["setting_key"]: r["setting_value"] for r in rows}
+    merged = dict(UI_DEFAULTS)   # start from defaults
+    merged.update(db_vals)       # overlay what's actually stored
+    return merged
+
 
 TRACKING_BASE_URL = os.environ.get(
     "TRACKING_BASE_URL", "http://localhost:5000")
@@ -610,9 +741,36 @@ def api_machines_status_public():
         return jresp({"free": 0, "busy": 0, "idle": 0, "maintenance": 0, "total": 0})
 
 
+@app.route("/api/ui/settings")
+def api_ui_settings_public():
+    """
+    Public — no authentication required.
+    Consumed by login.html, customer.html, operator.html, admin.html
+    to apply brand, theme, text, and section-visibility settings.
+
+    Sensitive/internal keys are deliberately excluded.
+    """
+    all_settings = get_ui_settings()
+
+    SAFE_PREFIXES = ("ui_", "login_", "cu_", "op_", "adm_", "ticker_")
+    EXCLUDED = {
+        "perm_admin", "perm_staff", "perm_customer",
+        "maintenance_mode", "force_logout_ts",
+        "allow_registration", "promos_enabled",
+        "opening_time", "closing_time",
+    }
+
+    public = {
+        k: v
+        for k, v in all_settings.items()
+        if any(k.startswith(p) for p in SAFE_PREFIXES)
+        and k not in EXCLUDED
+    }
+    return jresp(public)
 # ════════════════════════════════════════════════════════════════
 #  AUTH DECORATORS
 # ════════════════════════════════════════════════════════════════
+
 
 def login_required(f):
     @wraps(f)
@@ -948,6 +1106,15 @@ def db_init():
             "INSERT IGNORE INTO system_settings (setting_key, setting_value) VALUES (%s,%s)",
             (k, v), commit=True
         )
+
+        # ── Seed UI defaults on first initialisation ────────────────
+    for _k, _v in UI_DEFAULTS.items():
+        query(
+            "INSERT IGNORE INTO system_settings (setting_key, setting_value) "
+            "VALUES (%s, %s)",
+            (_k, _v), commit=True
+        )
+    # ── End UI defaults seed ────────────────────────────────────
 
     SA_EMAIL = os.getenv("SA_EMAIL",    "superadmin@laundry.com")
     SA_PASSWORD = os.getenv("SA_PASSWORD", "StrongPass#2026!")
@@ -3028,31 +3195,210 @@ def api_sa_request_reset():
 #  API — SYSTEM CONFIG
 # ════════════════════════════════════════════════════════════════
 
+"""
+╔══════════════════════════════════════════════════════════════╗
+║   app.py — UI CUSTOMIZER PATCH                               ║
+║   Apply the changes in this file to your existing app.py     ║
+║                                                              ║
+║   SUMMARY OF CHANGES                                         ║
+║   1. Add UI_DEFAULTS dict  (after SERVICE_RATES)             ║
+║   2. Add get_ui_settings() helper  (after UI_DEFAULTS)       ║
+║   3. Add /api/ui/settings  (public — login page consumes)    ║
+║   4. Replace /api/system/settings GET  (merges defaults)     ║
+║   5. Replace /api/system/settings POST  (better audit log)   ║
+║   6. Add /api/ui/reset  (superadmin factory-reset)           ║
+║   7. Add /api/ui/permissions  (parsed perm sets)             ║
+║   8. Seed UI_DEFAULTS in db_init()                           ║
+╚══════════════════════════════════════════════════════════════╝
+"""
+
+
+# ══════════════════════════════════════════════════════════════
+#  CHANGE 1
+#  Location: directly after SERVICE_RATES dict
+#  Action:   ADD the block below (do not remove anything)
+# ══════════════════════════════════════════════════════════════
+
+
+# ══════════════════════════════════════════════════════════════
+#  CHANGE 2
+#  Location: directly after UI_DEFAULTS (still near top of file)
+#  Action:   ADD the helper function below
+# ══════════════════════════════════════════════════════════════
+
+
+# ══════════════════════════════════════════════════════════════
+#  CHANGE 3
+#  Location: near the other public /api/* routes
+#            (e.g. after /api/machines/status)
+#  Action:   ADD the route below
+# ══════════════════════════════════════════════════════════════
+
+
+# ══════════════════════════════════════════════════════════════
+#  CHANGE 4  +  CHANGE 5
+#  Location: find the EXISTING two /api/system/settings routes
+#            and REPLACE both with the versions below.
+#
+#  Old GET:
+#    @app.route("/api/system/settings", methods=["GET"])
+#    @role_required("admin", "superadmin")
+#    def api_system_settings_get():
+#        rows = query("SELECT * FROM system_settings") or []
+#        return jresp({r["setting_key"]: r["setting_value"] for r in rows})
+#
+#  Old POST:
+#    @app.route("/api/system/settings", methods=["POST"])
+#    @role_required("admin", "superadmin")
+#    def api_system_settings_save():
+#        d = request.get_json(silent=True) or {}
+#        for key, val in d.items():
+#            query("INSERT INTO system_settings ...", commit=True)
+#        log_audit(...)
+#        return jresp({"ok": True})
+# ══════════════════════════════════════════════════════════════
+
 @app.route("/api/system/settings", methods=["GET"])
 @role_required("admin", "superadmin")
 def api_system_settings_get():
-    rows = query("SELECT * FROM system_settings") or []
-    return jresp({r["setting_key"]: r["setting_value"] for r in rows})
+    """
+    Returns all system + UI settings merged with defaults.
+    The superadmin UI Customizer uses this so fields always
+    pre-populate correctly even before anything has been saved.
+    """
+    return jresp(get_ui_settings())
 
 
 @app.route("/api/system/settings", methods=["POST"])
 @role_required("admin", "superadmin")
 def api_system_settings_save():
+    """
+    Upsert one or more settings.
+    Body: flat JSON object  { "key": "value", ... }
+    Produces a categorised audit log entry.
+    """
     d = request.get_json(silent=True) or {}
+    if not d:
+        return jresp({"error": "No settings provided"}, 400)
+
+    for key in d:
+        if len(key) > 120:
+            return jresp({"error": f"Key too long: {key[:40]}…"}, 400)
+
     for key, val in d.items():
         query(
-            "INSERT INTO system_settings (setting_key, setting_value) VALUES (%s,%s) "
-            "ON DUPLICATE KEY UPDATE setting_value=%s",
-            (key, str(val), str(val)), commit=True
+            "INSERT INTO system_settings (setting_key, setting_value) "
+            "VALUES (%s, %s) "
+            "ON DUPLICATE KEY UPDATE setting_value = %s",
+            (key, str(val), str(val)),
+            commit=True,
         )
-    log_audit(session["full_name"], "update_system_settings",
-              str(list(d.keys())), request.remote_addr)
-    return jresp({"ok": True})
+
+    # Categorise keys for a readable audit trail
+    ui_keys = [k for k in d if k.startswith(
+        ("ui_", "login_", "cu_", "op_", "adm_", "ticker_"))]
+    perm_keys = [k for k in d if k.startswith("perm_")]
+    sys_keys = [k for k in d
+                if k not in ui_keys and k not in perm_keys]
+
+    if ui_keys:
+        log_audit(session["full_name"], "ui_customizer_save",
+                  f"keys={ui_keys}", request.remote_addr)
+    if perm_keys:
+        log_audit(session["full_name"], "permissions_save",
+                  f"roles={perm_keys}", request.remote_addr)
+    if sys_keys:
+        log_audit(session["full_name"], "system_settings_save",
+                  f"keys={sys_keys}", request.remote_addr)
+
+    return jresp({"ok": True, "saved": list(d.keys())})
 
 
+# ══════════════════════════════════════════════════════════════
+#  CHANGE 6
+#  Location: after the /api/system/settings routes above
+#  Action:   ADD the two routes below
+# ══════════════════════════════════════════════════════════════
+
+@app.route("/api/ui/reset", methods=["POST"])
+@role_required("superadmin")
+def api_ui_reset():
+    """
+    Superadmin only — delete every UI customiser key from the DB.
+    Factory defaults (UI_DEFAULTS) take effect on the next request.
+    """
+    UI_KEY_PREFIXES = ("ui_", "login_", "cu_", "op_", "adm_", "ticker_")
+    placeholders = " OR ".join("setting_key LIKE %s" for _ in UI_KEY_PREFIXES)
+    rows = query(
+        f"SELECT setting_key FROM system_settings WHERE {placeholders}",
+        tuple(p + "%" for p in UI_KEY_PREFIXES)
+    ) or []
+
+    deleted = 0
+    for row in rows:
+        query("DELETE FROM system_settings WHERE setting_key = %s",
+              (row["setting_key"],), commit=True)
+        deleted += 1
+
+    log_audit(session["full_name"], "ui_customizer_reset",
+              f"deleted={deleted} keys", request.remote_addr)
+    return jresp({"ok": True, "deleted": deleted,
+                  "message": "UI settings reset to factory defaults."})
+
+
+@app.route("/api/ui/permissions")
+@role_required("superadmin")
+def api_ui_permissions():
+    """
+    Returns all three role permission sets pre-parsed from their
+    stored JSON strings.  Falls back to UI_DEFAULTS if not yet saved.
+    """
+    settings = get_ui_settings()
+
+    def _parse(key: str) -> dict:
+        try:
+            return json.loads(settings.get(key, "{}"))
+        except (json.JSONDecodeError, TypeError):
+            try:
+                return json.loads(UI_DEFAULTS.get(key, "{}"))
+            except Exception:
+                return {}
+
+    return jresp({
+        "admin":    _parse("perm_admin"),
+        "staff":    _parse("perm_staff"),
+        "customer": _parse("perm_customer"),
+    })
+
+
+# ══════════════════════════════════════════════════════════════
+#  CHANGE 7
+#  Location: inside the existing db_init() function
+#  Find this block (already in your db_init):
+#
+#      for k, v in [("maintenance_mode", "0"),
+#                   ("allow_registration", "1"),
+#                   ("promos_enabled", "1")]:
+#          query(
+#              "INSERT IGNORE INTO system_settings ...",
+#              (k, v), commit=True
+#          )
+#
+#  ADD the following block immediately after it:
+# ══════════════════════════════════════════════════════════════
+
+    # ── Seed UI defaults on first initialisation ────────────────
+    for _k, _v in UI_DEFAULTS.items():
+        query(
+            "INSERT IGNORE INTO system_settings (setting_key, setting_value) "
+            "VALUES (%s, %s)",
+            (_k, _v), commit=True
+        )
+    # ── End UI defaults seed ────────────────────────────────────
 # ════════════════════════════════════════════════════════════════
 #  ERROR HANDLERS
 # ════════════════════════════════════════════════════════════════
+
 
 @app.errorhandler(404)
 def not_found(e):
