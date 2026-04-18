@@ -1,24 +1,20 @@
 """
-hardcoded account for superadmin/developer
-email= adminmanagement1200@gmail.com
-pass = StrongPass#2026!
 Laundry Lounge Management System — Flask Backend
-app.py  (Audited & updated — production-grade)
+app.py  (Full update — synced with login, superadmin, admin, operator HTML)
 
-NEW in this revision:
-  ARCH1. Staff archive/unarchive/permanent-delete endpoints.
-  ARCH2. Customer archive/unarchive/permanent-delete endpoints.
-  ARCH3. /api/admin/feedbacks — feedback list for admin panel.
-  ARCH4. /api/machines/status — public (no-auth) machine status for login page.
-  ARCH5. /api/customers/search?q= — autocomplete for operator encode form.
-  ARCH6. /api/staff/toggle/<id> — toggle staff active/inactive status.
-  ARCH7. DB migration extended for is_archived / archived_at on both
-         users and staff (same table, role-filtered).
-  FIX1.  Admin orders API now returns discount_pct and promo_code fields.
-  FIX2.  Customer list excludes archived users.
-  FIX3.  Staff list excludes archived users.
+CHANGES vs previous revision:
+  NEW1.  /track/name/<name>  — public tracking by customer name (login page)
+  NEW2.  /api/admin/issues   — GET all issue reports for admin panel
+  NEW3.  /api/admin/issues/<id>/resolve  — PUT to resolve an issue
+  NEW4.  /api/staff/issues/report now inserts with reporter name for admin view
+  NEW5.  Superadmin /api/superadmin/change-own-password already present, kept.
+  NEW6.  db_init and db_migrate updated for issues table reporter_name column.
+  FIX1.  Duplicate db_init UI seed block removed (was duplicated at bottom).
+  FIX2.  Service rates label returned in /api/staff/my-orders.
+  FIX3.  Issues table gets reporter_name VARCHAR column for admin display.
 """
-import json  # already imported in your app.py
+
+import json
 from flask_mail import Mail, Message as MailMessage
 import threading
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -34,7 +30,6 @@ import secrets
 import click
 import io
 import math
-import json
 import csv
 import os
 from dotenv import load_dotenv
@@ -46,49 +41,40 @@ app = Flask(__name__)
 app.secret_key = os.environ.get(
     "SECRET_KEY", "laundry-lounge-secret-2026-CHANGE-ME"
 )
-
 app.permanent_session_lifetime = timedelta(days=7)
 
-# =========================
-# MYSQL CONFIG
-# =========================
-app.config["MYSQL_HOST"] = os.environ.get("MYSQL_HOST", "localhost")
-app.config["MYSQL_USER"] = os.environ.get("MYSQL_USER", "root")
+# ── MySQL ──────────────────────────────────────────────────────
+app.config["MYSQL_HOST"] = os.environ.get("MYSQL_HOST",     "localhost")
+app.config["MYSQL_USER"] = os.environ.get("MYSQL_USER",     "root")
 app.config["MYSQL_PASSWORD"] = os.environ.get("MYSQL_PASSWORD", "")
-app.config["MYSQL_DB"] = os.environ.get("MYSQL_DB", "llms_db_2026")
+app.config["MYSQL_DB"] = os.environ.get("MYSQL_DB",       "llms_db_2026")
 app.config["MYSQL_CURSORCLASS"] = "DictCursor"
-
 mysql = MySQL(app)
 
-# =========================
-# INTERNAL SECURITY SECRET
-# =========================
+# ── Internal secret ────────────────────────────────────────────
 INTERNAL_SECRET = os.environ.get(
-    "INTERNAL_SECRET", "change-me-internal-secret"
-)
+    "INTERNAL_SECRET", "change-me-internal-secret")
 
-# =========================
-# EMAIL / FLASK-MAIL CONFIG
-# =========================
-app.config["MAIL_SERVER"] = os.environ.get("MAIL_SERVER", "smtp.gmail.com")
+# ── Flask-Mail ─────────────────────────────────────────────────
+app.config["MAIL_SERVER"] = os.environ.get("MAIL_SERVER",  "smtp.gmail.com")
 app.config["MAIL_PORT"] = int(os.environ.get("MAIL_PORT", 587))
 app.config["MAIL_USE_TLS"] = os.environ.get(
     "MAIL_USE_TLS", "true").lower() == "true"
 app.config["MAIL_USERNAME"] = os.environ.get("MAIL_USERNAME", "")
 app.config["MAIL_PASSWORD"] = os.environ.get("MAIL_PASSWORD", "")
 app.config["MAIL_DEFAULT_SENDER"] = os.environ.get(
-    "MAIL_SENDER",
-    os.environ.get("MAIL_USERNAME", "noreply@laundrylounge.com")
+    "MAIL_SENDER", os.environ.get("MAIL_USERNAME", "noreply@laundrylounge.com")
 )
-
 mail = Mail(app)
 
 # ─── Constants ──────────────────────────────────────────────────
 MACHINE_CAPACITY = 8
-WASH_SECS = 10 * 60      # 1 minute per stage (dev mode; real = 44*60)
+WASH_SECS = 10 * 60   # 10 min (dev); production = 44*60
 DRY_SECS = 5 * 60
 DOWNY_SECS = 5 * 60
 DRYER_SURCHARGE = 20.0
+FOLD_MIN_SECS = 10 * 60
+FOLD_MAX_SECS = 15 * 60
 
 SERVICE_RATES = {
     "single_wash": {"label": "Single Wash",            "rate": 30},
@@ -98,146 +84,98 @@ SERVICE_RATES = {
     "soak_whites": {"label": "Soak for Whites",        "rate": 50},
 }
 
+TRACKING_BASE_URL = os.environ.get(
+    "TRACKING_BASE_URL", "http://localhost:5000")
+
 UI_DEFAULTS = {
-    # ── Theme ──────────────────────────────────────────────────
-    "ui_theme_preset":  "teal",
-    "ui_accent":        "#00B4D8",
-    "ui_accent2":       "#0077A8",
-    "ui_bg":            "#E8F8FB",
-    "ui_text":          "#0A2A35",
-    "ui_font":          "dmsans",
-
-    # ── Brand ──────────────────────────────────────────────────
-    "ui_brand_name":    "Laundry Lounge",
-    "ui_tagline":       "Your Local Laundry Partner",
-    "ui_year":          "2026",
-    "ui_location":      "Sta. Rosa, Nueva Ecija",
-
-    # ── Login page content ─────────────────────────────────────
-    "login_h1":         "Fresher.",
-    "login_h2":         "Faster.",
-    "login_h3":         "Better.",
-    "login_welcome":    "Welcome back",
-    "login_sub":        "Sign in — your role is detected automatically",
-    "login_f1":         "Real-time Laundry Tracking",
-    "login_f2":         "Sales & Expense Reports",
-    "login_f3":         "Customer Management",
-    "login_f4":         "Fast Service Processing",
-
-    # ── Ticker items ───────────────────────────────────────────
-    "ui_ticker_1":      "Fast Pickup",
-    "ui_ticker_2":      "Laundry Tracking",
-    "ui_ticker_3":      "Smooth Service",
-    "ui_ticker_4":      "Same-Day Service",
-    "ui_ticker_5":      "Fresh Every Time",
-    "ui_ticker_6":      "Laundry Lounge",
-
-    # ── Customer portal sections ───────────────────────────────
-    "cu_sec_dashboard": "1",
-    "cu_sec_status":    "1",
-    "cu_sec_history":   "1",
-    "cu_sec_feedback":  "1",
-    "cu_sec_profile":   "1",
-    "cu_notif":         "1",
-    "cu_title":         "Welcome Back",
-    "cu_greeting":      "Here's your laundry status at a glance.",
-    "cu_noorder":       "No active service right now.",
-    "cu_ticker":        "Laundry Lounge · Monitor Your Laundry Live · Wash · Dry · Fold",
-
-    # ── Operator panel sections ────────────────────────────────
-    "op_sec_dashboard": "1",
-    "op_sec_machines":  "1",
-    "op_sec_queue":     "1",
-    "op_sec_encode":    "1",
-    "op_sec_folding":   "1",
-    "op_sec_pickup":    "1",
-    "op_sec_promos":    "1",
-    "op_sec_issues":    "1",
-    "op_title":         "Machine Operator",
-    "op_eyebrow":       "Operator Portal · 2026",
-    "op_badge":         "Operator Access",
-    "op_logout":        "Logout",
-
-    # ── Admin panel sections ────────────────────────────────────
-    "adm_sec_dashboard":  "1",
-    "adm_sec_analytics":  "1",
-    "adm_sec_revenue":    "1",
-    "adm_sec_orders":     "1",
-    "adm_sec_staff":      "1",
-    "adm_sec_customers":  "1",
-    "adm_sec_archives":   "1",
-    "adm_sec_feedback":   "1",
-    "adm_sec_reports":    "1",
-    "adm_title":          "Admin Panel",
-    "adm_eyebrow":        "Admin Panel · 2026",
-    "adm_badge":          "Admin Access",
-    "adm_greeting":       "Welcome back. Here's today's operational overview.",
-
-    # ── Role permissions (stored as JSON strings) ──────────────
+    # Theme
+    "ui_theme_preset": "teal",
+    "ui_accent":       "#00B4D8",
+    "ui_accent2":      "#0077A8",
+    "ui_bg":           "#E8F8FB",
+    "ui_text":         "#0A2A35",
+    "ui_font":         "dmsans",
+    # Brand
+    "ui_brand_name":   "Laundry Lounge",
+    "ui_tagline":      "Your Local Laundry Partner",
+    "ui_year":         "2026",
+    "ui_location":     "Sta. Rosa, Nueva Ecija",
+    # Login page
+    "login_h1":        "Fresher.",
+    "login_h2":        "Faster.",
+    "login_h3":        "Better.",
+    "login_welcome":   "Welcome back",
+    "login_sub":       "Sign in — your role is detected automatically",
+    "login_f1":        "Real-time Laundry Tracking",
+    "login_f2":        "Sales & Expense Reports",
+    "login_f3":        "Customer Management",
+    "login_f4":        "Fast Service Processing",
+    # Ticker
+    "ui_ticker_1": "Fast Pickup",
+    "ui_ticker_2": "Laundry Tracking",
+    "ui_ticker_3": "Smooth Service",
+    "ui_ticker_4": "Same-Day Service",
+    "ui_ticker_5": "Fresh Every Time",
+    "ui_ticker_6": "Laundry Lounge",
+    # Customer portal
+    "cu_sec_dashboard": "1", "cu_sec_status": "1", "cu_sec_history": "1",
+    "cu_sec_feedback": "1",  "cu_sec_profile": "1", "cu_notif": "1",
+    "cu_title":    "Welcome Back",
+    "cu_greeting": "Here's your laundry status at a glance.",
+    "cu_noorder":  "No active service right now.",
+    "cu_ticker":   "Laundry Lounge · Monitor Your Laundry Live · Wash · Dry · Fold",
+    # Operator panel
+    "op_sec_dashboard": "1", "op_sec_machines": "1", "op_sec_queue":   "1",
+    "op_sec_encode":    "1", "op_sec_folding":  "1", "op_sec_pickup":  "1",
+    "op_sec_promos":    "1", "op_sec_issues":   "1",
+    "op_title":   "Machine Operator",
+    "op_eyebrow": "Operator Portal · 2026",
+    "op_badge":   "Operator Access",
+    "op_logout":  "Logout",
+    # Admin panel
+    "adm_sec_dashboard": "1", "adm_sec_analytics": "1", "adm_sec_revenue": "1",
+    "adm_sec_orders":    "1", "adm_sec_staff":     "1", "adm_sec_customers": "1",
+    "adm_sec_archives":  "1", "adm_sec_feedback":  "1", "adm_sec_reports":   "1",
+    "adm_title":    "Admin Panel",
+    "adm_eyebrow":  "Admin Panel · 2026",
+    "adm_badge":    "Admin Access",
+    "adm_greeting": "Welcome back. Here's today's operational overview.",
+    # Permissions
     "perm_admin": json.dumps({
-        "analytics":     True,
-        "revenue":       True,
-        "export":        True,
-        "staff-manage":  True,
-        "staff-edit":    True,
-        "staff-archive": True,
-        "cust-view":     True,
-        "cust-block":    True,
-        "cust-delete":   True,
-        "promos":        True,
-        "pricing":       True,
-        "settings-view": True,
-        "settings-edit": False,
-        "feedback":      True,
+        "analytics": True, "revenue": True, "export": True,
+        "staff-manage": True, "staff-edit": True, "staff-archive": True,
+        "cust-view": True, "cust-block": True, "cust-delete": True,
+        "promos": True, "pricing": True,
+        "settings-view": True, "settings-edit": False, "feedback": True,
     }),
     "perm_staff": json.dumps({
-        "encode":           True,
-        "assign":           True,
-        "fold":             True,
-        "complete":         True,
-        "machines-view":    True,
-        "machines-toggle":  True,
-        "promos-view":      True,
-        "promos-apply":     True,
-        "issues":           True,
-        "email":            True,
+        "encode": True, "assign": True, "fold": True, "complete": True,
+        "machines-view": True, "machines-toggle": True,
+        "promos-view": True, "promos-apply": True,
+        "issues": True, "email": True,
     }),
     "perm_customer": json.dumps({
-        "status":      True,
-        "history":     True,
-        "receipts":    True,
-        "feedback":    True,
-        "profile":     True,
-        "changepass":  True,
-        "register":    True,
+        "status": True, "history": True, "receipts": True,
+        "feedback": True, "profile": True, "changepass": True, "register": True,
     }),
 }
 
 
 def get_ui_settings() -> dict:
-    """
-    Return every system_settings row merged on top of UI_DEFAULTS.
-    DB values always win; missing DB rows fall back to the default.
-    Safe to call from any route that has an active app context.
-    """
     rows = query(
         "SELECT setting_key, setting_value FROM system_settings") or []
     db_vals = {r["setting_key"]: r["setting_value"] for r in rows}
-    merged = dict(UI_DEFAULTS)   # start from defaults
-    merged.update(db_vals)       # overlay what's actually stored
+    merged = dict(UI_DEFAULTS)
+    merged.update(db_vals)
     return merged
 
 
-TRACKING_BASE_URL = os.environ.get(
-    "TRACKING_BASE_URL", "http://localhost:5000")
-
-FOLD_MIN_SECS = 10 * 60
-FOLD_MAX_SECS = 15 * 60
-
-
 # ════════════════════════════════════════════════════════════════
-#  BACKGROUND SCHEDULER — Auto stage advancement every 10 seconds
+#  BACKGROUND SCHEDULER
 # ════════════════════════════════════════════════════════════════
+
+_stage_lock = threading.Lock()
+
 
 def _run_advance_stages():
     with _stage_lock:
@@ -251,22 +189,15 @@ def _run_advance_stages():
                 pass
 
 
-_stage_lock = threading.Lock()
-_scheduler_thread = None
-
-
 def _start_scheduler():
-    global _scheduler_thread
-
     def _loop():
         import time
         while True:
             time.sleep(10)
             _run_advance_stages()
 
-    _scheduler_thread = threading.Thread(
-        target=_loop, daemon=True, name="stage-scheduler")
-    _scheduler_thread.start()
+    t = threading.Thread(target=_loop, daemon=True, name="stage-scheduler")
+    t.start()
     try:
         app.logger.info(
             "[scheduler] Stage-advancement scheduler started (every 10s).")
@@ -274,18 +205,230 @@ def _start_scheduler():
         pass
 
 
-if not os.environ.get("WERKZEUG_RUN_MAIN") == "true" or True:
-    _start_scheduler()
+_start_scheduler()
 
 
 # ════════════════════════════════════════════════════════════════
 #  DATABASE HELPERS
 # ════════════════════════════════════════════════════════════════
 
+def query(sql, args=(), one=False, commit=False):
+    cur = mysql.connection.cursor()
+    try:
+        cur.execute(sql, args)
+        if commit:
+            mysql.connection.commit()
+            return cur.lastrowid
+        return cur.fetchone() if one else cur.fetchall()
+    finally:
+        cur.close()
+
+
+def serialize(obj):
+    if isinstance(obj, datetime):
+        return obj.strftime("%Y-%m-%dT%H:%M:%S")
+    if isinstance(obj, date):
+        return obj.isoformat()
+    if isinstance(obj, Decimal):
+        return float(obj)
+    raise TypeError(f"Object of type {type(obj)} not serializable")
+
+
+def jresp(data, status=200):
+    return app.response_class(
+        json.dumps(data, default=serialize),
+        status=status,
+        mimetype="application/json"
+    )
+
+
+# ════════════════════════════════════════════════════════════════
+#  DATABASE INIT + MIGRATE
+# ════════════════════════════════════════════════════════════════
+
+@app.route("/api/db/init", methods=["GET", "POST"])
+def db_init():
+    statements = [
+        """CREATE TABLE IF NOT EXISTS users (
+            user_id       INT AUTO_INCREMENT PRIMARY KEY,
+            full_name     VARCHAR(120) NOT NULL,
+            username      VARCHAR(60)  UNIQUE,
+            email         VARCHAR(120) NOT NULL UNIQUE,
+            phone         VARCHAR(30),
+            password_hash VARCHAR(256) NOT NULL,
+            role          ENUM('superadmin','admin','staff','customer') NOT NULL DEFAULT 'customer',
+            status        ENUM('active','inactive','blocked') NOT NULL DEFAULT 'active',
+            is_archived   TINYINT(1) NOT NULL DEFAULT 0,
+            archived_at   DATETIME DEFAULT NULL,
+            created_at    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4""",
+
+        """CREATE TABLE IF NOT EXISTS machines (
+            machine_id       INT AUTO_INCREMENT PRIMARY KEY,
+            unit_number      INT NOT NULL UNIQUE,
+            status           ENUM('free','busy','idle','maintenance') NOT NULL DEFAULT 'free',
+            current_order_id INT,
+            current_stage    VARCHAR(20),
+            stage_ends_at    DATETIME,
+            updated_at       DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4""",
+
+        """CREATE TABLE IF NOT EXISTS services (
+            id           INT AUTO_INCREMENT PRIMARY KEY,
+            service_key  VARCHAR(40) NOT NULL UNIQUE,
+            name         VARCHAR(80) NOT NULL,
+            price        DECIMAL(8,2) NOT NULL DEFAULT 0.00,
+            is_active    TINYINT(1) NOT NULL DEFAULT 1
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4""",
+
+        """CREATE TABLE IF NOT EXISTS promos (
+            promo_id   INT AUTO_INCREMENT PRIMARY KEY,
+            code       VARCHAR(30) NOT NULL UNIQUE,
+            discount   INT NOT NULL DEFAULT 0,
+            is_active  TINYINT(1) NOT NULL DEFAULT 1,
+            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4""",
+
+        """CREATE TABLE IF NOT EXISTS orders (
+            order_id              INT AUTO_INCREMENT PRIMARY KEY,
+            tracking_id           VARCHAR(30) NOT NULL UNIQUE,
+            customer_id           INT,
+            customer_name_walk_in VARCHAR(120),
+            customer_email        VARCHAR(120) DEFAULT NULL,
+            email_sent            TINYINT(1) NOT NULL DEFAULT 0,
+            service_type          VARCHAR(40) NOT NULL,
+            weight_kg             DECIMAL(6,2) NOT NULL DEFAULT 0,
+            with_dryer            TINYINT(1) NOT NULL DEFAULT 0,
+            with_downy            TINYINT(1) NOT NULL DEFAULT 0,
+            amount                DECIMAL(10,2) NOT NULL DEFAULT 0,
+            machines_needed       INT NOT NULL DEFAULT 1,
+            promo_code            VARCHAR(30),
+            discount_pct          DECIMAL(5,2) DEFAULT 0,
+            status                VARCHAR(20) NOT NULL DEFAULT 'pending',
+            stage_ends_at         DATETIME,
+            fold_ends_at          DATETIME,
+            started_at            DATETIME,
+            completed_at          DATETIME,
+            encoded_by            INT,
+            created_at            DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (customer_id) REFERENCES users(user_id) ON DELETE SET NULL,
+            FOREIGN KEY (encoded_by)  REFERENCES users(user_id) ON DELETE SET NULL
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4""",
+
+        """CREATE TABLE IF NOT EXISTS order_machines (
+            id         INT AUTO_INCREMENT PRIMARY KEY,
+            order_id   INT NOT NULL,
+            machine_id INT NOT NULL,
+            UNIQUE KEY uq_om (order_id, machine_id),
+            FOREIGN KEY (order_id)   REFERENCES orders(order_id)     ON DELETE CASCADE,
+            FOREIGN KEY (machine_id) REFERENCES machines(machine_id) ON DELETE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4""",
+
+        """CREATE TABLE IF NOT EXISTS feedbacks (
+            feedback_id INT AUTO_INCREMENT PRIMARY KEY,
+            order_id    INT NOT NULL,
+            customer_id INT NOT NULL,
+            rating      TINYINT NOT NULL DEFAULT 5,
+            comment     TEXT,
+            created_at  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            UNIQUE KEY uq_feedback (order_id, customer_id),
+            FOREIGN KEY (order_id)    REFERENCES orders(order_id) ON DELETE CASCADE,
+            FOREIGN KEY (customer_id) REFERENCES users(user_id)   ON DELETE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4""",
+
+        """CREATE TABLE IF NOT EXISTS audit_logs (
+            log_id     INT AUTO_INCREMENT PRIMARY KEY,
+            actor      VARCHAR(120),
+            action     VARCHAR(80),
+            target     VARCHAR(200),
+            ip_address VARCHAR(60),
+            timestamp  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4""",
+
+        # issues table — reporter_name stored for admin display without JOIN
+        """CREATE TABLE IF NOT EXISTS issues (
+            issue_id      INT AUTO_INCREMENT PRIMARY KEY,
+            issue_type    VARCHAR(40) NOT NULL DEFAULT 'other',
+            order_id      INT,
+            description   TEXT,
+            reported_by   INT,
+            reporter_name VARCHAR(120),
+            status        ENUM('open','resolved') NOT NULL DEFAULT 'open',
+            reported_at   DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (reported_by) REFERENCES users(user_id) ON DELETE SET NULL
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4""",
+
+        """CREATE TABLE IF NOT EXISTS system_settings (
+            setting_key   VARCHAR(60) PRIMARY KEY,
+            setting_value TEXT
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4""",
+
+        """CREATE TABLE IF NOT EXISTS backups (
+            backup_id  INT AUTO_INCREMENT PRIMARY KEY,
+            created_by VARCHAR(120),
+            note       TEXT,
+            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4""",
+
+        """CREATE TABLE IF NOT EXISTS password_resets (
+            user_id    INT PRIMARY KEY,
+            token      VARCHAR(80) NOT NULL,
+            expires_at DATETIME NOT NULL,
+            FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4""",
+    ]
+
+    for stmt in statements:
+        try:
+            query(stmt, commit=True)
+        except Exception as e:
+            return jresp({"error": str(e)}, 500)
+
+    # Seed machines 1-8
+    for n in range(1, 9):
+        query(
+            "INSERT IGNORE INTO machines (unit_number, status) VALUES (%s,'free')",
+            (n,), commit=True
+        )
+
+    # Seed services
+    for key, val in SERVICE_RATES.items():
+        query(
+            "INSERT IGNORE INTO services (service_key, name, price) VALUES (%s,%s,%s)",
+            (key, val["label"], val["rate"]), commit=True
+        )
+
+    # Seed core system settings
+    for k, v in [("maintenance_mode", "0"), ("allow_registration", "1"), ("promos_enabled", "1")]:
+        query(
+            "INSERT IGNORE INTO system_settings (setting_key, setting_value) VALUES (%s,%s)",
+            (k, v), commit=True
+        )
+
+    # Seed UI defaults
+    for _k, _v in UI_DEFAULTS.items():
+        query(
+            "INSERT IGNORE INTO system_settings (setting_key, setting_value) VALUES (%s,%s)",
+            (_k, _v), commit=True
+        )
+
+    # Seed superadmin
+    SA_EMAIL = os.getenv("SA_EMAIL",    "superadmin@laundry.com")
+    SA_PASSWORD = os.getenv("SA_PASSWORD", "StrongPass#2026!")
+    SA_NAME = "Super Admin"
+    if not query("SELECT user_id FROM users WHERE email=%s", (SA_EMAIL,), one=True):
+        query(
+            "INSERT INTO users (full_name, email, password_hash, role, status) "
+            "VALUES (%s,%s,%s,'superadmin','active')",
+            (SA_NAME, SA_EMAIL, generate_password_hash(SA_PASSWORD)), commit=True
+        )
+
+    return jresp({"ok": True, "message": "Database initialised."})
+
+
 @app.route("/api/db/migrate", methods=["POST", "GET"])
 def db_migrate():
     migrations = [
-        # original migrations
         """ALTER TABLE orders
            ADD COLUMN IF NOT EXISTS customer_email VARCHAR(120) DEFAULT NULL
            AFTER customer_name_walk_in""",
@@ -298,13 +441,16 @@ def db_migrate():
         """ALTER TABLE machines
            MODIFY COLUMN status
            ENUM('free','busy','idle','maintenance') NOT NULL DEFAULT 'free'""",
-        # archive columns on users table (covers both staff and customers)
         """ALTER TABLE users
            ADD COLUMN IF NOT EXISTS is_archived TINYINT(1) NOT NULL DEFAULT 0
            AFTER status""",
         """ALTER TABLE users
            ADD COLUMN IF NOT EXISTS archived_at DATETIME DEFAULT NULL
            AFTER is_archived""",
+        # NEW: reporter_name column for admin display
+        """ALTER TABLE issues
+           ADD COLUMN IF NOT EXISTS reporter_name VARCHAR(120) DEFAULT NULL
+           AFTER reported_by""",
     ]
 
     results = []
@@ -353,7 +499,7 @@ Thank you for choosing Laundry Lounge.
 <div style="font-family:Arial,sans-serif;max-width:520px;margin:0 auto;color:#1a1a2e">
   <div style="background:#1A5DAA;padding:24px 28px;border-radius:12px 12px 0 0">
     <h1 style="color:#fff;font-size:1.4rem;margin:0">🧺 Laundry Lounge</h1>
-    <p style="color:rgba(255,255,255,.8);margin:4px 0 0;font-size:.85rem">Order Received &mdash; Tracking Confirmation</p>
+    <p style="color:rgba(255,255,255,.8);margin:4px 0 0;font-size:.85rem">Order Received — Tracking Confirmation</p>
   </div>
   <div style="background:#fff;padding:28px;border:1px solid #e0e0e0;border-top:none">
     <p style="margin:0 0 18px">Hello <strong>{customer_name or 'Valued Customer'}</strong>,</p>
@@ -377,7 +523,7 @@ Thank you for choosing Laundry Lounge.
     </div>
   </div>
   <div style="background:#EDE5D8;padding:14px 28px;border-radius:0 0 12px 12px;text-align:center">
-    <p style="color:#888;font-size:.75rem;margin:0">Laundry Lounge &mdash; Your Local Laundry Partner</p>
+    <p style="color:#888;font-size:.75rem;margin:0">Laundry Lounge — Your Local Laundry Partner</p>
   </div>
 </div>
 """
@@ -452,9 +598,7 @@ def send_status_update_email(tracking_id, customer_email, customer_name,
     threading.Thread(target=_send, daemon=True).start()
 
 
-# ════════════════════════════════════════════════════════════════
-#  PASSWORD RESET EMAIL
-# ════════════════════════════════════════════════════════════════
+# ── Password reset email ───────────────────────────────────────
 
 def _send_reset_email_async(app_ctx, email, token, full_name):
     with app_ctx:
@@ -473,10 +617,8 @@ If you did not request a password reset, please ignore this email.
 
 — The Laundry Lounge Team
 """
-            html_body = f"""
-<!DOCTYPE html>
-<html>
-<body style="margin:0;padding:0;background:#F4EFE6;font-family:Arial,sans-serif">
+            html_body = f"""<!DOCTYPE html>
+<html><body style="margin:0;padding:0;background:#F4EFE6;font-family:Arial,sans-serif">
 <div style="max-width:520px;margin:32px auto;color:#1A1309">
   <div style="background:#C44F1F;padding:24px 28px;border-radius:12px 12px 0 0;text-align:center">
     <h1 style="color:#fff;font-size:1.4rem;margin:0">🧺 Laundry Lounge</h1>
@@ -501,8 +643,7 @@ If you did not request a password reset, please ignore this email.
     </p>
   </div>
 </div>
-</body>
-</html>
+</body></html>
 """
             msg = MailMessage(subject=subject, recipients=[email],
                               body=plain_body, html=html_body)
@@ -525,252 +666,66 @@ def send_reset_email(email, token, full_name):
 #  CORE HELPERS
 # ════════════════════════════════════════════════════════════════
 
-def query(sql, args=(), one=False, commit=False):
-    cur = mysql.connection.cursor()
+def log_audit(actor, action, target="", ip=""):
     try:
-        cur.execute(sql, args)
-        if commit:
-            mysql.connection.commit()
-            return cur.lastrowid
-        return cur.fetchone() if one else cur.fetchall()
-    finally:
-        cur.close()
+        query(
+            "INSERT INTO audit_logs (actor, action, target, ip_address, timestamp) "
+            "VALUES (%s,%s,%s,%s,NOW())",
+            (actor, action, target, ip), commit=True
+        )
+    except Exception:
+        pass
 
 
-def query_many(sql, args=(), commit=False):
-    cur = mysql.connection.cursor()
-    try:
-        cur.executemany(sql, args)
-        if commit:
-            mysql.connection.commit()
-    finally:
-        cur.close()
+def generate_tracking_id():
+    today = datetime.now().strftime("%Y%m%d")
+    for _ in range(5):
+        suffix = secrets.token_hex(4).upper()
+        candidate = f"TRK-{today}-{suffix}"
+        if not query("SELECT order_id FROM orders WHERE tracking_id=%s",
+                     (candidate,), one=True):
+            return candidate
+    raise RuntimeError("Failed to generate unique tracking ID")
 
 
-def serialize(obj):
-    if isinstance(obj, datetime):
-        return obj.strftime("%Y-%m-%dT%H:%M:%S")
-    if isinstance(obj, date):
-        return obj.isoformat()
-    if isinstance(obj, Decimal):
-        return float(obj)
-    raise TypeError(f"Object of type {type(obj)} not serializable")
+def calc_amount(service_type: str, weight_kg: float,
+                with_dryer: bool = False, discount_pct: float = 0) -> float:
+    rate = SERVICE_RATES.get(service_type, {}).get("rate", 0)
+    base = rate * weight_kg
+    disc = base * discount_pct / 100
+    dryer = DRYER_SURCHARGE if with_dryer else 0.0
+    return round((base - disc) + dryer, 2)
 
 
-def jresp(data, status=200):
-    return app.response_class(
-        json.dumps(data, default=serialize),
-        status=status,
-        mimetype="application/json"
+def machines_needed(weight_kg: float) -> int:
+    return max(1, math.ceil(weight_kg / MACHINE_CAPACITY))
+
+
+def redirect_by_role(role):
+    mapping = {
+        "superadmin": "/superadmin",
+        "admin":      "/admin",
+        "staff":      "/staff",
+        "customer":   "/customer",
+    }
+    return redirect(mapping.get(role, url_for("login")))
+
+
+def get_system_setting(key: str, default="0"):
+    row = query(
+        "SELECT setting_value FROM system_settings WHERE setting_key=%s",
+        (key,), one=True
     )
+    return row["setting_value"] if row else default
 
 
-# ════════════════════════════════════════════════════════════════
-#  PUBLIC TRACKING PAGE
-# ════════════════════════════════════════════════════════════════
-
-@app.route("/track/<path:tracking_id>")
-def public_track_page(tracking_id):
-    order = query(
-        """SELECT o.tracking_id, o.status, o.service_type,
-                  o.weight_kg, o.amount, o.with_dryer, o.with_downy,
-                  o.created_at, o.started_at, o.completed_at,
-                  o.stage_ends_at, o.fold_ends_at,
-                  COALESCE(u.full_name, o.customer_name_walk_in) AS customer_name
-           FROM orders o
-           LEFT JOIN users u ON o.customer_id=u.user_id
-           WHERE o.tracking_id=%s""",
-        (tracking_id,), one=True
-    )
-
-    if not order:
-        return f"""<!DOCTYPE html><html><head><title>Order Not Found</title>
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<style>body{{font-family:sans-serif;text-align:center;padding:60px 20px;background:#F5F0E8}}
-h1{{color:#C0392B}}p{{color:#666}}</style></head><body>
-<h1>❌ Order Not Found</h1><p>Tracking ID <strong>{tracking_id}</strong> was not found.</p>
-<p><a href="/">Return Home</a></p></body></html>""", 404
-
-    SERVICE_LABELS = {
-        "single_wash": "Single Wash", "double_wash": "Double Wash",
-        "household": "Household Items", "heavy_wash": "Heavy Wash (Comforter)",
-        "soak_whites": "Soak for Whites"
-    }
-    STATUS_DISPLAY = {
-        "pending":          {"label": "⏳ Pending",            "color": "#A06010", "bg": "#FDF3E3"},
-        "washing":          {"label": "🫧 Washing",            "color": "#1A5DAA", "bg": "#EEF3FB"},
-        "drying":           {"label": "💨 Drying",             "color": "#1A8080", "bg": "#E8F5F5"},
-        "downy":            {"label": "🌸 Downy",              "color": "#6A35A0", "bg": "#F3EEF8"},
-        "folding":          {"label": "👕 Folding",            "color": "#A06010", "bg": "#FDF3E3"},
-        "ready_for_pickup": {"label": "📦 Ready for Pickup!",  "color": "#B85000", "bg": "#FEF0E6"},
-        "completed":        {"label": "✅ Completed",          "color": "#1B7A4A", "bg": "#EBF5EE"},
-        "done":             {"label": "✅ Completed",          "color": "#1B7A4A", "bg": "#EBF5EE"},
-        "cancelled":        {"label": "❌ Cancelled",          "color": "#C0392B", "bg": "#FDEDED"},
-    }
-
-    s = order.get("status", "pending")
-    disp = STATUS_DISPLAY.get(s, {"label": s, "color": "#666", "bg": "#eee"})
-    svc_lbl = SERVICE_LABELS.get(
-        order.get("service_type", ""), order.get("service_type", ""))
-    created = order.get("created_at", "")
-    if hasattr(created, "strftime"):
-        created = created.strftime("%b %d, %Y %I:%M %p")
-
-    stages = ["pending", "washing"]
-    if order.get("with_dryer"):
-        stages.append("drying")
-    if order.get("with_downy"):
-        stages.append("downy")
-    stages += ["folding", "ready_for_pickup", "completed"]
-    cur_idx = stages.index(s) if s in stages else 0
-
-    stage_labels = {
-        "pending": "Received", "washing": "Washing", "drying": "Drying",
-        "downy": "Downy", "folding": "Folding",
-        "ready_for_pickup": "Ready!", "completed": "Done"
-    }
-    stage_html = "".join(
-        f"""<div style="display:flex;flex-direction:column;align-items:center;gap:4px">
-          <div style="width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;
-                      background:{'#1B7A4A' if i < cur_idx else ('#1A5DAA' if i == cur_idx else '#ddd')};
-                      color:{'#fff' if i <= cur_idx else '#999'};font-size:.9rem">
-            {'✓' if i < cur_idx else ('●' if i == cur_idx else '○')}
-          </div>
-          <div style="font-size:.6rem;color:{'#1A5DAA' if i == cur_idx else ('#1B7A4A' if i < cur_idx else '#999')};text-align:center;max-width:50px">
-            {stage_labels.get(stages[i], stages[i])}
-          </div>
-        </div>{'<div style="width:20px;height:2px;background:' + ('#1B7A4A' if i < cur_idx else '#ddd') + ';margin-bottom:14px"></div>' if i < len(stages)-1 else ''}"""
-        for i, _ in enumerate(stages)
-    )
-
-    return f"""<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Track Order — {tracking_id}</title>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <style>
-    *{{box-sizing:border-box;margin:0;padding:0}}
-    body{{font-family:'DM Sans',sans-serif;background:#F5F0E8;min-height:100vh;padding:20px}}
-    .card{{background:#fff;border-radius:16px;padding:28px;max-width:480px;margin:0 auto;box-shadow:0 8px 32px rgba(10,30,60,.1)}}
-    .brand{{font-size:1.1rem;font-weight:700;color:#C44F1F;margin-bottom:6px}}
-    .trk{{font-family:'DM Mono',monospace;font-size:.75rem;color:#888;margin-bottom:20px;letter-spacing:.06em}}
-    .status-badge{{display:inline-block;padding:8px 20px;border-radius:30px;font-weight:600;font-size:1rem;margin-bottom:20px}}
-    .row{{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f0f0f0;font-size:.88rem}}
-    .row:last-child{{border-bottom:none}}
-    .lbl{{color:#888}}.val{{font-weight:600;color:#1a1a2e}}
-    .stages{{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:0;margin:20px 0;overflow-x:auto;padding:8px 0}}
-    .refresh{{text-align:center;margin-top:20px;font-size:.78rem;color:#aaa}}
-    .refresh a{{color:#C44F1F;text-decoration:none}}
-    h2{{font-size:1rem;color:#333;margin:20px 0 10px}}
-    .auto-badge{{background:#E8F5EE;border:1px solid #1B7A4A;border-radius:8px;padding:8px 12px;font-size:.78rem;color:#1B7A4A;margin-top:16px;text-align:center}}
-  </style>
-</head>
-<body>
-<div class="card">
-  <div class="brand">🧺 Laundry Lounge</div>
-  <div class="trk">TRACKING: {tracking_id}</div>
-  <div class="status-badge" style="background:{disp['bg']};color:{disp['color']}">{disp['label']}</div>
-  <h2>Order Progress</h2>
-  <div class="stages">{stage_html}</div>
-  <div style="margin-top:16px">
-    <div class="row"><span class="lbl">Customer</span><span class="val">{order.get('customer_name', 'Walk-in')}</span></div>
-    <div class="row"><span class="lbl">Service</span><span class="val">{svc_lbl}</span></div>
-    <div class="row"><span class="lbl">Weight</span><span class="val">{order.get('weight_kg', 0)} kg</span></div>
-    <div class="row"><span class="lbl">Amount</span><span class="val">₱{float(order.get('amount', 0)):,.2f}</span></div>
-    <div class="row"><span class="lbl">Dryer</span><span class="val">{'Yes' if order.get('with_dryer') else 'No'}</span></div>
-    <div class="row"><span class="lbl">Downy</span><span class="val">{'Yes' if order.get('with_downy') else 'No'}</span></div>
-    <div class="row"><span class="lbl">Created</span><span class="val">{created}</span></div>
-  </div>
-  {f'<div class="auto-badge">✅ This page updates automatically.</div>' if s not in ("completed", "done", "cancelled") else '<div class="auto-badge" style="background:#EEF3FB;border-color:#C44F1F;color:#C44F1F">✅ Order Complete — Thank you!</div>'}
-  <div class="refresh"><a href="/track/{tracking_id}">🔄 Refresh Status</a> &nbsp;·&nbsp; Laundry Lounge 2026</div>
-</div>
-{'<script>setTimeout(()=>location.reload(),60000)</script>' if s not in ("completed", "done", "cancelled") else ''}
-</body>
-</html>"""
+def is_maintenance_mode() -> bool:
+    return get_system_setting("maintenance_mode", "0") == "1"
 
 
-@app.route("/api/public/track/<path:tracking_id>")
-def api_public_track(tracking_id):
-    order = query(
-        """SELECT o.tracking_id, o.status, o.service_type,
-                  o.weight_kg, o.amount, o.with_dryer, o.with_downy,
-                  o.created_at, o.started_at, o.completed_at, o.stage_ends_at,
-                  COALESCE(u.full_name, o.customer_name_walk_in) AS customer_name
-           FROM orders o
-           LEFT JOIN users u ON o.customer_id=u.user_id
-           WHERE o.tracking_id=%s""",
-        (tracking_id,), one=True
-    )
-    if not order:
-        return jresp({"error": "Order not found"}, 404)
-
-    if order.get("stage_ends_at") and order.get("status") in ("washing", "drying", "downy"):
-        rem = (order["stage_ends_at"] - datetime.now()).total_seconds()
-        order["remaining_seconds"] = max(0, int(rem))
-
-    return jresp(order)
-
-
-# ════════════════════════════════════════════════════════════════
-#  PUBLIC — MACHINE STATUS (used by login page, no auth required)
-# ════════════════════════════════════════════════════════════════
-
-@app.route("/api/machines/status")
-def api_machines_status_public():
-    """
-    Public endpoint — no authentication required.
-    Returns aggregate machine counts for the login page status bar.
-    """
-    try:
-        rows = query("SELECT status FROM machines") or []
-        free = sum(1 for m in rows if m["status"] == "free")
-        busy = sum(1 for m in rows if m["status"] == "busy")
-        idle = sum(1 for m in rows if m["status"] == "idle")
-        maintenance = sum(1 for m in rows if m["status"] == "maintenance")
-        return jresp({
-            "free":        free,
-            "busy":        busy,
-            "idle":        idle,
-            "maintenance": maintenance,
-            "total":       len(rows),
-        })
-    except Exception as e:
-        app.logger.error(f"api_machines_status_public error: {e}")
-        return jresp({"free": 0, "busy": 0, "idle": 0, "maintenance": 0, "total": 0})
-
-
-@app.route("/api/ui/settings")
-def api_ui_settings_public():
-    """
-    Public — no authentication required.
-    Consumed by login.html, customer.html, operator.html, admin.html
-    to apply brand, theme, text, and section-visibility settings.
-
-    Sensitive/internal keys are deliberately excluded.
-    """
-    all_settings = get_ui_settings()
-
-    SAFE_PREFIXES = ("ui_", "login_", "cu_", "op_", "adm_", "ticker_")
-    EXCLUDED = {
-        "perm_admin", "perm_staff", "perm_customer",
-        "maintenance_mode", "force_logout_ts",
-        "allow_registration", "promos_enabled",
-        "opening_time", "closing_time",
-    }
-
-    public = {
-        k: v
-        for k, v in all_settings.items()
-        if any(k.startswith(p) for p in SAFE_PREFIXES)
-        and k not in EXCLUDED
-    }
-    return jresp(public)
 # ════════════════════════════════════════════════════════════════
 #  AUTH DECORATORS
 # ════════════════════════════════════════════════════════════════
-
 
 def login_required(f):
     @wraps(f)
@@ -828,9 +783,10 @@ def check_force_logout():
         "register", "forgot_password",
         "api_forgot_password", "api_reset_password",
         "reset_password_redirect",
-        "public_track_page", "api_public_track",
-        "api_maintenance_status", "api_machines_status_public",
-        "db_init", "db_migrate", "static"
+        "public_track_page", "public_track_by_name",
+        "api_public_track", "api_maintenance_status",
+        "api_machines_status_public", "api_ui_settings_public",
+        "db_init", "db_migrate", "static",
     ):
         return
 
@@ -840,7 +796,6 @@ def check_force_logout():
     )
     if not db_ts_row:
         return
-
     try:
         db_ts = float(db_ts_row["setting_value"])
     except (ValueError, TypeError):
@@ -856,285 +811,7 @@ def check_force_logout():
 
 
 # ════════════════════════════════════════════════════════════════
-#  UTILITY FUNCTIONS
-# ════════════════════════════════════════════════════════════════
-
-def log_audit(actor, action, target="", ip=""):
-    try:
-        query(
-            "INSERT INTO audit_logs (actor, action, target, ip_address, timestamp) "
-            "VALUES (%s,%s,%s,%s,NOW())",
-            (actor, action, target, ip), commit=True
-        )
-    except Exception:
-        pass
-
-
-def generate_tracking_id():
-    today = datetime.now().strftime("%Y%m%d")
-    for _ in range(5):
-        suffix = secrets.token_hex(4).upper()
-        candidate = f"TRK-{today}-{suffix}"
-        existing = query(
-            "SELECT order_id FROM orders WHERE tracking_id=%s",
-            (candidate,), one=True
-        )
-        if not existing:
-            return candidate
-    raise RuntimeError("Failed to generate unique tracking ID")
-
-
-def calc_amount(service_type: str, weight_kg: float,
-                with_dryer: bool = False, discount_pct: float = 0) -> float:
-    rate = SERVICE_RATES.get(service_type, {}).get("rate", 0)
-    base = rate * weight_kg
-    disc = base * discount_pct / 100
-    service_total = base - disc
-    dryer = DRYER_SURCHARGE if with_dryer else 0.0
-    return round(service_total + dryer, 2)
-
-
-def machines_needed(weight_kg: float) -> int:
-    return max(1, math.ceil(weight_kg / MACHINE_CAPACITY))
-
-
-def redirect_by_role(role):
-    mapping = {
-        "superadmin": "/superadmin",
-        "admin":      "/admin",
-        "staff":      "/staff",
-        "customer":   "/customer",
-    }
-    return redirect(mapping.get(role, url_for("login")))
-
-
-def get_system_setting(key: str, default="0"):
-    row = query(
-        "SELECT setting_value FROM system_settings WHERE setting_key=%s",
-        (key,), one=True
-    )
-    return row["setting_value"] if row else default
-
-
-def is_maintenance_mode() -> bool:
-    return get_system_setting("maintenance_mode", "0") == "1"
-
-
-# ════════════════════════════════════════════════════════════════
-#  CLI COMMANDS
-# ════════════════════════════════════════════════════════════════
-
-@app.cli.command("create-superadmin")
-@with_appcontext
-def create_superadmin_cmd():
-    SA_EMAIL = os.getenv("SA_EMAIL",    "superadmin@laundry.com")
-    SA_PASSWORD = os.getenv("SA_PASSWORD", "StrongPass#2026!")
-    SA_NAME = "Super Admin"
-
-    existing = query(
-        "SELECT user_id FROM users WHERE email=%s", (SA_EMAIL,), one=True
-    )
-    if existing:
-        click.echo("⚠️  Superadmin already exists.")
-        return
-
-    query("""
-        INSERT INTO users
-        (full_name, username, email, phone, password_hash, role, status)
-        VALUES (%s, %s, %s, %s, %s, %s, %s)
-    """, (
-        SA_NAME, "superadmin", SA_EMAIL, "09123456789",
-        generate_password_hash(SA_PASSWORD), "superadmin", "active"
-    ), commit=True)
-    click.echo("✅ Superadmin created successfully!")
-
-
-# ════════════════════════════════════════════════════════════════
-#  DATABASE INITIALISATION
-# ════════════════════════════════════════════════════════════════
-
-@app.route("/api/db/init", methods=["GET", "POST"])
-def db_init():
-    statements = [
-        """CREATE TABLE IF NOT EXISTS users (
-            user_id       INT AUTO_INCREMENT PRIMARY KEY,
-            full_name     VARCHAR(120) NOT NULL,
-            username      VARCHAR(60) UNIQUE,
-            email         VARCHAR(120) NOT NULL UNIQUE,
-            phone         VARCHAR(30),
-            password_hash VARCHAR(256) NOT NULL,
-            role          ENUM('superadmin','admin','staff','customer') NOT NULL DEFAULT 'customer',
-            status        ENUM('active','inactive','blocked') NOT NULL DEFAULT 'active',
-            is_archived   TINYINT(1) NOT NULL DEFAULT 0,
-            archived_at   DATETIME DEFAULT NULL,
-            created_at    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4""",
-
-        """CREATE TABLE IF NOT EXISTS machines (
-            machine_id       INT AUTO_INCREMENT PRIMARY KEY,
-            unit_number      INT NOT NULL UNIQUE,
-            status           ENUM('free','busy','idle','maintenance') NOT NULL DEFAULT 'free',
-            current_order_id INT,
-            current_stage    VARCHAR(20),
-            stage_ends_at    DATETIME,
-            updated_at       DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4""",
-
-        """CREATE TABLE IF NOT EXISTS services (
-            id           INT AUTO_INCREMENT PRIMARY KEY,
-            service_key  VARCHAR(40) NOT NULL UNIQUE,
-            name         VARCHAR(80) NOT NULL,
-            price        DECIMAL(8,2) NOT NULL DEFAULT 0.00,
-            is_active    TINYINT(1) NOT NULL DEFAULT 1
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4""",
-
-        """CREATE TABLE IF NOT EXISTS promos (
-            promo_id   INT AUTO_INCREMENT PRIMARY KEY,
-            code       VARCHAR(30) NOT NULL UNIQUE,
-            discount   INT NOT NULL DEFAULT 0,
-            is_active  TINYINT(1) NOT NULL DEFAULT 1,
-            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4""",
-
-        """CREATE TABLE IF NOT EXISTS orders (
-            order_id              INT AUTO_INCREMENT PRIMARY KEY,
-            tracking_id           VARCHAR(30) NOT NULL UNIQUE,
-            customer_id           INT,
-            customer_name_walk_in VARCHAR(120),
-            customer_email        VARCHAR(120) DEFAULT NULL,
-            email_sent            TINYINT(1) NOT NULL DEFAULT 0,
-            service_type          VARCHAR(40) NOT NULL,
-            weight_kg             DECIMAL(6,2) NOT NULL DEFAULT 0,
-            with_dryer            TINYINT(1) NOT NULL DEFAULT 0,
-            with_downy            TINYINT(1) NOT NULL DEFAULT 0,
-            amount                DECIMAL(10,2) NOT NULL DEFAULT 0,
-            machines_needed       INT NOT NULL DEFAULT 1,
-            promo_code            VARCHAR(30),
-            discount_pct          DECIMAL(5,2) DEFAULT 0,
-            status                VARCHAR(20) NOT NULL DEFAULT 'pending',
-            stage_ends_at         DATETIME,
-            fold_ends_at          DATETIME,
-            started_at            DATETIME,
-            completed_at          DATETIME,
-            encoded_by            INT,
-            created_at            DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (customer_id) REFERENCES users(user_id) ON DELETE SET NULL,
-            FOREIGN KEY (encoded_by)  REFERENCES users(user_id) ON DELETE SET NULL
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4""",
-
-        """CREATE TABLE IF NOT EXISTS order_machines (
-            id         INT AUTO_INCREMENT PRIMARY KEY,
-            order_id   INT NOT NULL,
-            machine_id INT NOT NULL,
-            UNIQUE KEY uq_om (order_id, machine_id),
-            FOREIGN KEY (order_id)   REFERENCES orders(order_id)    ON DELETE CASCADE,
-            FOREIGN KEY (machine_id) REFERENCES machines(machine_id) ON DELETE CASCADE
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4""",
-
-        """CREATE TABLE IF NOT EXISTS feedbacks (
-            feedback_id INT AUTO_INCREMENT PRIMARY KEY,
-            order_id    INT NOT NULL,
-            customer_id INT NOT NULL,
-            rating      TINYINT NOT NULL DEFAULT 5,
-            comment     TEXT,
-            created_at  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            UNIQUE KEY uq_feedback (order_id, customer_id),
-            FOREIGN KEY (order_id)    REFERENCES orders(order_id) ON DELETE CASCADE,
-            FOREIGN KEY (customer_id) REFERENCES users(user_id)  ON DELETE CASCADE
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4""",
-
-        """CREATE TABLE IF NOT EXISTS audit_logs (
-            log_id     INT AUTO_INCREMENT PRIMARY KEY,
-            actor      VARCHAR(120),
-            action     VARCHAR(80),
-            target     VARCHAR(200),
-            ip_address VARCHAR(60),
-            timestamp  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4""",
-
-        """CREATE TABLE IF NOT EXISTS issues (
-            issue_id    INT AUTO_INCREMENT PRIMARY KEY,
-            issue_type  VARCHAR(40) NOT NULL DEFAULT 'other',
-            order_id    INT,
-            description TEXT,
-            reported_by INT,
-            status      ENUM('open','resolved') NOT NULL DEFAULT 'open',
-            reported_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (reported_by) REFERENCES users(user_id) ON DELETE SET NULL
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4""",
-
-        """CREATE TABLE IF NOT EXISTS system_settings (
-            setting_key   VARCHAR(60) PRIMARY KEY,
-            setting_value TEXT
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4""",
-
-        """CREATE TABLE IF NOT EXISTS backups (
-            backup_id  INT AUTO_INCREMENT PRIMARY KEY,
-            created_by VARCHAR(120),
-            note       TEXT,
-            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4""",
-
-        """CREATE TABLE IF NOT EXISTS password_resets (
-            user_id    INT PRIMARY KEY,
-            token      VARCHAR(80) NOT NULL,
-            expires_at DATETIME NOT NULL,
-            FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4""",
-    ]
-
-    for stmt in statements:
-        try:
-            query(stmt, commit=True)
-        except Exception as e:
-            return jresp({"error": str(e)}, 500)
-
-    for n in range(1, 9):
-        query(
-            "INSERT IGNORE INTO machines (unit_number, status) VALUES (%s,'free')",
-            (n,), commit=True
-        )
-
-    for key, val in SERVICE_RATES.items():
-        query(
-            "INSERT IGNORE INTO services (service_key, name, price) VALUES (%s,%s,%s)",
-            (key, val["label"], val["rate"]), commit=True
-        )
-
-    for k, v in [("maintenance_mode", "0"), ("allow_registration", "1"), ("promos_enabled", "1")]:
-        query(
-            "INSERT IGNORE INTO system_settings (setting_key, setting_value) VALUES (%s,%s)",
-            (k, v), commit=True
-        )
-
-        # ── Seed UI defaults on first initialisation ────────────────
-    for _k, _v in UI_DEFAULTS.items():
-        query(
-            "INSERT IGNORE INTO system_settings (setting_key, setting_value) "
-            "VALUES (%s, %s)",
-            (_k, _v), commit=True
-        )
-    # ── End UI defaults seed ────────────────────────────────────
-
-    SA_EMAIL = os.getenv("SA_EMAIL",    "superadmin@laundry.com")
-    SA_PASSWORD = os.getenv("SA_PASSWORD", "StrongPass#2026!")
-    SA_NAME = "Super Admin"
-
-    existing_sa = query(
-        "SELECT user_id FROM users WHERE email=%s", (SA_EMAIL,), one=True
-    )
-    if not existing_sa:
-        query(
-            "INSERT INTO users (full_name, email, password_hash, role, status) "
-            "VALUES (%s,%s,%s,'superadmin','active')",
-            (SA_NAME, SA_EMAIL, generate_password_hash(SA_PASSWORD)), commit=True
-        )
-
-    return jresp({"ok": True, "message": "Database initialised."})
-
-
-# ════════════════════════════════════════════════════════════════
-#  PUBLIC — MAINTENANCE STATUS
+#  PUBLIC — MAINTENANCE + MACHINES + TRACKING
 # ════════════════════════════════════════════════════════════════
 
 @app.route("/api/system/maintenance-status")
@@ -1142,8 +819,312 @@ def api_maintenance_status():
     return jresp({"maintenance": is_maintenance_mode()})
 
 
+@app.route("/api/machines/status")
+def api_machines_status_public():
+    """No-auth — used by login page machine status bar."""
+    try:
+        rows = query("SELECT status FROM machines") or []
+        free = sum(1 for m in rows if m["status"] == "free")
+        busy = sum(1 for m in rows if m["status"] == "busy")
+        idle = sum(1 for m in rows if m["status"] == "idle")
+        maintenance = sum(1 for m in rows if m["status"] == "maintenance")
+        return jresp({"free": free, "busy": busy, "idle": idle,
+                      "maintenance": maintenance, "total": len(rows)})
+    except Exception:
+        return jresp({"free": 0, "busy": 0, "idle": 0, "maintenance": 0, "total": 0})
+
+
+@app.route("/api/ui/settings")
+def api_ui_settings_public():
+    """No-auth — consumed by login/customer/operator/admin HTML pages."""
+    all_settings = get_ui_settings()
+    SAFE_PREFIXES = ("ui_", "login_", "cu_", "op_", "adm_", "ticker_")
+    EXCLUDED = {
+        "perm_admin", "perm_staff", "perm_customer",
+        "maintenance_mode", "force_logout_ts",
+        "allow_registration", "promos_enabled",
+        "opening_time", "closing_time",
+    }
+    public = {
+        k: v for k, v in all_settings.items()
+        if any(k.startswith(p) for p in SAFE_PREFIXES) and k not in EXCLUDED
+    }
+    return jresp(public)
+
+
 # ════════════════════════════════════════════════════════════════
-#  AUTH — Pages
+#  PUBLIC TRACKING PAGES
+# ════════════════════════════════════════════════════════════════
+
+def _build_tracking_html(order, tracking_id):
+    """Shared HTML builder for both tracking routes."""
+    SERVICE_LABELS = {
+        "single_wash": "Single Wash", "double_wash": "Double Wash",
+        "household": "Household Items", "heavy_wash": "Heavy Wash (Comforter)",
+        "soak_whites": "Soak for Whites",
+    }
+    STATUS_DISPLAY = {
+        "pending":          {"label": "⏳ Pending",           "color": "#A06010", "bg": "#FDF3E3"},
+        "washing":          {"label": "🫧 Washing",           "color": "#1A5DAA", "bg": "#EEF3FB"},
+        "drying":           {"label": "💨 Drying",            "color": "#1A8080", "bg": "#E8F5F5"},
+        "downy":            {"label": "🌸 Downy",             "color": "#6A35A0", "bg": "#F3EEF8"},
+        "folding":          {"label": "👕 Folding",           "color": "#A06010", "bg": "#FDF3E3"},
+        "ready_for_pickup": {"label": "📦 Ready for Pickup!", "color": "#B85000", "bg": "#FEF0E6"},
+        "completed":        {"label": "✅ Completed",         "color": "#1B7A4A", "bg": "#EBF5EE"},
+        "done":             {"label": "✅ Completed",         "color": "#1B7A4A", "bg": "#EBF5EE"},
+        "cancelled":        {"label": "❌ Cancelled",         "color": "#C0392B", "bg": "#FDEDED"},
+    }
+
+    s = order.get("status", "pending")
+    disp = STATUS_DISPLAY.get(s, {"label": s, "color": "#666", "bg": "#eee"})
+    svc_lbl = SERVICE_LABELS.get(
+        order.get("service_type", ""), order.get("service_type", ""))
+    created = order.get("created_at", "")
+    if hasattr(created, "strftime"):
+        created = created.strftime("%b %d, %Y %I:%M %p")
+
+    stages = ["pending", "washing"]
+    if order.get("with_dryer"):
+        stages.append("drying")
+    if order.get("with_downy"):
+        stages.append("downy")
+    stages += ["folding", "ready_for_pickup", "completed"]
+    cur_idx = stages.index(s) if s in stages else 0
+
+    stage_labels = {
+        "pending": "Received", "washing": "Washing", "drying": "Drying",
+        "downy": "Downy", "folding": "Folding",
+        "ready_for_pickup": "Ready!", "completed": "Done",
+    }
+    stage_html = "".join(
+        f"""<div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+          <div style="width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+                      background:{'#1B7A4A' if i < cur_idx else ('#1A5DAA' if i == cur_idx else '#ddd')};
+                      color:{'#fff' if i <= cur_idx else '#999'};font-size:.9rem">
+            {'✓' if i < cur_idx else ('●' if i == cur_idx else '○')}
+          </div>
+          <div style="font-size:.6rem;color:{'#1A5DAA' if i == cur_idx else ('#1B7A4A' if i < cur_idx else '#999')};text-align:center;max-width:50px">
+            {stage_labels.get(stages[i], stages[i])}
+          </div>
+        </div>{'<div style="width:20px;height:2px;background:' + ('#1B7A4A' if i < cur_idx else '#ddd') + ';margin-bottom:14px"></div>' if i < len(stages)-1 else ''}"""
+        for i in range(len(stages))
+    )
+
+    auto_refresh = s not in ("completed", "done", "cancelled")
+    done_banner = "" if auto_refresh else '<div class="auto-badge" style="background:#EEF3FB;border-color:#C44F1F;color:#C44F1F">✅ Order Complete — Thank you!</div>'
+    live_badge = '<div class="auto-badge">✅ This page updates automatically.</div>' if auto_refresh else done_banner
+
+    trk_url = f"/track/{tracking_id}"
+
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Track Order — {tracking_id}</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *{{box-sizing:border-box;margin:0;padding:0}}
+    body{{font-family:'DM Sans',sans-serif;background:#F5F0E8;min-height:100vh;padding:20px}}
+    .card{{background:#fff;border-radius:16px;padding:28px;max-width:480px;margin:0 auto;box-shadow:0 8px 32px rgba(10,30,60,.1)}}
+    .brand{{font-size:1.1rem;font-weight:700;color:#C44F1F;margin-bottom:6px}}
+    .trk{{font-family:'DM Mono',monospace;font-size:.75rem;color:#888;margin-bottom:20px;letter-spacing:.06em}}
+    .status-badge{{display:inline-block;padding:8px 20px;border-radius:30px;font-weight:600;font-size:1rem;margin-bottom:20px}}
+    .row{{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f0f0f0;font-size:.88rem}}
+    .row:last-child{{border-bottom:none}}
+    .lbl{{color:#888}}.val{{font-weight:600;color:#1a1a2e}}
+    .stages{{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:0;margin:20px 0;overflow-x:auto;padding:8px 0}}
+    .refresh{{text-align:center;margin-top:20px;font-size:.78rem;color:#aaa}}
+    .refresh a{{color:#C44F1F;text-decoration:none}}
+    h2{{font-size:1rem;color:#333;margin:20px 0 10px}}
+    .auto-badge{{background:#E8F5EE;border:1px solid #1B7A4A;border-radius:8px;padding:8px 12px;font-size:.78rem;color:#1B7A4A;margin-top:16px;text-align:center}}
+  </style>
+</head>
+<body>
+<div class="card">
+  <div class="brand">🧺 Laundry Lounge</div>
+  <div class="trk">TRACKING: {tracking_id}</div>
+  <div class="status-badge" style="background:{disp['bg']};color:{disp['color']}">{disp['label']}</div>
+  <h2>Order Progress</h2>
+  <div class="stages">{stage_html}</div>
+  <div style="margin-top:16px">
+    <div class="row"><span class="lbl">Customer</span><span class="val">{order.get('customer_name', 'Walk-in')}</span></div>
+    <div class="row"><span class="lbl">Service</span><span class="val">{svc_lbl}</span></div>
+    <div class="row"><span class="lbl">Weight</span><span class="val">{order.get('weight_kg', 0)} kg</span></div>
+    <div class="row"><span class="lbl">Amount</span><span class="val">₱{float(order.get('amount', 0)):,.2f}</span></div>
+    <div class="row"><span class="lbl">Dryer</span><span class="val">{'Yes' if order.get('with_dryer') else 'No'}</span></div>
+    <div class="row"><span class="lbl">Downy</span><span class="val">{'Yes' if order.get('with_downy') else 'No'}</span></div>
+    <div class="row"><span class="lbl">Created</span><span class="val">{created}</span></div>
+  </div>
+  {live_badge}
+  <div class="refresh"><a href="{trk_url}">🔄 Refresh Status</a> &nbsp;·&nbsp; Laundry Lounge 2026</div>
+</div>
+{'<script>setTimeout(()=>location.reload(),60000)</script>' if auto_refresh else ''}
+</body>
+</html>"""
+
+
+@app.route("/track/<path:tracking_id>")
+def public_track_page(tracking_id):
+    order = query(
+        """SELECT o.tracking_id, o.status, o.service_type,
+                  o.weight_kg, o.amount, o.with_dryer, o.with_downy,
+                  o.created_at, o.started_at, o.completed_at,
+                  o.stage_ends_at, o.fold_ends_at,
+                  COALESCE(u.full_name, o.customer_name_walk_in) AS customer_name
+           FROM orders o
+           LEFT JOIN users u ON o.customer_id=u.user_id
+           WHERE o.tracking_id=%s""",
+        (tracking_id,), one=True
+    )
+    if not order:
+        return f"""<!DOCTYPE html><html><head><title>Order Not Found</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>body{{font-family:sans-serif;text-align:center;padding:60px 20px;background:#F5F0E8}}
+h1{{color:#C0392B}}p{{color:#666}}</style></head><body>
+<h1>❌ Order Not Found</h1>
+<p>Tracking ID <strong>{tracking_id}</strong> was not found.</p>
+<p><a href="/">Return Home</a></p></body></html>""", 404
+
+    return _build_tracking_html(order, tracking_id)
+
+
+@app.route("/track/name/<path:name>")
+def public_track_by_name(name):
+    """
+    Public tracking by customer name (no login required).
+    Used by the login page tracking bar when a name is entered instead of a code.
+    Returns the most recent active or recent order matching the name.
+    """
+    name_clean = name.strip()
+    if not name_clean:
+        return f"""<!DOCTYPE html><html><head><title>No Name Provided</title>
+<style>body{{font-family:sans-serif;text-align:center;padding:60px 20px;background:#F5F0E8}}</style></head>
+<body><h1>Please enter a customer name.</h1><p><a href="/">Return Home</a></p></body></html>""", 400
+
+    # Search by walk-in name or registered user full_name, most recent first
+    like = f"%{name_clean}%"
+    orders = query(
+        """SELECT o.tracking_id, o.status, o.service_type,
+                  o.weight_kg, o.amount, o.with_dryer, o.with_downy,
+                  o.created_at, o.started_at, o.completed_at,
+                  o.stage_ends_at, o.fold_ends_at,
+                  COALESCE(u.full_name, o.customer_name_walk_in) AS customer_name
+           FROM orders o
+           LEFT JOIN users u ON o.customer_id=u.user_id
+           WHERE o.customer_name_walk_in LIKE %s
+              OR u.full_name LIKE %s
+           ORDER BY o.created_at DESC
+           LIMIT 20""",
+        (like, like)
+    ) or []
+
+    if not orders:
+        return f"""<!DOCTYPE html><html>
+<head><title>No Orders Found</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>body{{font-family:sans-serif;text-align:center;padding:60px 20px;background:#F5F0E8}}
+h1{{color:#C44F1F}}p{{color:#666}}a{{color:#1A5DAA}}</style></head>
+<body>
+<h1>🧺 No Orders Found</h1>
+<p>No laundry orders found for <strong>{name_clean}</strong>.</p>
+<p>Please check the name or ask staff for your tracking code.</p>
+<p style="margin-top:24px"><a href="/">← Return Home</a></p>
+</body></html>""", 404
+
+    # If only one order, show it directly
+    if len(orders) == 1:
+        o = orders[0]
+        return _build_tracking_html(o, o["tracking_id"])
+
+    # Multiple orders — show a list page
+    STATUS_DISPLAY = {
+        "pending":          {"label": "⏳ Pending",           "color": "#A06010", "bg": "#FDF3E3"},
+        "washing":          {"label": "🫧 Washing",           "color": "#1A5DAA", "bg": "#EEF3FB"},
+        "drying":           {"label": "💨 Drying",            "color": "#1A8080", "bg": "#E8F5F5"},
+        "downy":            {"label": "🌸 Downy",             "color": "#6A35A0", "bg": "#F3EEF8"},
+        "folding":          {"label": "👕 Folding",           "color": "#A06010", "bg": "#FDF3E3"},
+        "ready_for_pickup": {"label": "📦 Ready!",            "color": "#B85000", "bg": "#FEF0E6"},
+        "completed":        {"label": "✅ Completed",         "color": "#1B7A4A", "bg": "#EBF5EE"},
+        "done":             {"label": "✅ Completed",         "color": "#1B7A4A", "bg": "#EBF5EE"},
+        "cancelled":        {"label": "❌ Cancelled",         "color": "#C0392B", "bg": "#FDEDED"},
+    }
+    SERVICE_LABELS = {
+        "single_wash": "Single Wash", "double_wash": "Double Wash",
+        "household": "Household Items", "heavy_wash": "Heavy Wash",
+        "soak_whites": "Soak for Whites",
+    }
+
+    rows_html = ""
+    for o in orders:
+        s = o.get("status", "pending")
+        disp = STATUS_DISPLAY.get(
+            s, {"label": s, "color": "#666", "bg": "#eee"})
+        svc = SERVICE_LABELS.get(
+            o.get("service_type", ""), o.get("service_type", ""))
+        dt = o.get("created_at", "")
+        if hasattr(dt, "strftime"):
+            dt = dt.strftime("%b %d, %Y %I:%M %p")
+        rows_html += f"""
+<a href="/track/{o['tracking_id']}" style="display:block;padding:16px;border:1px solid #e0e0e0;
+   border-radius:12px;margin-bottom:10px;text-decoration:none;color:#1a1a2e;
+   transition:box-shadow .2s" onmouseover="this.style.boxShadow='0 4px 16px rgba(0,0,0,.1)'"
+   onmouseout="this.style.boxShadow=''">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+    <span style="font-family:'DM Mono',monospace;font-size:.75rem;color:#888">{o['tracking_id']}</span>
+    <span style="padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:600;
+                 background:{disp['bg']};color:{disp['color']}">{disp['label']}</span>
+  </div>
+  <div style="font-weight:600;margin-bottom:3px">{svc} · {float(o.get('weight_kg', 0))} kg</div>
+  <div style="font-size:.82rem;color:#888">{dt} · ₱{float(o.get('amount', 0)):,.2f}</div>
+</a>"""
+
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Orders for {name_clean}</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
+  <style>body{{font-family:'DM Sans',sans-serif;background:#F5F0E8;min-height:100vh;padding:20px}}
+  .card{{background:#fff;border-radius:16px;padding:28px;max-width:480px;margin:0 auto;box-shadow:0 8px 32px rgba(10,30,60,.1)}}</style>
+</head>
+<body>
+<div class="card">
+  <div style="font-size:1.1rem;font-weight:700;color:#C44F1F;margin-bottom:6px">🧺 Laundry Lounge</div>
+  <div style="font-size:1.1rem;font-weight:600;margin-bottom:4px">Orders for "{name_clean}"</div>
+  <div style="font-size:.82rem;color:#888;margin-bottom:20px">{len(orders)} order(s) found — click to track</div>
+  {rows_html}
+  <div style="text-align:center;margin-top:16px;font-size:.78rem;color:#aaa">
+    <a href="/" style="color:#C44F1F;text-decoration:none">← Return Home</a>
+  </div>
+</div>
+</body>
+</html>"""
+
+
+@app.route("/api/public/track/<path:tracking_id>")
+def api_public_track(tracking_id):
+    order = query(
+        """SELECT o.tracking_id, o.status, o.service_type,
+                  o.weight_kg, o.amount, o.with_dryer, o.with_downy,
+                  o.created_at, o.started_at, o.completed_at, o.stage_ends_at,
+                  COALESCE(u.full_name, o.customer_name_walk_in) AS customer_name
+           FROM orders o
+           LEFT JOIN users u ON o.customer_id=u.user_id
+           WHERE o.tracking_id=%s""",
+        (tracking_id,), one=True
+    )
+    if not order:
+        return jresp({"error": "Order not found"}, 404)
+    if order.get("stage_ends_at") and order.get("status") in ("washing", "drying", "downy"):
+        rem = (order["stage_ends_at"] - datetime.now()).total_seconds()
+        order["remaining_seconds"] = max(0, int(rem))
+    return jresp(order)
+
+
+# ════════════════════════════════════════════════════════════════
+#  AUTH — PAGES
 # ════════════════════════════════════════════════════════════════
 
 @app.route("/", methods=["GET"])
@@ -1259,15 +1240,12 @@ def register():
     return redirect(url_for("login"))
 
 
-# ════════════════════════════════════════════════════════════════
-#  FORGOT / RESET PASSWORD
-# ════════════════════════════════════════════════════════════════
+# ── Forgot / Reset password ────────────────────────────────────
 
 @app.route("/api/forgot-password", methods=["POST"])
 def api_forgot_password():
     data = request.get_json(silent=True) or {}
     email = (data.get("email") or "").strip().lower()
-
     if not email:
         return jresp({"ok": True})
 
@@ -1275,15 +1253,13 @@ def api_forgot_password():
         "SELECT user_id, full_name, email FROM users WHERE email=%s AND status != 'blocked'",
         (email,), one=True
     )
-
     if user:
         token = secrets.token_urlsafe(40)
         expiry = datetime.now() + timedelta(hours=1)
         query(
             "INSERT INTO password_resets (user_id, token, expires_at) VALUES (%s,%s,%s) "
             "ON DUPLICATE KEY UPDATE token=%s, expires_at=%s",
-            (user["user_id"], token, expiry, token, expiry),
-            commit=True,
+            (user["user_id"], token, expiry, token, expiry), commit=True,
         )
         send_reset_email(user["email"], token, user["full_name"])
         log_audit(email, "forgot_password_requested",
@@ -1328,20 +1304,17 @@ def api_reset_password():
            WHERE pr.token=%s AND pr.expires_at > NOW()""",
         (token,), one=True
     )
-
     if not row:
         return jresp({"error": "This reset link is invalid or has expired."}, 400)
 
     query(
         "UPDATE users SET password_hash=%s WHERE user_id=%s",
-        (generate_password_hash(new_password), row["user_id"]),
-        commit=True,
+        (generate_password_hash(new_password), row["user_id"]), commit=True,
     )
     query("DELETE FROM password_resets WHERE user_id=%s",
           (row["user_id"],), commit=True)
     log_audit(row["email"], "password_reset_completed",
               row["email"], request.remote_addr)
-
     return jresp({"ok": True})
 
 
@@ -1359,8 +1332,7 @@ def forgot_password():
             query(
                 "INSERT INTO password_resets (user_id, token, expires_at) VALUES (%s,%s,%s) "
                 "ON DUPLICATE KEY UPDATE token=%s, expires_at=%s",
-                (user["user_id"], token, expiry, token, expiry),
-                commit=True,
+                (user["user_id"], token, expiry, token, expiry), commit=True,
             )
             send_reset_email(email, token, user["full_name"])
     flash("If that email is registered, a reset link has been sent.", "success")
@@ -1408,7 +1380,7 @@ def customer_dashboard():
 
 
 # ════════════════════════════════════════════════════════════════
-#  API — SHARED  (/api/me)
+#  API — SHARED  /api/me
 # ════════════════════════════════════════════════════════════════
 
 @app.route("/api/me")
@@ -1459,10 +1431,8 @@ def api_me_change_password():
     if len(new_pass) < 8:
         return jresp({"error": "New password must be at least 8 characters"}, 400)
 
-    user = query(
-        "SELECT password_hash FROM users WHERE user_id=%s",
-        (session["user_id"],), one=True
-    )
+    user = query("SELECT password_hash FROM users WHERE user_id=%s",
+                 (session["user_id"],), one=True)
     if not user or not check_password_hash(user["password_hash"], current_pass):
         return jresp({"error": "Current password is incorrect"}, 401)
 
@@ -1597,6 +1567,87 @@ def api_sa_assign_role():
     return jresp({"ok": True})
 
 
+@app.route("/api/superadmin/change-own-password", methods=["POST"])
+@role_required("superadmin")
+@_require_json_or_xhr
+def api_sa_change_own_password():
+    d = request.get_json(silent=True) or {}
+    current = d.get("current_password",  "")
+    new_pw = d.get("new_password",      "")
+    confirm = d.get("confirm_password",  "")
+
+    if not all([current, new_pw, confirm]):
+        return jresp({"error": "All fields are required."}, 400)
+    if new_pw != confirm:
+        return jresp({"error": "New passwords do not match."}, 400)
+    if len(new_pw) < 8:
+        return jresp({"error": "Password must be at least 8 characters."}, 400)
+
+    user = query("SELECT password_hash FROM users WHERE user_id=%s",
+                 (session["user_id"],), one=True)
+    if not user or not check_password_hash(user["password_hash"], current):
+        return jresp({"error": "Current password is incorrect."}, 401)
+
+    query(
+        "UPDATE users SET password_hash=%s WHERE user_id=%s",
+        (generate_password_hash(new_pw), session["user_id"]), commit=True
+    )
+    query("DELETE FROM password_resets WHERE user_id=%s",
+          (session["user_id"],), commit=True)
+    log_audit(session["full_name"], "superadmin_password_changed",
+              session["email"], request.remote_addr)
+    return jresp({"ok": True})
+
+
+@app.route("/api/superadmin/request-reset", methods=["POST"])
+def api_sa_request_reset():
+    d = request.get_json(silent=True) or {}
+    email = (d.get("email") or "").strip().lower()
+    secret_phrase = (d.get("secret_phrase") or "").strip()
+    SA_RECOVERY_PHRASE = os.environ.get("SA_RECOVERY_PHRASE", "")
+
+    if not SA_RECOVERY_PHRASE:
+        log_audit(email, "sa_reset_attempt_no_phrase_configured",
+                  email, request.remote_addr)
+        return jresp({"ok": True})
+
+    phrase_ok = secrets.compare_digest(
+        secret_phrase.encode(), SA_RECOVERY_PHRASE.encode()
+    )
+    if phrase_ok:
+        user = query(
+            "SELECT user_id, full_name, email FROM users "
+            "WHERE email=%s AND role='superadmin' AND status='active'",
+            (email,), one=True
+        )
+        if user:
+            token = secrets.token_urlsafe(40)
+            expiry = datetime.now() + timedelta(hours=1)
+            query(
+                "INSERT INTO password_resets (user_id, token, expires_at) VALUES (%s,%s,%s) "
+                "ON DUPLICATE KEY UPDATE token=%s, expires_at=%s",
+                (user["user_id"], token, expiry, token, expiry), commit=True,
+            )
+            send_reset_email(user["email"], token, user["full_name"])
+            log_audit(email, "sa_reset_email_sent", email, request.remote_addr)
+    else:
+        log_audit(email, "sa_reset_wrong_phrase", email, request.remote_addr)
+
+    return jresp({"ok": True})
+
+
+@app.route("/api/superadmin/backup", methods=["POST"])
+@role_required("superadmin")
+def api_sa_create_backup():
+    query(
+        "INSERT INTO backups (created_by, note, created_at) VALUES (%s,'Manual backup',NOW())",
+        (session["full_name"],), commit=True
+    )
+    log_audit(session["full_name"], "backup_created",
+              "manual", request.remote_addr)
+    return jresp({"ok": True, "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")})
+
+
 # ════════════════════════════════════════════════════════════════
 #  EMERGENCY ACTIONS
 # ════════════════════════════════════════════════════════════════
@@ -1606,7 +1657,7 @@ def api_sa_assign_role():
 def api_sa_emergency(action):
     allowed = {
         "shutdown", "enable_system", "block_all",
-        "reset_admin_passwords", "disable_promos", "force_logout"
+        "reset_admin_passwords", "disable_promos", "force_logout",
     }
     if action not in allowed:
         return jresp({"error": "Invalid action"}, 400)
@@ -1679,32 +1730,94 @@ def api_sa_emergency(action):
     return jresp({"ok": True, "action": action, **extra})
 
 
-@app.route("/api/superadmin/backup", methods=["POST"])
+# ════════════════════════════════════════════════════════════════
+#  API — SYSTEM CONFIG
+# ════════════════════════════════════════════════════════════════
+
+@app.route("/api/system/settings", methods=["GET"])
+@role_required("admin", "superadmin")
+def api_system_settings_get():
+    return jresp(get_ui_settings())
+
+
+@app.route("/api/system/settings", methods=["POST"])
+@role_required("admin", "superadmin")
+def api_system_settings_save():
+    d = request.get_json(silent=True) or {}
+    if not d:
+        return jresp({"error": "No settings provided"}, 400)
+    for key in d:
+        if len(key) > 120:
+            return jresp({"error": f"Key too long: {key[:40]}…"}, 400)
+
+    for key, val in d.items():
+        query(
+            "INSERT INTO system_settings (setting_key, setting_value) "
+            "VALUES (%s, %s) ON DUPLICATE KEY UPDATE setting_value = %s",
+            (key, str(val), str(val)), commit=True,
+        )
+
+    ui_keys = [k for k in d if k.startswith(
+        ("ui_", "login_", "cu_", "op_", "adm_", "ticker_"))]
+    perm_keys = [k for k in d if k.startswith("perm_")]
+    sys_keys = [k for k in d if k not in ui_keys and k not in perm_keys]
+
+    if ui_keys:
+        log_audit(session["full_name"], "ui_customizer_save",
+                  f"keys={ui_keys}",   request.remote_addr)
+    if perm_keys:
+        log_audit(session["full_name"], "permissions_save",
+                  f"roles={perm_keys}", request.remote_addr)
+    if sys_keys:
+        log_audit(session["full_name"], "system_settings_save",
+                  f"keys={sys_keys}",  request.remote_addr)
+
+    return jresp({"ok": True, "saved": list(d.keys())})
+
+
+@app.route("/api/ui/reset", methods=["POST"])
 @role_required("superadmin")
-def api_sa_create_backup():
-    query(
-        "INSERT INTO backups (created_by, note, created_at) VALUES (%s,'Manual backup',NOW())",
-        (session["full_name"],), commit=True
-    )
-    log_audit(session["full_name"], "backup_created",
-              "manual", request.remote_addr)
-    return jresp({"ok": True, "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")})
+def api_ui_reset():
+    UI_KEY_PREFIXES = ("ui_", "login_", "cu_", "op_", "adm_", "ticker_")
+    placeholders = " OR ".join("setting_key LIKE %s" for _ in UI_KEY_PREFIXES)
+    rows = query(
+        f"SELECT setting_key FROM system_settings WHERE {placeholders}",
+        tuple(p + "%" for p in UI_KEY_PREFIXES)
+    ) or []
+    deleted = 0
+    for row in rows:
+        query("DELETE FROM system_settings WHERE setting_key = %s",
+              (row["setting_key"],), commit=True)
+        deleted += 1
+    log_audit(session["full_name"], "ui_customizer_reset",
+              f"deleted={deleted} keys", request.remote_addr)
+    return jresp({"ok": True, "deleted": deleted, "message": "UI settings reset to factory defaults."})
+
+
+@app.route("/api/ui/permissions")
+@role_required("superadmin")
+def api_ui_permissions():
+    settings = get_ui_settings()
+
+    def _parse(key: str) -> dict:
+        try:
+            return json.loads(settings.get(key, "{}"))
+        except Exception:
+            try:
+                return json.loads(UI_DEFAULTS.get(key, "{}"))
+            except Exception:
+                return {}
+
+    return jresp({
+        "admin":    _parse("perm_admin"),
+        "staff":    _parse("perm_staff"),
+        "customer": _parse("perm_customer"),
+    })
 
 
 # ════════════════════════════════════════════════════════════════
 #  API — ADMIN
 # ════════════════════════════════════════════════════════════════
-
-@app.route("/api/admin/me")
-@role_required("admin", "superadmin")
-def api_admin_me():
-    user = query(
-        "SELECT user_id, full_name, email, phone, role, status, created_at "
-        "FROM users WHERE user_id=%s",
-        (session["user_id"],), one=True
-    )
-    return jresp(user or {})
-
 
 @app.route("/api/admin/analytics")
 @role_required("admin", "superadmin")
@@ -1862,14 +1975,9 @@ def api_admin_export():
     return resp
 
 
-# ════════════════════════════════════════════════════════════════
-#  API — ADMIN FEEDBACK
-# ════════════════════════════════════════════════════════════════
-
 @app.route("/api/admin/feedbacks")
 @role_required("admin", "superadmin")
 def api_admin_feedbacks():
-    """Return all customer feedback with order and customer details."""
     rows = query(
         """SELECT f.feedback_id, f.order_id, f.rating, f.comment, f.created_at,
                   o.tracking_id, o.service_type,
@@ -1885,6 +1993,54 @@ def api_admin_feedbacks():
             r.get("service_type", ""), {}
         ).get("label", r.get("service_type", ""))
     return jresp(rows)
+
+
+# ════════════════════════════════════════════════════════════════
+#  API — ADMIN ISSUE REPORTS  (NEW)
+# ════════════════════════════════════════════════════════════════
+
+@app.route("/api/admin/issues")
+@role_required("admin", "superadmin")
+def api_admin_issues():
+    """
+    Return all issue reports submitted by operators.
+    Used by the admin Issue Reports section.
+    """
+    rows = query(
+        """SELECT i.issue_id, i.issue_type, i.order_id,
+                  i.description, i.status, i.reported_at,
+                  i.reporter_name,
+                  u.full_name AS reporter_full_name
+           FROM issues i
+           LEFT JOIN users u ON i.reported_by = u.user_id
+           ORDER BY i.reported_at DESC
+           LIMIT 500"""
+    ) or []
+    # Prefer stored reporter_name, fall back to JOIN
+    for r in rows:
+        if not r.get("reporter_name") and r.get("reporter_full_name"):
+            r["reporter_name"] = r["reporter_full_name"]
+        r.pop("reporter_full_name", None)
+    return jresp(rows)
+
+
+@app.route("/api/admin/issues/<int:issue_id>/resolve", methods=["PUT"])
+@role_required("admin", "superadmin")
+@_require_json_or_xhr
+def api_admin_resolve_issue(issue_id):
+    """Mark an issue report as resolved."""
+    row = query("SELECT issue_id FROM issues WHERE issue_id=%s",
+                (issue_id,), one=True)
+    if not row:
+        return jresp({"error": "Issue not found"}, 404)
+
+    query(
+        "UPDATE issues SET status='resolved' WHERE issue_id=%s",
+        (issue_id,), commit=True
+    )
+    log_audit(session["full_name"], "resolve_issue",
+              f"issue_id={issue_id}", request.remote_addr)
+    return jresp({"ok": True})
 
 
 # ════════════════════════════════════════════════════════════════
@@ -1963,7 +2119,6 @@ def api_staff_update(uid):
 @role_required("admin", "superadmin")
 @_require_json_or_xhr
 def api_staff_toggle(uid):
-    """Toggle staff active/inactive status."""
     d = request.get_json(silent=True) or {}
     status = d.get("status", "active")
     if status not in ("active", "inactive"):
@@ -1986,13 +2141,12 @@ def api_staff_remove(uid):
     return jresp({"ok": True})
 
 
-# ─── Staff Archive ───────────────────────────────────────────────
+# ── Staff Archive ──────────────────────────────────────────────
 
 @app.route("/api/staff/archive/<int:uid>", methods=["PUT"])
 @role_required("admin", "superadmin")
 @_require_json_or_xhr
 def api_staff_archive(uid):
-    """Move staff member to archive (soft-delete from active roster)."""
     query(
         "UPDATE users SET is_archived=1, archived_at=NOW() "
         "WHERE user_id=%s AND role='staff'",
@@ -2007,7 +2161,6 @@ def api_staff_archive(uid):
 @role_required("admin", "superadmin")
 @_require_json_or_xhr
 def api_staff_unarchive(uid):
-    """Restore a staff member from archive back to the active roster."""
     query(
         "UPDATE users SET is_archived=0, archived_at=NULL, status='active' "
         "WHERE user_id=%s AND role='staff'",
@@ -2021,7 +2174,6 @@ def api_staff_unarchive(uid):
 @app.route("/api/staff/archived")
 @role_required("admin", "superadmin")
 def api_staff_archived():
-    """Return all archived staff members."""
     rows = query(
         "SELECT user_id, full_name, email, status, archived_at, created_at "
         "FROM users WHERE role='staff' AND is_archived=1 "
@@ -2035,19 +2187,17 @@ def api_staff_archived():
 @app.route("/api/staff/delete/<int:uid>", methods=["DELETE"])
 @role_required("admin", "superadmin")
 def api_staff_delete_permanent(uid):
-    """Permanently delete an archived staff member and all associated data."""
-    # Only allow deletion of archived staff
     row = query(
         "SELECT user_id FROM users WHERE user_id=%s AND role='staff' AND is_archived=1",
         (uid,), one=True
     )
     if not row:
         return jresp({"error": "Staff not found or not archived"}, 404)
-
-    # Nullify encoded_by references so orders are preserved
     query("UPDATE orders SET encoded_by=NULL WHERE encoded_by=%s", (uid,), commit=True)
-    query("DELETE FROM issues WHERE reported_by=%s", (uid,), commit=True)
-    query("DELETE FROM users WHERE user_id=%s", (uid,), commit=True)
+    query("DELETE FROM issues   WHERE reported_by=%s",
+          (uid,), commit=True)
+    query("DELETE FROM users    WHERE user_id=%s",
+          (uid,), commit=True)
     log_audit(session["full_name"], "delete_staff_permanent",
               f"id={uid}", request.remote_addr)
     return jresp({"ok": True})
@@ -2072,7 +2222,7 @@ def api_machines():
             }.get(m.get("current_stage", "washing"), WASH_SECS)
             e["remaining_seconds"] = max(0, int(rem))
             e["progress_pct"] = max(
-                0, min(100, int((1 - rem / stage_total) * 100)))
+                0, min(100, int((1 - rem/stage_total)*100)))
         out.append(e)
     return jresp(out)
 
@@ -2117,7 +2267,7 @@ def api_staff_tasks():
             }.get(o["status"], WASH_SECS)
             o["remaining_seconds"] = max(0, int(rem))
             o["progress_pct"] = max(
-                0, min(100, int((1 - rem / stage_total) * 100)))
+                0, min(100, int((1 - rem/stage_total)*100)))
         if o.get("fold_ends_at") and o["status"] == "folding":
             fe = o["fold_ends_at"]
             if hasattr(fe, "isoformat"):
@@ -2171,6 +2321,7 @@ def api_encode_service():
     m_needed = machines_needed(weight)
     tracking = generate_tracking_id()
 
+    # Link to registered customer if email matches
     linked_customer_id = None
     if customer_email:
         registered = query(
@@ -2181,7 +2332,7 @@ def api_encode_service():
         if registered:
             linked_customer_id = registered["user_id"]
 
-    # Warn if customer has multiple active services (don't block)
+    # Warn about multiple active services (non-blocking)
     active_service_count = 0
     if customer_email:
         row = query(
@@ -2213,13 +2364,13 @@ def api_encode_service():
     )
 
     return jresp({
-        "ok":                True,
-        "order_id":          oid,
-        "tracking_id":       tracking,
-        "amount":            amount,
-        "machines_needed":   m_needed,
-        "email_queued":      bool(customer_email),
-        "linked_to_account": linked_customer_id is not None,
+        "ok":                    True,
+        "order_id":              oid,
+        "tracking_id":           tracking,
+        "amount":                amount,
+        "machines_needed":       m_needed,
+        "email_queued":          bool(customer_email),
+        "linked_to_account":     linked_customer_id is not None,
         "active_services_warning": active_service_count,
     })
 
@@ -2321,7 +2472,7 @@ def api_assign_start(oid):
 
 
 # ════════════════════════════════════════════════════════════════
-#  FOLD DONE
+#  FOLD / COMPLETE / EMAIL
 # ════════════════════════════════════════════════════════════════
 
 @app.route("/api/staff/orders/fold-done/<int:oid>", methods=["PUT"])
@@ -2432,8 +2583,7 @@ def api_machine_set_status(machine_id):
         return jresp({"error": f"Invalid status. Allowed: {', '.join(valid_ops)}"}, 400)
 
     machine = query(
-        "SELECT status FROM machines WHERE machine_id=%s", (machine_id,), one=True
-    )
+        "SELECT status FROM machines WHERE machine_id=%s", (machine_id,), one=True)
     if not machine:
         return jresp({"error": "Machine not found"}, 404)
     if machine["status"] == "busy":
@@ -2448,9 +2598,14 @@ def api_machine_set_status(machine_id):
     return jresp({"ok": True, "status": new_status})
 
 
+# ════════════════════════════════════════════════════════════════
+#  API — OPERATOR ISSUE REPORTS
+# ════════════════════════════════════════════════════════════════
+
 @app.route("/api/staff/issues")
 @role_required("staff", "admin", "superadmin")
 def api_staff_issues():
+    """Operator's own submitted issues."""
     rows = query(
         "SELECT * FROM issues WHERE reported_by=%s ORDER BY reported_at DESC",
         (session["user_id"],)
@@ -2462,6 +2617,10 @@ def api_staff_issues():
 @role_required("staff", "admin", "superadmin")
 @_require_json_or_xhr
 def api_report_issue():
+    """
+    Operator submits an issue report.
+    Stores reporter_name so admin panel can display it without a JOIN.
+    """
     d = request.get_json(silent=True) or {}
     issue_type = d.get("issue_type", "other")
     order_id = d.get("order_id") or None
@@ -2470,13 +2629,16 @@ def api_report_issue():
     if not desc:
         return jresp({"error": "Description required"}, 400)
 
+    reporter_name = session.get("full_name", "Unknown Operator")
+
     query(
-        "INSERT INTO issues (issue_type, order_id, description, reported_by, reported_at) "
-        "VALUES (%s,%s,%s,%s,NOW())",
-        (issue_type, order_id, desc, session["user_id"]), commit=True
+        "INSERT INTO issues "
+        "(issue_type, order_id, description, reported_by, reporter_name, reported_at) "
+        "VALUES (%s,%s,%s,%s,%s,NOW())",
+        (issue_type, order_id, desc,
+         session["user_id"], reporter_name), commit=True
     )
-    log_audit(session["full_name"], "report_issue",
-              issue_type, request.remote_addr)
+    log_audit(reporter_name, "report_issue", issue_type, request.remote_addr)
     return jresp({"ok": True})
 
 
@@ -2506,12 +2668,11 @@ def _advance_stages_logic():
             (stage, ends_at, oid), commit=True
         )
 
-    # ── Washing → next stage ──────────────────────────────────
-    washing_done = query(
+    # Washing → next
+    for o in (query(
         "SELECT * FROM orders WHERE status='washing' AND stage_ends_at <= %s", (
             now,)
-    ) or []
-    for o in washing_done:
+    ) or []):
         if o.get("with_dryer"):
             _set_stage(o["order_id"], "drying", now +
                        timedelta(seconds=DRY_SECS))
@@ -2526,12 +2687,11 @@ def _advance_stages_logic():
             _free_machines(o["order_id"])
         advanced += 1
 
-    # ── Drying → next stage ───────────────────────────────────
-    drying_done = query(
+    # Drying → next
+    for o in (query(
         "SELECT * FROM orders WHERE status='drying' AND stage_ends_at <= %s", (
             now,)
-    ) or []
-    for o in drying_done:
+    ) or []):
         if o.get("with_downy"):
             _set_stage(o["order_id"], "downy", now +
                        timedelta(seconds=DOWNY_SECS))
@@ -2543,12 +2703,11 @@ def _advance_stages_logic():
             _free_machines(o["order_id"])
         advanced += 1
 
-    # ── Downy → folding ───────────────────────────────────────
-    downy_done = query(
+    # Downy → folding
+    for o in (query(
         "SELECT * FROM orders WHERE status='downy' AND stage_ends_at <= %s", (
             now,)
-    ) or []
-    for o in downy_done:
+    ) or []):
         query(
             "UPDATE orders SET status='folding', stage_ends_at=NULL, fold_ends_at=NULL "
             "WHERE order_id=%s", (o["order_id"],), commit=True
@@ -2565,10 +2724,13 @@ def api_advance_stages():
     token = auth.removeprefix("Bearer ").strip()
     if token != INTERNAL_SECRET:
         return jresp({"error": "Forbidden"}, 403)
-
     advanced = _advance_stages_logic()
     return jresp({"ok": True, "advanced": advanced})
 
+
+# ════════════════════════════════════════════════════════════════
+#  API — PROMO VALIDATION
+# ════════════════════════════════════════════════════════════════
 
 @app.route("/api/staff/validate-promo/<code>")
 @role_required("staff", "admin", "superadmin")
@@ -2599,19 +2761,13 @@ def api_customers():
 @app.route("/api/customers/search")
 @role_required("staff", "admin", "superadmin")
 def api_customers_search():
-    """
-    Autocomplete search for the operator encode form.
-    Returns active, non-archived customers whose name contains the query.
-    Query param: ?q=<search term>
-    """
+    """Autocomplete for operator encode form."""
     q = request.args.get("q", "").strip()
     if not q or len(q) < 1:
         return jresp([])
-
     like = f"%{q}%"
     rows = query(
-        "SELECT user_id, full_name, email "
-        "FROM users "
+        "SELECT user_id, full_name, email FROM users "
         "WHERE role='customer' AND status='active' "
         "  AND (is_archived=0 OR is_archived IS NULL) "
         "  AND (full_name LIKE %s OR email LIKE %s) "
@@ -2641,13 +2797,12 @@ def api_unblock_customer(uid):
     return jresp({"ok": True})
 
 
-# ─── Customer Archive ────────────────────────────────────────────
+# ── Customer Archive ───────────────────────────────────────────
 
 @app.route("/api/customers/archive/<int:uid>", methods=["PUT"])
 @role_required("admin", "superadmin")
 @_require_json_or_xhr
 def api_customer_archive(uid):
-    """Move a customer to archive (soft-delete from active list)."""
     query(
         "UPDATE users SET is_archived=1, archived_at=NOW() "
         "WHERE user_id=%s AND role='customer'",
@@ -2662,7 +2817,6 @@ def api_customer_archive(uid):
 @role_required("admin", "superadmin")
 @_require_json_or_xhr
 def api_customer_unarchive(uid):
-    """Restore a customer from archive."""
     query(
         "UPDATE users SET is_archived=0, archived_at=NULL, status='active' "
         "WHERE user_id=%s AND role='customer'",
@@ -2676,7 +2830,6 @@ def api_customer_unarchive(uid):
 @app.route("/api/customers/archived")
 @role_required("admin", "superadmin")
 def api_customers_archived():
-    """Return all archived customers."""
     rows = query(
         "SELECT user_id, full_name, email, phone, status, archived_at, created_at "
         "FROM users WHERE role='customer' AND is_archived=1 "
@@ -2688,16 +2841,13 @@ def api_customers_archived():
 @app.route("/api/customers/delete/<int:uid>", methods=["DELETE"])
 @role_required("admin", "superadmin")
 def api_customer_delete_permanent(uid):
-    """Permanently delete an archived customer and all their data."""
     row = query(
         "SELECT user_id FROM users WHERE user_id=%s AND role='customer' AND is_archived=1",
         (uid,), one=True
     )
     if not row:
         return jresp({"error": "Customer not found or not archived"}, 404)
-
-    # Preserve orders by nullifying the customer link
-    query("UPDATE orders SET customer_id=NULL WHERE customer_id=%s",
+    query("UPDATE orders     SET customer_id=NULL WHERE customer_id=%s",
           (uid,), commit=True)
     query("DELETE FROM feedbacks WHERE customer_id=%s", (uid,), commit=True)
     query("DELETE FROM password_resets WHERE user_id=%s", (uid,), commit=True)
@@ -2761,7 +2911,7 @@ def api_promos():
 @role_required("admin", "superadmin")
 def api_promo_add():
     d = request.get_json(silent=True) or {}
-    code = d.get("code",     "").strip().upper()
+    code = d.get("code",    "").strip().upper()
     discount = int(d.get("discount", 0))
 
     if not code or not (1 <= discount <= 100):
@@ -2787,6 +2937,17 @@ def api_promo_delete(pid):
 # ════════════════════════════════════════════════════════════════
 #  API — CUSTOMER PORTAL
 # ════════════════════════════════════════════════════════════════
+
+def _enrich_order_timer(o):
+    if o.get("stage_ends_at") and o.get("status") in ("washing", "drying", "downy"):
+        now = datetime.now()
+        rem = (o["stage_ends_at"] - now).total_seconds()
+        stage_total = {
+            "washing": WASH_SECS, "drying": DRY_SECS, "downy": DOWNY_SECS,
+        }.get(o["status"], WASH_SECS)
+        o["remaining_seconds"] = max(0, int(rem))
+        o["progress_pct"] = max(0, min(100, int((1 - rem/stage_total)*100)))
+
 
 @app.route("/api/customer/dashboard")
 @role_required("customer")
@@ -2873,18 +3034,6 @@ def api_customer_active_orders():
     return jresp(rows)
 
 
-def _enrich_order_timer(o):
-    if o.get("stage_ends_at") and o.get("status") in ("washing", "drying", "downy"):
-        now = datetime.now()
-        rem = (o["stage_ends_at"] - now).total_seconds()
-        stage_total = {
-            "washing": WASH_SECS, "drying": DRY_SECS, "downy": DOWNY_SECS,
-        }.get(o["status"], WASH_SECS)
-        o["remaining_seconds"] = max(0, int(rem))
-        o["progress_pct"] = max(
-            0, min(100, int((1 - rem / stage_total) * 100)))
-
-
 @app.route("/api/customer/orders")
 @role_required("customer")
 def api_customer_orders():
@@ -2934,7 +3083,6 @@ def api_track_order(tracking_id):
 @role_required("customer")
 def api_customer_place_order():
     uid = session["user_id"]
-
     d = request.get_json(silent=True) or {}
     service_id = d.get("service_id")
     weight = float(d.get("weight_kg", 0))
@@ -2952,9 +3100,8 @@ def api_customer_place_order():
 
     discount_pct = 0
     if promo_code:
-        promo = query(
-            "SELECT * FROM promos WHERE code=%s AND is_active=1", (promo_code,), one=True
-        )
+        promo = query("SELECT * FROM promos WHERE code=%s AND is_active=1",
+                      (promo_code,), one=True)
         if not promo:
             return jresp({"error": "Invalid or expired promo code"}, 400)
         discount_pct = promo["discount"]
@@ -3064,8 +3211,31 @@ def api_submit_feedback():
 
 
 # ════════════════════════════════════════════════════════════════
-#  CLI RECOVERY COMMANDS
+#  CLI COMMANDS
 # ════════════════════════════════════════════════════════════════
+
+@app.cli.command("create-superadmin")
+@with_appcontext
+def create_superadmin_cmd():
+    SA_EMAIL = os.getenv("SA_EMAIL",    "superadmin@laundry.com")
+    SA_PASSWORD = os.getenv("SA_PASSWORD", "StrongPass#2026!")
+    SA_NAME = "Super Admin"
+
+    existing = query("SELECT user_id FROM users WHERE email=%s",
+                     (SA_EMAIL,), one=True)
+    if existing:
+        click.echo("⚠️  Superadmin already exists.")
+        return
+
+    query(
+        "INSERT INTO users (full_name, username, email, phone, password_hash, role, status) "
+        "VALUES (%s,%s,%s,%s,%s,%s,%s)",
+        (SA_NAME, "superadmin", SA_EMAIL, "09123456789",
+         generate_password_hash(SA_PASSWORD), "superadmin", "active"),
+        commit=True
+    )
+    click.echo("✅ Superadmin created successfully!")
+
 
 @app.cli.command("recover-superadmin")
 @with_appcontext
@@ -3118,287 +3288,8 @@ def recover_superadmin_cmd():
 
 
 # ════════════════════════════════════════════════════════════════
-#  API — SUPERADMIN SELF-SERVICE
-# ════════════════════════════════════════════════════════════════
-
-@app.route("/api/superadmin/change-own-password", methods=["POST"])
-@role_required("superadmin")
-@_require_json_or_xhr
-def api_sa_change_own_password():
-    d = request.get_json(silent=True) or {}
-    current = d.get("current_password",  "")
-    new_pw = d.get("new_password",      "")
-    confirm = d.get("confirm_password",  "")
-
-    if not all([current, new_pw, confirm]):
-        return jresp({"error": "All fields are required."}, 400)
-    if new_pw != confirm:
-        return jresp({"error": "New passwords do not match."}, 400)
-    if len(new_pw) < 8:
-        return jresp({"error": "Password must be at least 8 characters."}, 400)
-
-    user = query("SELECT password_hash FROM users WHERE user_id=%s",
-                 (session["user_id"],), one=True)
-    if not user or not check_password_hash(user["password_hash"], current):
-        return jresp({"error": "Current password is incorrect."}, 401)
-
-    query(
-        "UPDATE users SET password_hash=%s WHERE user_id=%s",
-        (generate_password_hash(new_pw), session["user_id"]), commit=True
-    )
-    query("DELETE FROM password_resets WHERE user_id=%s",
-          (session["user_id"],), commit=True)
-    log_audit(session["full_name"], "superadmin_password_changed",
-              session["email"], request.remote_addr)
-    return jresp({"ok": True})
-
-
-@app.route("/api/superadmin/request-reset", methods=["POST"])
-def api_sa_request_reset():
-    d = request.get_json(silent=True) or {}
-    email = (d.get("email") or "").strip().lower()
-    secret_phrase = (d.get("secret_phrase") or "").strip()
-    SA_RECOVERY_PHRASE = os.environ.get("SA_RECOVERY_PHRASE", "")
-
-    if not SA_RECOVERY_PHRASE:
-        log_audit(email, "sa_reset_attempt_no_phrase_configured",
-                  email, request.remote_addr)
-        return jresp({"ok": True})
-
-    phrase_ok = secrets.compare_digest(
-        secret_phrase.encode(), SA_RECOVERY_PHRASE.encode())
-
-    if phrase_ok:
-        user = query(
-            "SELECT user_id, full_name, email FROM users "
-            "WHERE email=%s AND role='superadmin' AND status='active'",
-            (email,), one=True
-        )
-        if user:
-            token = secrets.token_urlsafe(40)
-            expiry = datetime.now() + timedelta(hours=1)
-            query(
-                "INSERT INTO password_resets (user_id, token, expires_at) VALUES (%s,%s,%s) "
-                "ON DUPLICATE KEY UPDATE token=%s, expires_at=%s",
-                (user["user_id"], token, expiry, token, expiry),
-                commit=True,
-            )
-            send_reset_email(user["email"], token, user["full_name"])
-            log_audit(email, "sa_reset_email_sent", email, request.remote_addr)
-    else:
-        log_audit(email, "sa_reset_wrong_phrase", email, request.remote_addr)
-
-    return jresp({"ok": True})
-
-
-# ════════════════════════════════════════════════════════════════
-#  API — SYSTEM CONFIG
-# ════════════════════════════════════════════════════════════════
-
-"""
-╔══════════════════════════════════════════════════════════════╗
-║   app.py — UI CUSTOMIZER PATCH                               ║
-║   Apply the changes in this file to your existing app.py     ║
-║                                                              ║
-║   SUMMARY OF CHANGES                                         ║
-║   1. Add UI_DEFAULTS dict  (after SERVICE_RATES)             ║
-║   2. Add get_ui_settings() helper  (after UI_DEFAULTS)       ║
-║   3. Add /api/ui/settings  (public — login page consumes)    ║
-║   4. Replace /api/system/settings GET  (merges defaults)     ║
-║   5. Replace /api/system/settings POST  (better audit log)   ║
-║   6. Add /api/ui/reset  (superadmin factory-reset)           ║
-║   7. Add /api/ui/permissions  (parsed perm sets)             ║
-║   8. Seed UI_DEFAULTS in db_init()                           ║
-╚══════════════════════════════════════════════════════════════╝
-"""
-
-
-# ══════════════════════════════════════════════════════════════
-#  CHANGE 1
-#  Location: directly after SERVICE_RATES dict
-#  Action:   ADD the block below (do not remove anything)
-# ══════════════════════════════════════════════════════════════
-
-
-# ══════════════════════════════════════════════════════════════
-#  CHANGE 2
-#  Location: directly after UI_DEFAULTS (still near top of file)
-#  Action:   ADD the helper function below
-# ══════════════════════════════════════════════════════════════
-
-
-# ══════════════════════════════════════════════════════════════
-#  CHANGE 3
-#  Location: near the other public /api/* routes
-#            (e.g. after /api/machines/status)
-#  Action:   ADD the route below
-# ══════════════════════════════════════════════════════════════
-
-
-# ══════════════════════════════════════════════════════════════
-#  CHANGE 4  +  CHANGE 5
-#  Location: find the EXISTING two /api/system/settings routes
-#            and REPLACE both with the versions below.
-#
-#  Old GET:
-#    @app.route("/api/system/settings", methods=["GET"])
-#    @role_required("admin", "superadmin")
-#    def api_system_settings_get():
-#        rows = query("SELECT * FROM system_settings") or []
-#        return jresp({r["setting_key"]: r["setting_value"] for r in rows})
-#
-#  Old POST:
-#    @app.route("/api/system/settings", methods=["POST"])
-#    @role_required("admin", "superadmin")
-#    def api_system_settings_save():
-#        d = request.get_json(silent=True) or {}
-#        for key, val in d.items():
-#            query("INSERT INTO system_settings ...", commit=True)
-#        log_audit(...)
-#        return jresp({"ok": True})
-# ══════════════════════════════════════════════════════════════
-
-@app.route("/api/system/settings", methods=["GET"])
-@role_required("admin", "superadmin")
-def api_system_settings_get():
-    """
-    Returns all system + UI settings merged with defaults.
-    The superadmin UI Customizer uses this so fields always
-    pre-populate correctly even before anything has been saved.
-    """
-    return jresp(get_ui_settings())
-
-
-@app.route("/api/system/settings", methods=["POST"])
-@role_required("admin", "superadmin")
-def api_system_settings_save():
-    """
-    Upsert one or more settings.
-    Body: flat JSON object  { "key": "value", ... }
-    Produces a categorised audit log entry.
-    """
-    d = request.get_json(silent=True) or {}
-    if not d:
-        return jresp({"error": "No settings provided"}, 400)
-
-    for key in d:
-        if len(key) > 120:
-            return jresp({"error": f"Key too long: {key[:40]}…"}, 400)
-
-    for key, val in d.items():
-        query(
-            "INSERT INTO system_settings (setting_key, setting_value) "
-            "VALUES (%s, %s) "
-            "ON DUPLICATE KEY UPDATE setting_value = %s",
-            (key, str(val), str(val)),
-            commit=True,
-        )
-
-    # Categorise keys for a readable audit trail
-    ui_keys = [k for k in d if k.startswith(
-        ("ui_", "login_", "cu_", "op_", "adm_", "ticker_"))]
-    perm_keys = [k for k in d if k.startswith("perm_")]
-    sys_keys = [k for k in d
-                if k not in ui_keys and k not in perm_keys]
-
-    if ui_keys:
-        log_audit(session["full_name"], "ui_customizer_save",
-                  f"keys={ui_keys}", request.remote_addr)
-    if perm_keys:
-        log_audit(session["full_name"], "permissions_save",
-                  f"roles={perm_keys}", request.remote_addr)
-    if sys_keys:
-        log_audit(session["full_name"], "system_settings_save",
-                  f"keys={sys_keys}", request.remote_addr)
-
-    return jresp({"ok": True, "saved": list(d.keys())})
-
-
-# ══════════════════════════════════════════════════════════════
-#  CHANGE 6
-#  Location: after the /api/system/settings routes above
-#  Action:   ADD the two routes below
-# ══════════════════════════════════════════════════════════════
-
-@app.route("/api/ui/reset", methods=["POST"])
-@role_required("superadmin")
-def api_ui_reset():
-    """
-    Superadmin only — delete every UI customiser key from the DB.
-    Factory defaults (UI_DEFAULTS) take effect on the next request.
-    """
-    UI_KEY_PREFIXES = ("ui_", "login_", "cu_", "op_", "adm_", "ticker_")
-    placeholders = " OR ".join("setting_key LIKE %s" for _ in UI_KEY_PREFIXES)
-    rows = query(
-        f"SELECT setting_key FROM system_settings WHERE {placeholders}",
-        tuple(p + "%" for p in UI_KEY_PREFIXES)
-    ) or []
-
-    deleted = 0
-    for row in rows:
-        query("DELETE FROM system_settings WHERE setting_key = %s",
-              (row["setting_key"],), commit=True)
-        deleted += 1
-
-    log_audit(session["full_name"], "ui_customizer_reset",
-              f"deleted={deleted} keys", request.remote_addr)
-    return jresp({"ok": True, "deleted": deleted,
-                  "message": "UI settings reset to factory defaults."})
-
-
-@app.route("/api/ui/permissions")
-@role_required("superadmin")
-def api_ui_permissions():
-    """
-    Returns all three role permission sets pre-parsed from their
-    stored JSON strings.  Falls back to UI_DEFAULTS if not yet saved.
-    """
-    settings = get_ui_settings()
-
-    def _parse(key: str) -> dict:
-        try:
-            return json.loads(settings.get(key, "{}"))
-        except (json.JSONDecodeError, TypeError):
-            try:
-                return json.loads(UI_DEFAULTS.get(key, "{}"))
-            except Exception:
-                return {}
-
-    return jresp({
-        "admin":    _parse("perm_admin"),
-        "staff":    _parse("perm_staff"),
-        "customer": _parse("perm_customer"),
-    })
-
-
-# ══════════════════════════════════════════════════════════════
-#  CHANGE 7
-#  Location: inside the existing db_init() function
-#  Find this block (already in your db_init):
-#
-#      for k, v in [("maintenance_mode", "0"),
-#                   ("allow_registration", "1"),
-#                   ("promos_enabled", "1")]:
-#          query(
-#              "INSERT IGNORE INTO system_settings ...",
-#              (k, v), commit=True
-#          )
-#
-#  ADD the following block immediately after it:
-# ══════════════════════════════════════════════════════════════
-
-    # ── Seed UI defaults on first initialisation ────────────────
-    for _k, _v in UI_DEFAULTS.items():
-        query(
-            "INSERT IGNORE INTO system_settings (setting_key, setting_value) "
-            "VALUES (%s, %s)",
-            (_k, _v), commit=True
-        )
-    # ── End UI defaults seed ────────────────────────────────────
-# ════════════════════════════════════════════════════════════════
 #  ERROR HANDLERS
 # ════════════════════════════════════════════════════════════════
-
 
 @app.errorhandler(404)
 def not_found(e):

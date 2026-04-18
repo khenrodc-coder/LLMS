@@ -6,10 +6,10 @@
 <title>Super Admin — Laundry Lounge</title>
 <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/icon.png') }}">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{--ease:cubic-bezier(0.16,1,0.3,1)}
-
 [data-theme="light"]{
   --bg:#E8F8FB;--bg2:#D6F1F7;--bg3:#C4EAF4;
   --surface:rgba(255,255,255,0.88);--surface2:rgba(245,253,255,0.98);
@@ -21,6 +21,8 @@
   --warn:#A07010;--warn-bg:rgba(160,112,16,0.08);--warn-border:rgba(160,112,16,0.25);
   --blue:#1A6FA8;--blue-bg:rgba(26,111,168,0.08);--blue-border:rgba(26,111,168,0.25);
   --purple:#6A35A0;--purple-bg:rgba(106,53,160,0.07);--purple-border:rgba(106,53,160,0.22);
+  --teal:#1A8080;--teal-bg:rgba(26,128,128,0.07);--teal-border:rgba(26,128,128,0.22);
+  --orange:#B85000;--orange-bg:rgba(184,80,0,0.08);--orange-border:rgba(184,80,0,0.25);
   --shadow:0 20px 60px rgba(0,80,120,0.11),0 4px 20px rgba(0,80,120,0.06);
   --shadow-sm:0 4px 16px rgba(0,80,120,0.07);
   --input-bg:rgba(255,255,255,0.85);--overlay:rgba(6,22,28,0.48);--sidebar-w:272px;
@@ -36,24 +38,22 @@
   --warn:#D4A030;--warn-bg:rgba(212,160,48,0.1);--warn-border:rgba(212,160,48,0.28);
   --blue:#40A8D4;--blue-bg:rgba(64,168,212,0.1);--blue-border:rgba(64,168,212,0.28);
   --purple:#A878E0;--purple-bg:rgba(168,120,224,0.1);--purple-border:rgba(168,120,224,0.28);
+  --teal:#40C0C0;--teal-bg:rgba(64,192,192,0.1);--teal-border:rgba(64,192,192,0.28);
+  --orange:#F4A460;--orange-bg:rgba(244,164,96,0.1);--orange-border:rgba(244,164,96,0.28);
   --shadow:0 20px 60px rgba(0,0,0,0.6),0 4px 20px rgba(0,0,0,0.35);
   --shadow-sm:0 4px 16px rgba(0,0,0,0.4);
   --input-bg:rgba(0,0,0,0.3);--overlay:rgba(0,0,0,0.7);--sidebar-w:272px;
 }
-
 html{scroll-behavior:smooth;font-size:16px}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;transition:background .4s,color .4s;padding-bottom:48px}
 body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:180px}
-
 .deco-bg{pointer-events:none;position:fixed;inset:0;overflow:hidden;z-index:0}
 .deco-word{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:clamp(5rem,14vw,16rem);line-height:.82;color:var(--text);opacity:.025;position:absolute;white-space:nowrap;user-select:none;letter-spacing:-.02em}
 .deco-word.w1{top:-4%;left:-2%;transform:rotate(-2deg)}
 .deco-word.w2{bottom:-3%;right:-3%;transform:rotate(2deg);font-style:italic}
 @media(max-width:540px){.deco-word{display:none}}
-
 #overlay{position:fixed;inset:0;background:var(--overlay);backdrop-filter:blur(4px);z-index:35;display:none}
 #overlay.visible{display:block}
-
 #sidebar{position:fixed;top:0;left:0;height:100%;width:var(--sidebar-w);z-index:40;background:var(--surface2);border-right:1px solid var(--border);transform:translateX(-100%);transition:transform .32s var(--ease);display:flex;flex-direction:column;overflow-y:auto;overscroll-behavior:contain}
 #sidebar.open{transform:translateX(0)}
 .sb-top{padding:22px 18px 0}
@@ -79,7 +79,6 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opa
 .sb-urole{font-family:'DM Mono',monospace;font-size:.48rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
 .sb-logout{display:flex;align-items:center;justify-content:center;gap:8px;padding:10px;border-radius:10px;background:var(--danger-bg);color:var(--danger);border:1px solid var(--danger-border);font-family:'DM Mono',monospace;font-size:.54rem;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;text-decoration:none;transition:background .2s,transform .15s}
 .sb-logout:hover{background:rgba(192,57,43,.15);transform:translateY(-1px)}
-
 .topbar{position:sticky;top:0;z-index:30;background:var(--surface);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:12px clamp(14px,4vw,28px);transition:background .4s}
 .topbar-left{display:flex;align-items:center;gap:11px}
 #openSidebar{width:40px;height:40px;border-radius:10px;background:var(--surface2);border:1px solid var(--border);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:border-color .2s,transform .15s}
@@ -92,35 +91,29 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opa
 .btn-theme{width:40px;height:40px;border-radius:10px;background:var(--surface2);border:1px solid var(--border);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.95rem;transition:border-color .2s,transform .15s}
 .btn-theme:hover{border-color:var(--accent);transform:scale(1.05)}
 @media(max-width:540px){.sa-crown{display:none}}
-
 #layout{position:relative;z-index:10;min-height:calc(100vh - 64px)}
 #main{max-width:2000px;margin:0 auto;padding:clamp(16px,3.5vw,30px) clamp(14px,4vw,32px)}
-
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 @keyframes livePulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-
+@keyframes machineWash{0%,100%{transform:rotate(0deg)}25%{transform:rotate(12deg)}75%{transform:rotate(-12deg)}}
 .section{display:none}
 .section.active{display:block;animation:fadeUp .38s var(--ease)}
-
 .page-head{margin-bottom:clamp(16px,3vw,24px)}
 .live-tag{display:inline-flex;align-items:center;gap:6px;padding:5px 11px 5px 9px;background:var(--accent);color:#fff;border-radius:4px;font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;margin-bottom:10px}
 .live-dot{width:7px;height:7px;background:rgba(255,255,255,.8);border-radius:50%;animation:livePulse 1.8s ease-in-out infinite}
 .page-title{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:clamp(2.4rem,6vw,3.8rem);letter-spacing:-.02em;color:var(--text);line-height:.92}
 .page-title em{display:block;font-style:italic;font-weight:400;color:var(--accent)}
 .page-sub{font-size:.88rem;color:var(--text3);margin-top:7px;font-weight:300}
-
 .divider{display:flex;align-items:center;gap:11px;margin:clamp(14px,3vw,20px) 0}
 .divider .rule{flex:1;height:1px;background:var(--border)}
 .divider .dia{width:8px;height:8px;border:1px solid var(--accent);transform:rotate(45deg);opacity:.4;flex-shrink:0}
-
 .glass{background:var(--surface);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow-sm);transition:box-shadow .3s,transform .3s,background .4s}
 .glass:hover{box-shadow:var(--shadow);transform:translateY(-2px)}
 .gstatic{background:var(--surface);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow-sm);transition:background .4s}
 .corner{position:absolute;top:-1px;right:-1px;width:44px;height:44px;border-top:2px solid var(--accent);border-right:2px solid var(--accent);border-radius:0 18px 0 0;opacity:.3;pointer-events:none;transition:opacity .2s}
 .glass:hover .corner{opacity:1}
-
 .stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:11px;margin-bottom:clamp(14px,3vw,20px)}
 .stat-card{position:relative;overflow:hidden;border-radius:16px;padding:16px 18px;cursor:default}
 .stat-lbl{font-family:'DM Mono',monospace;font-size:.46rem;letter-spacing:.2em;text-transform:uppercase;color:var(--text3);margin-bottom:5px}
@@ -131,11 +124,10 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opa
 .stat-tag.acc{background:rgba(0,180,216,.08);color:var(--accent)}
 .stat-tag.warn{background:var(--warn-bg);color:var(--warn)}
 .stat-tag.red{background:var(--danger-bg);color:var(--danger)}
-
+.stat-tag.orange{background:var(--orange-bg);color:var(--orange)}
 .grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin-bottom:14px}
 .card{padding:20px 22px;position:relative;overflow:hidden}
-.card-lbl{font-family:'DM Mono',monospace;font-size:1.46rem;letter-spacing:.22em;text-transform:uppercase;color:var(--text3);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:8px}
-
+.card-lbl{font-family:'DM Mono',monospace;font-size:.46rem;letter-spacing:.22em;text-transform:uppercase;color:var(--text3);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:8px}
 .toolbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px}
 .toolbar-left{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .search-wrap{position:relative}
@@ -150,7 +142,6 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opa
 .btn-add:hover{opacity:.88;transform:translateY(-1px);box-shadow:0 6px 18px var(--accent-glow)}
 .btn-export{height:38px;padding:0 16px;border-radius:22px;border:1px solid var(--border-acc);background:rgba(0,180,216,.08);color:var(--accent);font-family:'DM Mono',monospace;font-size:.52rem;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;gap:6px;transition:opacity .2s,transform .15s}
 .btn-export:hover{opacity:.88;transform:translateY(-1px)}
-
 .table-card{border-radius:18px;overflow:hidden}
 .table-head-bar{display:flex;align-items:center;justify-content:space-between;padding:15px 20px 12px;border-bottom:1px solid var(--border)}
 .table-lbl{font-family:'DM Mono',monospace;font-size:.46rem;letter-spacing:.22em;text-transform:uppercase;color:var(--text3);display:flex;align-items:center;gap:8px}
@@ -162,12 +153,10 @@ tbody tr{border-bottom:1px solid var(--border);transition:background .15s}
 tbody tr:last-child{border-bottom:none}
 tbody tr:hover{background:rgba(0,180,216,.025)}
 td{padding:12px 16px;vertical-align:middle}
-
 .person-cell{display:flex;align-items:center;gap:10px}
 .p-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:1rem;color:#fff;flex-shrink:0}
 .p-name{font-size:.9rem;font-weight:600;color:var(--text)}
 .p-email{font-family:'DM Mono',monospace;font-size:.46rem;color:var(--text3);letter-spacing:.04em;margin-top:1px}
-
 .pill{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-family:'DM Mono',monospace;font-size:.44rem;letter-spacing:.1em;text-transform:uppercase}
 .pill.green{background:var(--success-bg);color:var(--success);border:1px solid var(--success-border)}
 .pill.red{background:var(--danger-bg);color:var(--danger);border:1px solid var(--danger-border)}
@@ -175,9 +164,10 @@ td{padding:12px 16px;vertical-align:middle}
 .pill.amber{background:var(--warn-bg);color:var(--warn);border:1px solid var(--warn-border)}
 .pill.blue{background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-border)}
 .pill.acc{background:rgba(0,180,216,.08);color:var(--accent);border:1px solid var(--border-acc)}
+.pill.teal{background:var(--teal-bg);color:var(--teal);border:1px solid var(--teal-border)}
+.pill.orange{background:var(--orange-bg);color:var(--orange);border:1px solid var(--orange-border)}
 .pill-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;background:currentColor}
 .pill.green .pill-dot{animation:livePulse 2s ease-in-out infinite}
-
 .mono-cell{font-family:'DM Mono',monospace;font-size:.52rem;color:var(--text3);letter-spacing:.05em}
 .action-group{display:flex;align-items:center;gap:5px}
 .act-btn{width:30px;height:30px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .2s,color .2s,background .2s}
@@ -185,12 +175,10 @@ td{padding:12px 16px;vertical-align:middle}
 .act-btn:hover{border-color:var(--border-acc);color:var(--accent);background:rgba(0,180,216,.06)}
 .act-btn.block:hover{border-color:var(--warn-border);color:var(--warn);background:var(--warn-bg)}
 .act-btn.unlock:hover{border-color:var(--success-border);color:var(--success);background:var(--success-bg)}
-
 .inline-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border)}
 .inline-row:last-child{border-bottom:none}
 .ikey{font-family:'DM Mono',monospace;font-size:.95rem;color:var(--text3);letter-spacing:.06em}
 .ival{font-family:'DM Mono',monospace;font-size:.95rem;color:var(--text);font-weight:500}
-
 .log-item{padding:10px 0;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:12px}
 .log-item:last-child{border-bottom:none}
 .log-icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;margin-top:1px}
@@ -198,26 +186,23 @@ td{padding:12px 16px;vertical-align:middle}
 .log-icon.warn{background:var(--warn-bg);border:1px solid var(--warn-border)}
 .log-icon.danger{background:var(--danger-bg);border:1px solid var(--danger-border)}
 .log-icon.success{background:var(--success-bg);border:1px solid var(--success-border)}
-.log-msg{font-size:1.22rem;color:var(--text);line-height:1.4}
-.log-meta{font-family:'DM Mono',monospace;font-size:.99rem;color:var(--text3);margin-top:2px;letter-spacing:.04em}
-
+.log-msg{font-size:.82rem;color:var(--text);line-height:1.4}
+.log-meta{font-family:'DM Mono',monospace;font-size:.44rem;color:var(--text3);margin-top:2px;letter-spacing:.04em}
 .toggle-wrap{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--border)}
 .toggle-wrap:last-child{border-bottom:none}
-.toggle-label{font-size:.99rem;color:var(--text)}
-.toggle-desc{font-family:'DM Mono',monospace;font-size:.96rem;color:var(--text3);margin-top:2px}
+.toggle-label{font-size:.88rem;color:var(--text)}
+.toggle-desc{font-family:'DM Mono',monospace;font-size:.44rem;color:var(--text3);margin-top:2px}
 .toggle{position:relative;width:40px;height:22px;flex-shrink:0}
 .toggle input{opacity:0;width:0;height:0;position:absolute}
 .toggle-slider{position:absolute;inset:0;background:rgba(0,0,0,.1);border:1px solid var(--border);border-radius:22px;cursor:pointer;transition:background .25s}
 .toggle-slider::before{content:'';position:absolute;width:16px;height:16px;left:2px;bottom:2px;background:#fff;border-radius:50%;transition:transform .25s;box-shadow:0 1px 4px rgba(0,0,0,.2)}
 .toggle input:checked+.toggle-slider{background:var(--accent);border-color:var(--accent)}
 .toggle input:checked+.toggle-slider::before{transform:translateX(18px)}
-
 .prog-row{display:flex;align-items:center;gap:9px;margin-bottom:9px}
 .prog-name{font-size:.8rem;color:var(--text2);flex-shrink:0;min-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .prog-bg{flex:1;height:5px;border-radius:10px;background:rgba(0,180,216,.1);overflow:hidden}
 .prog-fill{height:100%;border-radius:10px;background:linear-gradient(90deg,var(--accent),rgba(0,180,216,.4));transition:width .8s var(--ease)}
-.prog-val{font-family:'DM Mono',monospace;font-size:1.5rem;color:var(--text3);flex-shrink:0;min-width:28px;text-align:right}
-
+.prog-val{font-family:'DM Mono',monospace;font-size:.44rem;color:var(--text3);flex-shrink:0;min-width:28px;text-align:right}
 .modal-overlay{position:fixed;inset:0;background:var(--overlay);backdrop-filter:blur(6px);z-index:60;display:none;align-items:center;justify-content:center;padding:20px}
 .modal-overlay.open{display:flex}
 .modal{background:var(--surface2);border:1px solid var(--border-acc);border-radius:20px;padding:28px;width:100%;max-width:440px;box-shadow:var(--shadow);animation:fadeUp .3s var(--ease)}
@@ -226,12 +211,12 @@ td{padding:12px 16px;vertical-align:middle}
 .modal-close{width:30px;height:30px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.85rem;transition:border-color .2s,color .2s}
 .modal-close:hover{border-color:var(--accent);color:var(--accent)}
 .mfield{margin-bottom:14px}
-.mfield label{display:block;font-family:'DM Mono',monospace;font-size:.86rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text3);margin-bottom:7px}
+.mfield label{display:block;font-family:'DM Mono',monospace;font-size:.46rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text3);margin-bottom:7px}
 .mfield input,.mfield select{width:100%;height:40px;border-radius:10px;border:1px solid var(--border);background:var(--input-bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:.88rem;padding:0 13px;outline:none;transition:border-color .2s,box-shadow .2s}
 .mfield input:focus,.mfield select:focus{border-color:var(--border-acc);box-shadow:0 0 0 3px var(--accent-glow)}
 .mfield select option{background:var(--bg2);color:var(--text)}
+.mfield-hint{font-family:'DM Mono',monospace;font-size:.44rem;color:var(--text3);margin-top:5px}
 .modal-btns{display:flex;gap:8px;margin-top:18px;justify-content:flex-end}
-
 .btn-primary{height:38px;padding:0 20px;border-radius:22px;background:var(--accent);color:#fff;border:none;font-family:'DM Mono',monospace;font-size:.52rem;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;transition:opacity .2s,transform .15s,box-shadow .2s}
 .btn-primary:hover{opacity:.88;transform:translateY(-1px);box-shadow:0 6px 18px var(--accent-glow)}
 .btn-primary:disabled{opacity:.45;cursor:not-allowed;transform:none}
@@ -239,18 +224,15 @@ td{padding:12px 16px;vertical-align:middle}
 .btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
 .btn-danger{height:38px;padding:0 20px;border-radius:22px;background:var(--danger-bg);color:var(--danger);border:1px solid var(--danger-border);font-family:'DM Mono',monospace;font-size:.52rem;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;transition:background .2s}
 .btn-danger:hover{background:rgba(192,57,43,.15)}
-
 .role-chip{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:6px;font-family:'DM Mono',monospace;font-size:.44rem;letter-spacing:.12em;text-transform:uppercase;font-weight:500}
 .role-chip.superadmin{background:linear-gradient(135deg,rgba(0,180,216,.15),rgba(0,119,168,.08));color:var(--accent);border:1px solid var(--border-acc)}
 .role-chip.admin{background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-border)}
 .role-chip.staff{background:var(--success-bg);color:var(--success);border:1px solid var(--success-border)}
 .role-chip.customer{background:var(--warn-bg);color:var(--warn);border:1px solid var(--warn-border)}
-
 .alert-box{padding:12px 16px;border-radius:11px;font-size:.82rem;margin-bottom:14px;display:flex;align-items:center;gap:10px}
 .alert-box.warn{background:var(--warn-bg);border:1px solid var(--warn-border);color:var(--warn)}
 .alert-box.info{background:var(--blue-bg);border:1px solid var(--blue-border);color:var(--blue)}
 .alert-box.danger{background:var(--danger-bg);border:1px solid var(--danger-border);color:var(--danger)}
-
 .emergency-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:11px;margin-top:6px}
 .emg-card{border-radius:13px;padding:16px;border:1px solid var(--border);background:var(--input-bg);cursor:pointer;transition:border-color .2s,background .2s,transform .15s;text-align:left}
 .emg-card:hover{border-color:var(--border-acc);transform:translateY(-2px)}
@@ -258,126 +240,77 @@ td{padding:12px 16px;vertical-align:middle}
 .emg-icon{font-size:1.4rem;margin-bottom:8px;display:block}
 .emg-title{font-family:'DM Mono',monospace;font-size:.62rem;font-weight:500;color:var(--text);letter-spacing:.06em;margin-bottom:3px}
 .emg-desc{font-size:.76rem;color:var(--text3)}
-
 .backup-info{background:var(--bg3);border-radius:10px;padding:14px;margin-bottom:12px;border:1px solid var(--border)}
 .backup-date{font-family:'DM Mono',monospace;font-size:.82rem;color:var(--text);font-weight:500}
 .backup-meta{font-family:'DM Mono',monospace;font-size:.5rem;color:var(--text3);margin-top:2px}
 .export-group{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
 .btn-dl{height:36px;padding:0 14px;border-radius:9px;border:1px solid var(--border);background:var(--input-bg);color:var(--text2);font-family:'DM Mono',monospace;font-size:.48rem;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;gap:6px;transition:border-color .2s,color .2s,transform .15s}
 .btn-dl:hover{border-color:var(--border-acc);color:var(--accent);transform:translateY(-1px)}
-
 .toast{position:fixed;bottom:52px;left:50%;transform:translateX(-50%) translateY(12px);padding:10px 20px;border-radius:30px;font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.1em;z-index:100;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;white-space:nowrap;max-width:90vw}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .toast.success{background:var(--success);color:#fff}
 .toast.error{background:var(--danger);color:#fff}
 .toast.info{background:var(--text);color:var(--bg)}
-
 .ticker-wrap{position:fixed;bottom:0;left:0;width:100%;background:var(--accent);overflow:hidden;padding:5px 0;z-index:50}
 .ticker-inner{display:flex;white-space:nowrap;animation:ticker 30s linear infinite}
 .ticker-item{font-family:'DM Mono',monospace;font-size:.52rem;letter-spacing:.2em;text-transform:uppercase;padding:0 24px;color:rgba(255,255,255,.9)}
 .ticker-dot{display:inline-block;width:3px;height:3px;background:rgba(255,255,255,.4);border-radius:50%;vertical-align:middle;margin:0 8px}
-
 .loading-row td{text-align:center;padding:28px;color:var(--text3);font-family:'DM Mono',monospace;font-size:.58rem}
 .empty-state{text-align:center;padding:32px;color:var(--text3);font-family:'DM Mono',monospace;font-size:.58rem}
 .spinner{display:inline-block;width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
-
 #bubblesCanvas{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
-
-/* Account Security */
+/* SECURITY */
 .sec-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:22px 24px;box-shadow:var(--shadow-sm)}
-
-/* ══ PERMISSION CONTROL ══ */
-.perm-role-tabs{display:flex;gap:0;margin-bottom:20px;border:1px solid var(--border-acc);border-radius:12px;overflow:hidden}
-.perm-tab{flex:1;padding:11px 10px;font-family:'DM Mono',monospace;font-size:.52rem;letter-spacing:.14em;text-transform:uppercase;text-align:center;cursor:pointer;border:none;background:var(--input-bg);color:var(--text3);transition:background .18s,color .18s;display:flex;align-items:center;justify-content:center;gap:6px}
-.perm-tab:not(:last-child){border-right:1px solid var(--border-acc)}
-.perm-tab.active{background:rgba(0,180,216,.1);color:var(--accent);font-weight:500}
-.perm-tab:hover:not(.active){background:rgba(0,180,216,.05);color:var(--text2)}
-.perm-pane{display:none}
-.perm-pane.active{display:block;animation:fadeUp .28s var(--ease)}
-.perm-category{margin-bottom:20px}
-.perm-cat-title{font-family:'DM Mono',monospace;font-size:.52rem;letter-spacing:.22em;text-transform:uppercase;color:var(--text3);margin-bottom:10px;padding-bottom:7px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
-.perm-cat-icon{font-size:.9rem}
-.perm-item{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-radius:10px;background:var(--input-bg);border:1px solid var(--border);margin-bottom:6px;gap:12px;transition:border-color .2s}
-.perm-item:hover{border-color:var(--border-acc)}
-.perm-item-info{flex:1}
-.perm-item-name{font-size:.88rem;font-weight:600;color:var(--text)}
-.perm-item-desc{font-family:'DM Mono',monospace;font-size:.46rem;color:var(--text3);margin-top:2px;letter-spacing:.04em}
-.perm-item-badge{font-family:'DM Mono',monospace;font-size:.4rem;padding:2px 7px;border-radius:5px;text-transform:uppercase;letter-spacing:.1em;flex-shrink:0}
-.perm-item-badge.inherited{background:rgba(0,180,216,.08);color:var(--accent);border:1px solid var(--border-acc)}
-.perm-item-badge.restricted{background:var(--danger-bg);color:var(--danger);border:1px solid var(--danger-border)}
-.perm-item-badge.granted{background:var(--success-bg);color:var(--success);border:1px solid var(--success-border)}
-.perm-save-bar{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-radius:12px;background:rgba(0,180,216,.06);border:1px solid var(--border-acc);margin-top:16px}
-.perm-save-msg{font-family:'DM Mono',monospace;font-size:.52rem;color:var(--text3);letter-spacing:.08em}
-.role-hierarchy{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:20px}
-.rh-node{display:flex;flex-direction:column;align-items:center;gap:5px;padding:12px 16px;border-radius:12px;border:1px solid var(--border);background:var(--input-bg);min-width:100px;text-align:center}
-.rh-node.superadmin{border-color:var(--border-acc);background:rgba(0,180,216,.06)}
-.rh-node.admin{border-color:var(--blue-border);background:var(--blue-bg)}
-.rh-node.staff{border-color:var(--success-border);background:var(--success-bg)}
-.rh-node.customer{border-color:var(--warn-border);background:var(--warn-bg)}
-.rh-icon{font-size:1.4rem}
-.rh-name{font-family:'DM Mono',monospace;font-size:.5rem;letter-spacing:.14em;text-transform:uppercase;font-weight:500}
-.rh-count{font-family:'DM Mono',monospace;font-size:.42rem;color:var(--text3)}
-.rh-arrow{font-size:1.2rem;color:var(--text3);flex-shrink:0}
-
-/* ══ UI CUSTOMIZER ══ */
-.ui-page-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
-.ui-page-tab{padding:8px 16px;border-radius:22px;font-family:'DM Mono',monospace;font-size:.5rem;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;border:1px solid var(--border);background:var(--input-bg);color:var(--text3);transition:border-color .2s,color .2s,background .2s}
-.ui-page-tab.active{border-color:var(--border-acc);background:rgba(0,180,216,.08);color:var(--accent)}
-.ui-page-tab:hover:not(.active){border-color:var(--border-acc);color:var(--text2)}
-.ui-pane{display:none}
-.ui-pane.active{display:block;animation:fadeUp .28s var(--ease)}
-.color-swatch-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:14px}
-.color-swatch-card{border-radius:12px;border:1px solid var(--border);background:var(--input-bg);padding:14px;transition:border-color .2s}
-.color-swatch-card:hover{border-color:var(--border-acc)}
-.csw-label{font-family:'DM Mono',monospace;font-size:.46rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text3);margin-bottom:9px}
-.csw-row{display:flex;align-items:center;gap:9px}
-.csw-preview{width:32px;height:32px;border-radius:8px;border:1px solid var(--border);flex-shrink:0;cursor:pointer;transition:transform .15s}
-.csw-preview:hover{transform:scale(1.1)}
-.csw-hex{font-family:'DM Mono',monospace;font-size:.58rem;color:var(--text);flex:1;padding:6px 10px;border-radius:7px;border:1px solid var(--border);background:var(--input-bg);outline:none;transition:border-color .2s}
-.csw-hex:focus{border-color:var(--border-acc)}
-.ui-preview-frame{border-radius:14px;border:1px solid var(--border);background:var(--bg2);overflow:hidden;margin-top:14px}
-.upf-header{padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-.upf-title{font-family:'DM Mono',monospace;font-size:.5rem;letter-spacing:.18em;text-transform:uppercase;color:var(--text3)}
-.upf-live{display:inline-flex;align-items:center;gap:5px;padding:3px 8px;border-radius:10px;background:rgba(0,180,216,.08);border:1px solid var(--border-acc);font-family:'DM Mono',monospace;font-size:.42rem;color:var(--accent)}
-.upf-body{padding:16px}
-.logo-upload-zone{border:2px dashed var(--border-acc);border-radius:12px;padding:28px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;background:rgba(0,180,216,.02)}
-.logo-upload-zone:hover{border-color:var(--accent);background:rgba(0,180,216,.05)}
-.luz-icon{font-size:2rem;margin-bottom:8px;opacity:.5}
-.luz-label{font-family:'DM Mono',monospace;font-size:.54rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text3)}
-.luz-sub{font-size:.76rem;color:var(--text3);margin-top:4px}
-.logo-preview-box{border-radius:12px;border:1px solid var(--border);background:var(--bg2);padding:20px;text-align:center;display:none}
-.font-option{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:10px;border:1px solid var(--border);background:var(--input-bg);cursor:pointer;margin-bottom:8px;transition:border-color .2s,background .2s}
-.font-option.selected{border-color:var(--border-acc);background:rgba(0,180,216,.07)}
-.font-option:hover:not(.selected){border-color:var(--border-acc)}
-.fo-preview{font-size:1.3rem;min-width:90px;color:var(--text);flex-shrink:0}
-.fo-name{font-family:'DM Mono',monospace;font-size:.54rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text);margin-bottom:2px;font-weight:500}
-.fo-stack{font-size:.72rem;color:var(--text3)}
-.fo-check{width:18px;height:18px;border-radius:50%;border:2px solid var(--border);margin-left:auto;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s,border-color .2s}
-.font-option.selected .fo-check{background:var(--accent);border-color:var(--accent);color:#fff;font-size:.7rem}
-.apply-banner{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-radius:12px;background:rgba(0,180,216,.06);border:1px solid var(--border-acc);margin-top:14px;gap:12px;flex-wrap:wrap}
-.apply-msg{font-family:'DM Mono',monospace;font-size:.52rem;color:var(--text2);letter-spacing:.06em}
-.apply-btns{display:flex;gap:8px}
-.theme-preset-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-bottom:16px}
-.theme-preset{border-radius:12px;border:2px solid transparent;overflow:hidden;cursor:pointer;transition:border-color .2s,transform .15s}
-.theme-preset:hover{transform:translateY(-2px)}
-.theme-preset.selected{border-color:var(--accent)}
-.tp-swatch{height:48px;display:flex}
-.tp-s1{flex:3}
-.tp-s2{flex:2}
-.tp-s3{flex:1}
-.tp-name{font-family:'DM Mono',monospace;font-size:.48rem;letter-spacing:.12em;text-transform:uppercase;padding:8px 10px;background:var(--surface2);color:var(--text);border-top:1px solid var(--border);text-align:center}
-.section-toggle-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px;margin-top:4px}
-.section-toggle-card{border-radius:12px;border:1px solid var(--border);background:var(--input-bg);padding:14px 16px;display:flex;align-items:center;gap:12px;transition:border-color .2s}
-.section-toggle-card:hover{border-color:var(--border-acc)}
-.stc-icon{font-size:1.2rem;flex-shrink:0;width:32px;text-align:center}
-.stc-info{flex:1}
-.stc-name{font-size:.9rem;font-weight:600;color:var(--text);margin-bottom:2px}
-.stc-desc{font-family:'DM Mono',monospace;font-size:.44rem;color:var(--text3)}
+/* CHARTS */
+.chart-grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-bottom:14px}
+.chart-block{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 18px;box-shadow:var(--shadow-sm)}
+.chart-lbl{font-family:'DM Mono',monospace;font-size:.46rem;letter-spacing:.22em;text-transform:uppercase;color:var(--text3);margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+.chart-legend{display:flex;align-items:center;gap:14px;margin-top:9px;flex-wrap:wrap}
+.chart-legend-item{display:flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:.44rem;color:var(--text3)}
+.chart-legend-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+/* MACHINE MONITORING */
+.machine-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-top:8px}
+.machine-card{border-radius:13px;border:1.5px solid var(--border);padding:13px 10px;text-align:center;transition:border-color .25s,box-shadow .25s,transform .2s;background:var(--input-bg);position:relative;overflow:hidden}
+.machine-card.free{border-color:var(--success-border);background:var(--success-bg)}
+.machine-card.busy{border-color:var(--border-acc);background:rgba(0,180,216,.05)}
+.machine-card.idle{border-color:var(--warn-border);background:var(--warn-bg)}
+.machine-card.maintenance{border-color:var(--danger-border);background:var(--danger-bg);opacity:.85}
+.machine-icon{font-size:2.5rem;display:block;margin-bottom:5px}
+.machine-card.busy .machine-icon{animation:machineWash 1.4s ease-in-out infinite}
+.machine-num{font-family:'DM Mono',monospace;font-size:.5rem;letter-spacing:.16em;text-transform:uppercase;color:var(--text3)}
+.machine-status-lbl{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;margin-top:3px;font-weight:600}
+.machine-card.free .machine-status-lbl{color:var(--success)}
+.machine-card.busy .machine-status-lbl{color:var(--accent)}
+.machine-card.idle .machine-status-lbl{color:var(--warn)}
+.machine-card.maintenance .machine-status-lbl{color:var(--danger)}
+.machine-order-info{font-family:'DM Mono',monospace;font-size:.42rem;color:var(--text3);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.machine-progress{height:3px;border-radius:10px;background:var(--border);margin-top:7px;overflow:hidden}
+.machine-progress-fill{height:100%;border-radius:10px;background:var(--accent);transition:width .5s linear}
+.machine-status-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(80px,1fr));gap:8px;margin-bottom:14px}
+.mss-item{text-align:center;padding:12px 8px;border-radius:12px;border:1px solid var(--border);background:var(--input-bg)}
+.mss-val{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:700;color:var(--text);line-height:1}
+.mss-lbl{font-family:'DM Mono',monospace;font-size:.4rem;letter-spacing:.16em;text-transform:uppercase;color:var(--text3);margin-top:3px}
+/* ENCODE SERVICE */
+.price-calc-box{background:var(--bg2);border:1px solid var(--border-acc);border-radius:12px;padding:16px 18px;margin-top:14px}
+.price-line{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)}
+.price-line:last-child{border-bottom:none;padding-top:10px;margin-top:3px}
+.price-line.total{font-weight:600}
+.p-lbl{font-family:'DM Mono',monospace;font-size:.48rem;color:var(--text3)}
+.p-val{font-family:'DM Mono',monospace;font-size:.52rem;color:var(--text);font-weight:500}
+.name-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.rate-card{border:1px solid var(--border);border-radius:10px;padding:11px 13px;background:var(--input-bg)}
+.rate-name{font-size:.88rem;font-weight:600;color:var(--text);margin-bottom:3px}
+.rate-price{font-family:'DM Mono',monospace;font-size:.9rem;color:var(--accent)}
+.price-rate-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:9px;margin-top:12px}
+.promo-status{font-family:'DM Mono',monospace;font-size:.44rem;margin-top:6px;min-height:18px}
+.form-row-check{display:flex;gap:16px;margin-bottom:14px;flex-wrap:wrap}
+.cb-wrap{display:flex;align-items:center;gap:8px;cursor:pointer}
+.cb-wrap input[type=checkbox]{width:16px;height:16px;accent-color:var(--accent);cursor:pointer}
+.sys-rule{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:5px;background:rgba(0,180,216,.06);border:1px solid var(--border-acc);font-family:'DM Mono',monospace;font-size:.44rem;letter-spacing:.12em;color:var(--accent);text-transform:uppercase}
 </style>
 </head>
 <body>
 <canvas id="bubblesCanvas" aria-hidden="true"></canvas>
-
 <div class="deco-bg" aria-hidden="true">
   <div class="deco-word w1">SUPER</div>
   <div class="deco-word w2">Admin</div>
@@ -400,6 +333,10 @@ td{padding:12px 16px;vertical-align:middle}
         <span class="nav-icon"><svg viewBox="0 0 16 16" fill="none"><rect x="1.5" y="1.5" width="5.5" height="5.5" rx="1.5" stroke="currentColor" stroke-width="1.2"/><rect x="9" y="1.5" width="5.5" height="5.5" rx="1.5" stroke="currentColor" stroke-width="1.2"/><rect x="1.5" y="9" width="5.5" height="5.5" rx="1.5" stroke="currentColor" stroke-width="1.2"/><rect x="9" y="9" width="5.5" height="5.5" rx="1.5" stroke="currentColor" stroke-width="1.2"/></svg></span>
         Overview
       </a>
+      <a class="nav-link" onclick="showSection('analytics',this)">
+        <span class="nav-icon"><svg viewBox="0 0 16 16" fill="none"><path d="M2 13V6l4-3 4 2 4-3v11H2z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg></span>
+        Analytics
+      </a>
     </nav>
     <p class="nav-sec">Super Controls</p>
     <nav style="display:flex;flex-direction:column;gap:3px">
@@ -407,9 +344,13 @@ td{padding:12px 16px;vertical-align:middle}
         <span class="nav-icon"><svg viewBox="0 0 16 16" fill="none"><circle cx="6" cy="5" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M1.5 13c0-2.5 2-3.5 4.5-3.5s4.5 1 4.5 3.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M11 2l1.5 1.5L15 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
         Admin Management
       </a>
-      <a class="nav-link" onclick="showSection('permissions',this)">
-        <span class="nav-icon"><svg viewBox="0 0 16 16" fill="none"><path d="M8 1.5L2.5 4v4c0 3 2.5 5.5 5.5 6 3-0.5 5.5-3 5.5-6V4L8 1.5z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-        Role &amp; Permissions
+      <a class="nav-link" onclick="showSection('machines',this)">
+        <span class="nav-icon"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.2"/><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.2"/><path d="M8 2.5V4M8 12v1.5M2.5 8H4M12 8h1.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></span>
+        Machine Status
+      </a>
+      <a class="nav-link" onclick="showSection('encode',this)">
+        <span class="nav-icon"><svg viewBox="0 0 16 16" fill="none"><path d="M8 2v12M2 8h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+        Encode Service
       </a>
       <a class="nav-link" onclick="showSection('auditlogs',this)">
         <span class="nav-icon"><svg viewBox="0 0 16 16" fill="none"><rect x="2.5" y="1.5" width="11" height="13" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M5 5.5h6M5 8h6M5 10.5h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></span>
@@ -427,10 +368,6 @@ td{padding:12px 16px;vertical-align:middle}
     </nav>
     <p class="nav-sec">System</p>
     <nav style="display:flex;flex-direction:column;gap:3px">
-      <a class="nav-link" onclick="showSection('uicustomizer',this)">
-        <span class="nav-icon"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="3" stroke="currentColor" stroke-width="1.2"/><path d="M8 2v1M8 13v1M2 8h1M13 8h1M3.5 3.5l.7.7M11.8 11.8l.7.7M11.8 4.2l-.7.7M4.2 11.8l-.7.7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></span>
-        UI Customizer
-      </a>
       <a class="nav-link" onclick="showSection('config',this)">
         <span class="nav-icon"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.2 3.2l1.4 1.4M11.4 11.4l1.4 1.4M3.2 12.8l1.4-1.4M11.4 4.6l1.4-1.4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></span>
         System Config
@@ -525,6 +462,54 @@ td{padding:12px 16px;vertical-align:middle}
   </div>
 </div>
 
+<!-- ══════════════ ANALYTICS DASHBOARD ══════════════ -->
+<div id="sec-analytics" class="section">
+  <div class="page-head">
+    <div class="live-tag"><div class="live-dot"></div>Real-Time Analytics</div>
+    <div class="page-title">Analytics <em>Dashboard</em></div>
+    <div class="page-sub">Unified view of all metrics — trends, comparisons, and distributions in real time.</div>
+  </div>
+  <div class="stats-row">
+    <div class="glass stat-card"><div class="corner"></div><div class="stat-icon">&#x1F9FA;</div><div class="stat-lbl">Today Services</div><div class="stat-val" id="an-today">&mdash;</div><div class="stat-tag up">&#x2191; Live</div></div>
+    <div class="glass stat-card"><div class="corner"></div><div class="stat-icon">&#x1F4B3;</div><div class="stat-lbl">Daily Revenue</div><div class="stat-val" id="an-daily-rev">&mdash;</div><div class="stat-tag up">Today</div></div>
+    <div class="glass stat-card"><div class="corner"></div><div class="stat-icon">&#x1F4C6;</div><div class="stat-lbl">Monthly Revenue</div><div class="stat-val" id="an-monthly-rev">&mdash;</div><div class="stat-tag acc">Month</div></div>
+    <div class="glass stat-card"><div class="corner"></div><div class="stat-icon">&#x1F464;</div><div class="stat-lbl">Customers</div><div class="stat-val" id="an-customers">&mdash;</div><div class="stat-tag acc">Total</div></div>
+    <div class="glass stat-card"><div class="corner"></div><div class="stat-icon">&#x1F381;</div><div class="stat-lbl">Active Promos</div><div class="stat-val" id="an-promos">&mdash;</div><div class="stat-tag acc">Live</div></div>
+  </div>
+  <div class="divider"><div class="rule"></div><div class="dia"></div><div class="rule"></div></div>
+  <!-- LINE GRAPH -->
+  <div class="gstatic card" style="margin-bottom:14px">
+    <div class="card-lbl">
+      <span>Daily Revenue Trend — This Month</span>
+      <span style="background:var(--success-bg);color:var(--success);padding:3px 9px;border-radius:10px;border:1px solid var(--success-border);font-size:.42rem">● Live</span>
+    </div>
+    <div style="position:relative;width:100%;height:220px"><canvas id="an-line-chart"></canvas></div>
+  </div>
+  <!-- BAR + PIE -->
+  <div class="chart-grid-2">
+    <div class="chart-block">
+      <div class="chart-lbl"><span>Weekly Revenue — Bar</span></div>
+      <div style="position:relative;width:100%;height:200px"><canvas id="an-bar-chart"></canvas></div>
+    </div>
+    <div class="chart-block">
+      <div class="chart-lbl"><span>Service Mix Distribution</span></div>
+      <div style="position:relative;width:100%;height:200px"><canvas id="an-pie-chart"></canvas></div>
+      <div class="chart-legend" id="an-pie-legend"></div>
+    </div>
+  </div>
+  <!-- MONTHLY BAR + STAFF PERFORMANCE -->
+  <div class="chart-grid-2">
+    <div class="chart-block">
+      <div class="chart-lbl"><span>Monthly Revenue — 6 Months</span></div>
+      <div style="position:relative;width:100%;height:200px"><canvas id="an-monthly-bar"></canvas></div>
+    </div>
+    <div class="gstatic card" style="border-radius:14px;border:1px solid var(--border);padding:16px 18px">
+      <div class="card-lbl">Staff Performance (30 days)</div>
+      <div id="an-staff-perf"><div class="empty-state"><span class="spinner"></span>Loading&hellip;</div></div>
+    </div>
+  </div>
+</div>
+
 <!-- ══════════════ ADMIN MANAGEMENT ══════════════ -->
 <div id="sec-admins" class="section">
   <div class="page-head">
@@ -539,10 +524,8 @@ td{padding:12px 16px;vertical-align:middle}
         <svg viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.3"/><path d="M10 10l3 3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
         <input class="search-input" id="adm-search" type="text" placeholder="Search admins&hellip;" oninput="filterTable('adm-tbody',this.value)">
       </div>
-      <select class="filter-select" id="adm-filter" onchange="filterTableByStatus('adm-tbody',this.value)">
-        <option value="">All Status</option>
-        <option value="active">Active</option>
-        <option value="inactive">Inactive</option>
+      <select class="filter-select" onchange="filterTableByStatus('adm-tbody',this.value)">
+        <option value="">All Status</option><option value="active">Active</option><option value="inactive">Inactive</option>
       </select>
     </div>
     <button class="btn-add" onclick="openModal('add-admin')">
@@ -551,9 +534,7 @@ td{padding:12px 16px;vertical-align:middle}
     </button>
   </div>
   <div class="gstatic table-card">
-    <div class="table-head-bar">
-      <div class="table-lbl">Administrator Accounts <span class="count-pill" id="adm-count">0 total</span></div>
-    </div>
+    <div class="table-head-bar"><div class="table-lbl">Administrator Accounts <span class="count-pill" id="adm-count">0 total</span></div></div>
     <div class="table-scroll">
       <table>
         <thead><tr><th>Administrator</th><th>Status</th><th>Role</th><th>Created</th><th>Actions</th></tr></thead>
@@ -563,548 +544,136 @@ td{padding:12px 16px;vertical-align:middle}
   </div>
 </div>
 
-<!-- ══════════════ ROLE & PERMISSIONS ══════════════ -->
-<div id="sec-permissions" class="section">
+<!-- ══════════════ MACHINE STATUS MONITORING ══════════════ -->
+<div id="sec-machines" class="section">
   <div class="page-head">
-    <div class="live-tag"><div class="live-dot"></div>Role &amp; Permissions</div>
-    <div class="page-title">Role <em>Control</em></div>
-    <div class="page-sub">Define what each role can access and perform across the entire system.</div>
+    <div class="live-tag"><div class="live-dot"></div>Live Machine Monitoring</div>
+    <div class="page-title">Machine <em>Status</em></div>
+    <div class="page-sub">Real-time status of all 8 washing machines — auto-refreshes every 10 seconds.</div>
   </div>
   <div class="divider"><div class="rule"></div><div class="dia"></div><div class="rule"></div></div>
-
-  <div class="alert-box info">
-    &#x2139;&#xFE0F; Super Admin inherits all permissions by default and cannot be restricted. Changes to Admin, Staff, and Customer roles are saved to system settings.
+  <div class="machine-status-summary" id="mss-summary">
+    <div class="mss-item"><div class="mss-val" id="mss-free" style="color:var(--success)">—</div><div class="mss-lbl">Free</div></div>
+    <div class="mss-item"><div class="mss-val" id="mss-busy" style="color:var(--accent)">—</div><div class="mss-lbl">In Use</div></div>
+    <div class="mss-item"><div class="mss-val" id="mss-idle" style="color:var(--warn)">—</div><div class="mss-lbl">Idle</div></div>
+    <div class="mss-item"><div class="mss-val" id="mss-maint" style="color:var(--danger)">—</div><div class="mss-lbl">Maintenance</div></div>
+    <div class="mss-item"><div class="mss-val" id="mss-total" style="color:var(--text)">8</div><div class="mss-lbl">Total Units</div></div>
   </div>
-
-  <!-- Role Hierarchy Visual -->
-  <div class="gstatic card" style="margin-bottom:14px">
-    <div class="card-lbl" style="margin-bottom:14px">Role Hierarchy</div>
-    <div class="role-hierarchy">
-      <div class="rh-node superadmin">
-        <div class="rh-icon">&#x1F451;</div>
-        <div class="rh-name" style="color:var(--accent)">Super Admin</div>
-        <div class="rh-count">Root Access</div>
-      </div>
-      <div class="rh-arrow">&#x2192;</div>
-      <div class="rh-node admin">
-        <div class="rh-icon">&#x1F6E0;&#xFE0F;</div>
-        <div class="rh-name" style="color:var(--blue)">Admin</div>
-        <div class="rh-count" id="rh-admin-count">— users</div>
-      </div>
-      <div class="rh-arrow">&#x2192;</div>
-      <div class="rh-node staff">
-        <div class="rh-icon">&#x1F9D1;&#x200D;&#x1F527;</div>
-        <div class="rh-name" style="color:var(--success)">Staff / Operator</div>
-        <div class="rh-count" id="rh-staff-count">— users</div>
-      </div>
-      <div class="rh-arrow">&#x2192;</div>
-      <div class="rh-node customer">
-        <div class="rh-icon">&#x1F464;</div>
-        <div class="rh-name" style="color:var(--warn)">Customer</div>
-        <div class="rh-count" id="rh-cust-count">— users</div>
-      </div>
-    </div>
+  <div class="gstatic card">
+    <div class="card-lbl">All 8 Machines — Live View <span class="sys-rule">&#x2699; Auto-refreshes every 10s</span></div>
+    <div class="machine-grid" id="machine-monitor-grid"><div class="empty-state"><span class="spinner"></span>Loading machines&hellip;</div></div>
   </div>
-
-  <!-- Per-Role Permission Tabs -->
-  <div class="perm-role-tabs">
-    <button class="perm-tab active" id="ptab-admin" onclick="switchPermTab('admin')">&#x1F6E0; Admin</button>
-    <button class="perm-tab" id="ptab-staff" onclick="switchPermTab('staff')">&#x1F9D1;&#x200D;&#x1F527; Staff / Operator</button>
-    <button class="perm-tab" id="ptab-customer" onclick="switchPermTab('customer')">&#x1F464; Customer</button>
-  </div>
-
-  <!-- ADMIN PERMISSIONS -->
-  <div class="perm-pane active" id="ppane-admin">
-    <div class="perm-category">
-      <div class="perm-cat-title"><span class="perm-cat-icon">&#x1F4CA;</span>Analytics &amp; Revenue</div>
-      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">View Dashboard Analytics</div><div class="perm-item-desc">Access service counts, top service, and peak hour data</div></div><span class="perm-item-badge inherited">Inherited</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-admin-analytics" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
-      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">View Revenue Reports</div><div class="perm-item-desc">Daily, monthly income and profit estimates</div></div><span class="perm-item-badge inherited">Inherited</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-admin-revenue" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
-      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">Export Reports (CSV/PDF)</div><div class="perm-item-desc">Download order and revenue data exports</div></div><span class="perm-item-badge granted">Granted</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-admin-export" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
-    </div>
-    <div class="perm-category">
-      <div class="perm-cat-title"><span class="perm-cat-icon">&#x1F9D1;&#x200D;&#x1F4BB;</span>Staff Management</div>
-      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">Add / Remove Staff</div><div class="perm-item-desc">Create and delete staff operator accounts</div></div><span class="perm-item-badge granted">Granted</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-admin-staff-manage" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
-      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">Edit Staff Accounts</div><div class="perm-item-desc">Update name, email, status, and password for staff</div></div><span class="perm-item-badge granted">Granted</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-admin-staff-edit" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
-      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">Archive Staff</div><div class="perm-item-desc">Move staff to archive (soft-delete)</div></div><span class="perm-item-badge granted">Granted</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-admin-staff-archive" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
-    </div>
-    <div class="perm-category">
-      <div class="perm-cat-title"><span class="perm-cat-icon">&#x1F464;</span>Customer Management</div>
-      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">View Customer List</div><div class="perm-item-desc">Access full customer directory</div></div><span class="perm-item-badge inherited">Inherited</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-admin-cust-view" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
-      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">Block / Unblock Customers</div><div class="perm-item-desc">Control customer access to the platform</div></div><span class="perm-item-badge granted">Granted</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-admin-cust-block" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
-      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">Archive / Delete Customers</div><div class="perm-item-desc">Soft-delete or permanently remove customer accounts</div></div><span class="perm-item-badge granted">Granted</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-admin-cust-delete" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
-    </div>
-    <div class="perm-category">
-      <div class="perm-cat-title"><span class="perm-cat-icon">&#x1F381;</span>Promos &amp; Pricing</div>
-      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">Manage Promo Codes</div><div class="perm-item-desc">Create and delete active promo codes</div></div><span class="perm-item-badge granted">Granted</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-admin-promos" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
-      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">Update Service Pricing</div><div class="perm-item-desc">Change per-kg rates for laundry services</div></div><span class="perm-item-badge granted">Granted</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-admin-pricing" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
-    </div>
-    <div class="perm-category">
-      <div class="perm-cat-title"><span class="perm-cat-icon">&#x2699;&#xFE0F;</span>System Settings</div>
-      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">View System Settings</div><div class="perm-item-desc">Access maintenance and config toggles</div></div><span class="perm-item-badge inherited">Inherited</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-admin-settings-view" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
-      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">Modify System Settings</div><div class="perm-item-desc">Toggle maintenance mode, business hours, etc.</div></div><span class="perm-item-badge restricted" id="badge-admin-settings-edit">Restricted</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-admin-settings-edit" onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
-      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">View Customer Feedback</div><div class="perm-item-desc">Read ratings and comments from customers</div></div><span class="perm-item-badge granted">Granted</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-admin-feedback" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
-    </div>
-    <div class="perm-save-bar">
-      <span class="perm-save-msg" id="perm-admin-dirty-msg">No unsaved changes</span>
-      <div style="display:flex;gap:8px">
-        <button class="btn-ghost" onclick="resetPermissions('admin')">Reset to Default</button>
-        <button class="btn-primary" id="perm-admin-save-btn" onclick="savePermissions('admin')">Save Admin Permissions</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- STAFF PERMISSIONS -->
-  <div class="perm-pane" id="ppane-staff">
-    <div class="perm-category">
-      <div class="perm-cat-title"><span class="perm-cat-icon">&#x1F3A7;</span>Service Operations</div>
-      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">Encode New Services</div><div class="perm-item-desc">Register walk-in customers and new laundry orders</div></div><span class="perm-item-badge granted">Granted</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-staff-encode" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
-      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">Assign &amp; Start Machines</div><div class="perm-item-desc">Allocate free machines to pending orders</div></div><span class="perm-item-badge granted">Granted</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-staff-assign" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
-      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">Mark Fold Done</div><div class="perm-item-desc">Advance folding orders to Ready for Pickup</div></div><span class="perm-item-badge granted">Granted</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-staff-fold" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
-      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">Mark Orders Complete</div><div class="perm-item-desc">Complete pickup-ready orders upon collection</div></div><span class="perm-item-badge granted">Granted</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-staff-complete" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
-    </div>
-    <div class="perm-category">
-      <div class="perm-cat-title"><span class="perm-cat-icon">&#x1F6E0;&#xFE0F;</span>Machine Control</div>
-      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">View Machine Status</div><div class="perm-item-desc">Monitor all 8 washing machines live</div></div><span class="perm-item-badge inherited">Inherited</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-staff-machines-view" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
-      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">Toggle Maintenance Mode (per machine)</div><div class="perm-item-desc">Set individual machines to maintenance/free state</div></div><span class="perm-item-badge granted">Granted</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-staff-machines-toggle" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
-    </div>
-    <div class="perm-category">
-      <div class="perm-cat-title"><span class="perm-cat-icon">&#x1F381;</span>Promos</div>
-      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">View Active Promo Codes</div><div class="perm-item-desc">See all promo codes available for encoding</div></div><span class="perm-item-badge inherited">Inherited</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-staff-promos-view" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
-      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">Apply Promo Codes</div><div class="perm-item-desc">Use promo codes during service encoding</div></div><span class="perm-item-badge granted">Granted</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-staff-promos-apply" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
-    </div>
-    <div class="perm-category">
-      <div class="perm-cat-title"><span class="perm-cat-icon">&#x26A0;&#xFE0F;</span>Issue Reporting</div>
-      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">Submit Issue Reports</div><div class="perm-item-desc">Report machine malfunctions, lost or damaged items</div></div><span class="perm-item-badge granted">Granted</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-staff-issues" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
-      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">Send Pickup Emails</div><div class="perm-item-desc">Trigger customer notification emails for ready orders</div></div><span class="perm-item-badge granted">Granted</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-staff-email" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
-    </div>
-    <div class="perm-save-bar">
-      <span class="perm-save-msg" id="perm-staff-dirty-msg">No unsaved changes</span>
-      <div style="display:flex;gap:8px">
-        <button class="btn-ghost" onclick="resetPermissions('staff')">Reset to Default</button>
-        <button class="btn-primary" id="perm-staff-save-btn" onclick="savePermissions('staff')">Save Staff Permissions</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- CUSTOMER PERMISSIONS -->
-  <div class="perm-pane" id="ppane-customer">
-    <div class="perm-category">
-      <div class="perm-cat-title"><span class="perm-cat-icon">&#x1F4F1;</span>Customer Portal Access</div>
-      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">View Live Order Status</div><div class="perm-item-desc">Real-time tracking dashboard with timers</div></div><span class="perm-item-badge inherited">Inherited</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-cust-status" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
-      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">View Transaction History</div><div class="perm-item-desc">Past and active laundry service records</div></div><span class="perm-item-badge inherited">Inherited</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-cust-history" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
-      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">Download Service Receipts</div><div class="perm-item-desc">Print or save PDF receipts for completed orders</div></div><span class="perm-item-badge granted">Granted</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-cust-receipts" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
-      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">Submit Feedback &amp; Ratings</div><div class="perm-item-desc">Rate and review completed laundry services</div></div><span class="perm-item-badge granted">Granted</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-cust-feedback" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
-    </div>
-    <div class="perm-category">
-      <div class="perm-cat-title"><span class="perm-cat-icon">&#x1F464;</span>Account Management</div>
-      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">Edit Profile Information</div><div class="perm-item-desc">Update full name and phone number</div></div><span class="perm-item-badge granted">Granted</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-cust-profile" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
-      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">Change Password</div><div class="perm-item-desc">Update own account password</div></div><span class="perm-item-badge granted">Granted</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-cust-changepass" checked onchange="markPermDirty()"><span class="toggle-slider"></span></label></div>
-      <div class="perm-item"><div class="perm-item-info"><div class="perm-item-name">Self-Registration</div><div class="perm-item-desc">Allow new customers to create accounts on login page</div></div><span class="perm-item-badge granted">Granted</span><label class="toggle" style="margin-left:12px"><input type="checkbox" id="perm-cust-register" checked onchange="saveSetting('allow_registration',document.getElementById('perm-cust-register').checked?'1':'0')"><span class="toggle-slider"></span></label></div>
-    </div>
-    <div class="perm-save-bar">
-      <span class="perm-save-msg" id="perm-customer-dirty-msg">No unsaved changes</span>
-      <div style="display:flex;gap:8px">
-        <button class="btn-ghost" onclick="resetPermissions('customer')">Reset to Default</button>
-        <button class="btn-primary" id="perm-customer-save-btn" onclick="savePermissions('customer')">Save Customer Permissions</button>
-      </div>
-    </div>
+  <div class="divider"><div class="rule"></div><div class="dia"></div><div class="rule"></div></div>
+  <div class="gstatic card">
+    <div class="card-lbl">Currently Active Orders on Machines</div>
+    <div id="machine-active-orders"><div class="empty-state"><span class="spinner"></span>Loading&hellip;</div></div>
   </div>
 </div>
 
-<!-- ══════════════ UI CUSTOMIZER ══════════════ -->
-<div id="sec-uicustomizer" class="section">
+<!-- ══════════════ ENCODE SERVICE ══════════════ -->
+<div id="sec-encode" class="section">
   <div class="page-head">
-    <div class="live-tag"><div class="live-dot"></div>UI Customizer</div>
-    <div class="page-title">Interface <em>Customizer</em></div>
-    <div class="page-sub">Customize colors, branding, fonts, and layout visibility for all system pages.</div>
+    <div class="live-tag"><div class="live-dot"></div>Encode Service</div>
+    <div class="page-title">Encode <em>Service</em></div>
+    <div class="page-sub">Register walk-in or customer services directly from the Super Admin panel.</div>
+  </div>
+  <div style="display:flex;align-items:flex-start;gap:11px;padding:12px 15px;background:rgba(0,180,216,.05);border:1px solid var(--border-acc);border-radius:11px;margin-bottom:16px">
+    <span style="font-size:1rem;flex-shrink:0">&#x1F4E7;</span>
+    <div style="font-family:'DM Mono',monospace;font-size:.46rem;letter-spacing:.04em;color:var(--accent);line-height:1.7">EMAIL IS OPTIONAL &mdash; Enter a customer email to send auto tracking &amp; link to their portal account. If email matches a registered customer, the order links to their account automatically. Walk-in friendly — no email required.</div>
   </div>
   <div class="divider"><div class="rule"></div><div class="dia"></div><div class="rule"></div></div>
-
-  <div class="alert-box warn">
-    &#x26A0;&#xFE0F; UI customization changes affect what all users see. Theme changes require a page refresh to apply system-wide. Customizations are saved to system settings.
-  </div>
-
-  <!-- Page Tabs -->
-  <div class="ui-page-tabs">
-    <button class="ui-page-tab active" id="uitab-global" onclick="switchUITab('global')">&#x1F310; Global</button>
-    <button class="ui-page-tab" id="uitab-login" onclick="switchUITab('login')">&#x1F511; Login Page</button>
-    <button class="ui-page-tab" id="uitab-customer" onclick="switchUITab('customer')">&#x1F9BA; Customer Portal</button>
-    <button class="ui-page-tab" id="uitab-operator" onclick="switchUITab('operator')">&#x2699; Operator Panel</button>
-    <button class="ui-page-tab" id="uitab-admin" onclick="switchUITab('admin')">&#x1F6E0; Admin Panel</button>
-  </div>
-
-  <!-- GLOBAL TAB -->
-  <div class="ui-pane active" id="uipane-global">
-    <div class="grid-2">
-      <div class="gstatic card">
-        <div class="card-lbl" style="margin-bottom:14px">Theme Presets</div>
-        <div class="theme-preset-grid">
-          <div class="theme-preset selected" id="tp-teal" onclick="applyPreset('teal')">
-            <div class="tp-swatch"><div class="tp-s1" style="background:#00B4D8"></div><div class="tp-s2" style="background:#E8F8FB"></div><div class="tp-s3" style="background:#0077A8"></div></div>
-            <div class="tp-name">Ocean Teal <span style="font-size:.4rem;color:var(--accent)">(Default)</span></div>
-          </div>
-          <div class="theme-preset" id="tp-navy" onclick="applyPreset('navy')">
-            <div class="tp-swatch"><div class="tp-s1" style="background:#1A3A7A"></div><div class="tp-s2" style="background:#E6EFF8"></div><div class="tp-s3" style="background:#0C244A"></div></div>
-            <div class="tp-name">Deep Navy</div>
-          </div>
-          <div class="theme-preset" id="tp-emerald" onclick="applyPreset('emerald')">
-            <div class="tp-swatch"><div class="tp-s1" style="background:#059669"></div><div class="tp-s2" style="background:#ECFDF5"></div><div class="tp-s3" style="background:#065F46"></div></div>
-            <div class="tp-name">Emerald Fresh</div>
-          </div>
-          <div class="theme-preset" id="tp-violet" onclick="applyPreset('violet')">
-            <div class="tp-swatch"><div class="tp-s1" style="background:#7C3AED"></div><div class="tp-s2" style="background:#F5F3FF"></div><div class="tp-s3" style="background:#4C1D95"></div></div>
-            <div class="tp-name">Royal Violet</div>
-          </div>
-          <div class="theme-preset" id="tp-rose" onclick="applyPreset('rose')">
-            <div class="tp-swatch"><div class="tp-s1" style="background:#E11D48"></div><div class="tp-s2" style="background:#FFF1F2"></div><div class="tp-s3" style="background:#881337"></div></div>
-            <div class="tp-name">Rose Red</div>
-          </div>
-          <div class="theme-preset" id="tp-amber" onclick="applyPreset('amber')">
-            <div class="tp-swatch"><div class="tp-s1" style="background:#D97706"></div><div class="tp-s2" style="background:#FFFBEB"></div><div class="tp-s3" style="background:#92400E"></div></div>
-            <div class="tp-name">Warm Amber</div>
-          </div>
+  <div class="grid-2">
+    <div class="gstatic card">
+      <div class="card-lbl">Service Entry</div>
+      <div class="name-row">
+        <div class="mfield" style="margin-bottom:0">
+          <label>First Name *</label>
+          <input type="text" id="sa-enc-firstname" placeholder="e.g. Juan" autocomplete="off">
         </div>
-        <div class="perm-save-bar" style="margin-top:4px">
-          <span class="perm-save-msg">Selected: <span id="preset-name-display">Ocean Teal</span></span>
-          <button class="btn-primary" onclick="saveThemePreset()">Apply Theme</button>
+        <div class="mfield" style="margin-bottom:0">
+          <label>Last Name *</label>
+          <input type="text" id="sa-enc-lastname" placeholder="e.g. dela Cruz" autocomplete="off">
         </div>
       </div>
-
-      <div class="gstatic card">
-        <div class="card-lbl" style="margin-bottom:14px">Brand &amp; Logo</div>
-        <div class="mfield">
-          <label>System / Brand Name</label>
-          <input type="text" id="ui-brand-name" placeholder="Laundry Lounge" value="Laundry Lounge" oninput="previewBrand()">
+      <div class="mfield" style="margin-top:14px">
+        <label>Gmail Address <span style="font-size:.7rem;opacity:.7;color:var(--accent)">(optional)</span></label>
+        <input type="email" id="sa-enc-email" placeholder="customer@gmail.com (optional)">
+        <div class="mfield-hint">&#x1F4E7; Optional — must end in @gmail.com if provided</div>
+      </div>
+      <div class="mfield">
+        <label>Service Type *</label>
+        <select id="sa-enc-service" onchange="saCalcPrice()">
+          <option value="">Select service&hellip;</option>
+          <option value="single_wash">Single Wash — &#x20B1;30/kg</option>
+          <option value="double_wash">Double Wash — &#x20B1;35/kg</option>
+          <option value="household">Household Items — &#x20B1;45/kg</option>
+          <option value="heavy_wash">Heavy Wash (Comforter) — &#x20B1;75/kg</option>
+          <option value="soak_whites">Soak for Whites — &#x20B1;50/kg</option>
+        </select>
+      </div>
+      <div class="mfield">
+        <label>Total Weight (max 8kg) *</label>
+        <input type="number" id="sa-enc-weight" placeholder="e.g. 5.0" min="0.5" step="0.5" oninput="saCalcPrice()">
+      </div>
+      <div class="mfield">
+        <label>Promo Code <span style="font-size:.7rem;opacity:.7">(optional)</span></label>
+        <div style="display:flex;gap:8px">
+          <input type="text" id="sa-enc-promo" placeholder="e.g. SAVE10" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()">
+          <button class="btn-ghost" onclick="saValidatePromo()" style="white-space:nowrap;height:40px;padding:0 14px;font-size:.46rem;flex-shrink:0">Validate</button>
         </div>
-        <div class="mfield">
-          <label>System Tagline</label>
-          <input type="text" id="ui-tagline" placeholder="Your Local Laundry Partner" value="Your Local Laundry Partner">
-        </div>
-        <div class="mfield">
-          <label>Year / Est. Label</label>
-          <input type="text" id="ui-year" placeholder="2026" value="2026">
-        </div>
-        <div class="mfield">
-          <label>Location / Branch</label>
-          <input type="text" id="ui-location" placeholder="Sta. Rosa, Nueva Ecija" value="Sta. Rosa, Nueva Ecija">
-        </div>
-        <div style="display:flex;justify-content:flex-end;margin-top:8px">
-          <button class="btn-primary" onclick="saveBrandSettings()">Save Brand Settings</button>
-        </div>
+        <div class="promo-status" id="sa-promo-status"></div>
+      </div>
+      <div class="form-row-check">
+        <label class="cb-wrap"><input type="checkbox" id="sa-enc-dryer" onchange="saCalcPrice()"><span style="font-size:.88rem;color:var(--text2)">With Dryer <span style="color:var(--text3);font-size:.8rem">(+&#x20B1;20 flat)</span></span></label>
+        <label class="cb-wrap"><input type="checkbox" id="sa-enc-downy" onchange="saCalcPrice()"><span style="font-size:.88rem;color:var(--text2)">With Downy</span></label>
+      </div>
+      <div style="display:flex;gap:9px;flex-wrap:wrap;margin-top:4px">
+        <button class="btn-add" id="sa-enc-submit-btn" onclick="saEncodeService()">
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M8 2v12M2 8h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          Encode Service
+        </button>
+        <button class="btn-ghost" onclick="saClearEncodeForm()">Clear Form</button>
       </div>
     </div>
-
-    <div class="grid-2">
-      <div class="gstatic card">
-        <div class="card-lbl" style="margin-bottom:14px">Custom Accent Colors</div>
-        <div class="color-swatch-grid">
-          <div class="color-swatch-card">
-            <div class="csw-label">Primary Accent</div>
-            <div class="csw-row">
-              <input type="color" class="csw-preview" id="color-accent" value="#00B4D8" oninput="updateColorPreview('accent',this.value)">
-              <input type="text" class="csw-hex" id="color-accent-hex" value="#00B4D8" placeholder="#00B4D8" oninput="syncColorPicker('accent',this.value)">
-            </div>
-          </div>
-          <div class="color-swatch-card">
-            <div class="csw-label">Secondary Accent</div>
-            <div class="csw-row">
-              <input type="color" class="csw-preview" id="color-accent2" value="#0077A8" oninput="updateColorPreview('accent2',this.value)">
-              <input type="text" class="csw-hex" id="color-accent2-hex" value="#0077A8" placeholder="#0077A8" oninput="syncColorPicker('accent2',this.value)">
-            </div>
-          </div>
-          <div class="color-swatch-card">
-            <div class="csw-label">Background</div>
-            <div class="csw-row">
-              <input type="color" class="csw-preview" id="color-bg" value="#E8F8FB" oninput="updateColorPreview('bg',this.value)">
-              <input type="text" class="csw-hex" id="color-bg-hex" value="#E8F8FB" placeholder="#E8F8FB" oninput="syncColorPicker('bg',this.value)">
-            </div>
-          </div>
-          <div class="color-swatch-card">
-            <div class="csw-label">Text Color</div>
-            <div class="csw-row">
-              <input type="color" class="csw-preview" id="color-text" value="#0A2A35" oninput="updateColorPreview('text',this.value)">
-              <input type="text" class="csw-hex" id="color-text-hex" value="#0A2A35" placeholder="#0A2A35" oninput="syncColorPicker('text',this.value)">
-            </div>
-          </div>
-        </div>
-        <div class="apply-banner">
-          <span class="apply-msg">Custom colors override the selected theme preset</span>
-          <div class="apply-btns">
-            <button class="btn-ghost" onclick="resetCustomColors()">Reset Colors</button>
-            <button class="btn-primary" onclick="applyCustomColors()">Apply Colors</button>
-          </div>
-        </div>
+    <div class="gstatic card">
+      <div class="card-lbl">Live Calculation <span class="sys-rule">&#x2699; System Computed</span></div>
+      <div class="price-calc-box">
+        <div class="price-line"><span class="p-lbl">Service Rate</span><span class="p-val" id="sa-calc-rate">—</span></div>
+        <div class="price-line"><span class="p-lbl">Weight</span><span class="p-val" id="sa-calc-weight">—</span></div>
+        <div class="price-line"><span class="p-lbl">Base Price</span><span class="p-val" id="sa-calc-base">—</span></div>
+        <div class="price-line"><span class="p-lbl">Promo Discount</span><span class="p-val" id="sa-calc-discount" style="color:var(--success)">—</span></div>
+        <div class="price-line"><span class="p-lbl">Dryer Surcharge</span><span class="p-val" id="sa-calc-dryer">—</span></div>
+        <div class="price-line"><span class="p-lbl">Machines Needed</span><span class="p-val" id="sa-calc-machines">—</span></div>
+        <div class="price-line total"><span class="p-lbl" style="color:var(--text);font-weight:600">Total Amount</span><span class="p-val" style="color:var(--accent);font-size:.8rem" id="sa-calc-total">&#x20B1;0.00</span></div>
       </div>
-
-      <div class="gstatic card">
-        <div class="card-lbl" style="margin-bottom:14px">Global Font</div>
-        <div class="font-option selected" id="font-dmsans" onclick="selectFont('dmsans')">
-          <div class="fo-preview" style="font-family:'DM Sans',sans-serif">Aa</div>
-          <div><div class="fo-name">DM Sans</div><div class="fo-stack">Clean, modern — current default</div></div>
-          <div class="fo-check">&#x2713;</div>
-        </div>
-        <div class="font-option" id="font-inter" onclick="selectFont('inter')">
-          <div class="fo-preview" style="font-family:'Inter',sans-serif">Aa</div>
-          <div><div class="fo-name">Inter</div><div class="fo-stack">Tech-forward, high legibility</div></div>
-          <div class="fo-check"></div>
-        </div>
-        <div class="font-option" id="font-poppins" onclick="selectFont('poppins')">
-          <div class="fo-preview" style="font-family:'Poppins',sans-serif">Aa</div>
-          <div><div class="fo-name">Poppins</div><div class="fo-stack">Geometric, friendly, rounded</div></div>
-          <div class="fo-check"></div>
-        </div>
-        <div class="font-option" id="font-lato" onclick="selectFont('lato')">
-          <div class="fo-preview" style="font-family:'Lato',sans-serif">Aa</div>
-          <div><div class="fo-name">Lato</div><div class="fo-stack">Neutral, minimal, universal</div></div>
-          <div class="fo-check"></div>
-        </div>
-        <div class="apply-banner" style="margin-top:8px">
-          <span class="apply-msg">Selected: <strong id="font-name-display">DM Sans</strong></span>
-          <button class="btn-primary" onclick="saveFont()">Apply Font</button>
-        </div>
+      <div style="margin-top:16px">
+        <div class="card-lbl" style="margin-bottom:8px">Stage Timeline</div>
+        <div id="sa-calc-timeline" style="display:flex;gap:6px;flex-wrap:wrap"><span class="pill blue"><span class="pill-dot"></span>Washing 44m</span></div>
       </div>
     </div>
   </div>
-
-  <!-- LOGIN PAGE TAB -->
-  <div class="ui-pane" id="uipane-login">
-    <div class="grid-2">
-      <div class="gstatic card">
-        <div class="card-lbl" style="margin-bottom:14px">Login Page Content</div>
-        <div class="mfield">
-          <label>Main Headline (Line 1)</label>
-          <input type="text" id="login-h1" value="Fresher." placeholder="Fresher.">
-        </div>
-        <div class="mfield">
-          <label>Main Headline (Line 2)</label>
-          <input type="text" id="login-h2" value="Faster." placeholder="Faster.">
-        </div>
-        <div class="mfield">
-          <label>Main Headline (Italic Line)</label>
-          <input type="text" id="login-h3" value="Better." placeholder="Better.">
-        </div>
-        <div class="mfield">
-          <label>Card Welcome Text</label>
-          <input type="text" id="login-welcome" value="Welcome back" placeholder="Welcome back">
-        </div>
-        <div class="mfield">
-          <label>Card Subtitle</label>
-          <input type="text" id="login-sub" value="Sign in — your role is detected automatically">
-        </div>
-        <div style="display:flex;justify-content:flex-end">
-          <button class="btn-primary" onclick="saveLoginPage()">Save Login Content</button>
-        </div>
-      </div>
-      <div class="gstatic card">
-        <div class="card-lbl" style="margin-bottom:14px">Feature Points</div>
-        <div class="mfield"><label>Feature 1</label><input type="text" id="login-f1" value="Real-time Laundry Tracking"></div>
-        <div class="mfield"><label>Feature 2</label><input type="text" id="login-f2" value="Sales &amp; Expense Reports"></div>
-        <div class="mfield"><label>Feature 3</label><input type="text" id="login-f3" value="Customer Management"></div>
-        <div class="mfield"><label>Feature 4</label><input type="text" id="login-f4" value="Fast Service Processing"></div>
-        <div style="display:flex;justify-content:flex-end">
-          <button class="btn-primary" onclick="saveLoginFeatures()">Save Features</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="gstatic card" style="margin-bottom:14px">
-      <div class="card-lbl" style="margin-bottom:14px">Ticker Bar Messages</div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px">
-        <div class="mfield"><label>Ticker Item 1</label><input type="text" id="ticker-1" value="Fast Pickup"></div>
-        <div class="mfield"><label>Ticker Item 2</label><input type="text" id="ticker-2" value="Laundry Tracking"></div>
-        <div class="mfield"><label>Ticker Item 3</label><input type="text" id="ticker-3" value="Smooth Service"></div>
-        <div class="mfield"><label>Ticker Item 4</label><input type="text" id="ticker-4" value="Same-Day Service"></div>
-        <div class="mfield"><label>Ticker Item 5</label><input type="text" id="ticker-5" value="Fresh Every Time"></div>
-        <div class="mfield"><label>Ticker Item 6</label><input type="text" id="ticker-6" value="Laundry Lounge"></div>
-      </div>
-      <div style="display:flex;justify-content:flex-end;margin-top:8px">
-        <button class="btn-primary" onclick="saveTicker()">Save Ticker Items</button>
-      </div>
+  <div class="gstatic card" style="margin-bottom:14px">
+    <div class="card-lbl">Pricing Reference</div>
+    <div class="price-rate-grid">
+      <div class="rate-card"><div class="rate-name">Single Wash</div><div class="rate-price">&#x20B1;30/kg</div></div>
+      <div class="rate-card"><div class="rate-name">Double Wash</div><div class="rate-price">&#x20B1;35/kg</div></div>
+      <div class="rate-card"><div class="rate-name">Household Items</div><div class="rate-price">&#x20B1;45/kg</div></div>
+      <div class="rate-card"><div class="rate-name">Heavy Wash</div><div class="rate-price">&#x20B1;75/kg</div></div>
+      <div class="rate-card"><div class="rate-name">Soak for Whites</div><div class="rate-price">&#x20B1;50/kg</div></div>
+      <div class="rate-card"><div class="rate-name">Dryer Add-On</div><div class="rate-price">+&#x20B1;20 flat</div></div>
     </div>
   </div>
-
-  <!-- CUSTOMER PORTAL TAB -->
-  <div class="ui-pane" id="uipane-customer">
-    <div class="grid-2">
-      <div class="gstatic card">
-        <div class="card-lbl" style="margin-bottom:14px">Customer Portal Layout</div>
-        <div class="section-toggle-grid">
-          <div class="section-toggle-card">
-            <div class="stc-icon">&#x1F4CA;</div>
-            <div class="stc-info"><div class="stc-name">Dashboard</div><div class="stc-desc">Overview stats + active order cards</div></div>
-            <label class="toggle"><input type="checkbox" id="cu-sec-dashboard" checked onchange="markUIDirty()"><span class="toggle-slider"></span></label>
-          </div>
-          <div class="section-toggle-card">
-            <div class="stc-icon">&#x23F1;&#xFE0F;</div>
-            <div class="stc-info"><div class="stc-name">Live Status</div><div class="stc-desc">Real-time order tracking &amp; timers</div></div>
-            <label class="toggle"><input type="checkbox" id="cu-sec-status" checked onchange="markUIDirty()"><span class="toggle-slider"></span></label>
-          </div>
-          <div class="section-toggle-card">
-            <div class="stc-icon">&#x1F4CB;</div>
-            <div class="stc-info"><div class="stc-name">Transaction History</div><div class="stc-desc">Past orders &amp; receipts</div></div>
-            <label class="toggle"><input type="checkbox" id="cu-sec-history" checked onchange="markUIDirty()"><span class="toggle-slider"></span></label>
-          </div>
-          <div class="section-toggle-card">
-            <div class="stc-icon">&#x2B50;</div>
-            <div class="stc-info"><div class="stc-name">Feedback Section</div><div class="stc-desc">Star ratings &amp; review submission</div></div>
-            <label class="toggle"><input type="checkbox" id="cu-sec-feedback" checked onchange="markUIDirty()"><span class="toggle-slider"></span></label>
-          </div>
-          <div class="section-toggle-card">
-            <div class="stc-icon">&#x1F464;</div>
-            <div class="stc-info"><div class="stc-name">My Profile</div><div class="stc-desc">Account info &amp; password change</div></div>
-            <label class="toggle"><input type="checkbox" id="cu-sec-profile" checked onchange="markUIDirty()"><span class="toggle-slider"></span></label>
-          </div>
-          <div class="section-toggle-card">
-            <div class="stc-icon">&#x1F514;</div>
-            <div class="stc-info"><div class="stc-name">Notifications Bell</div><div class="stc-desc">Real-time status change alerts</div></div>
-            <label class="toggle"><input type="checkbox" id="cu-notif" checked onchange="markUIDirty()"><span class="toggle-slider"></span></label>
-          </div>
-        </div>
-      </div>
-      <div class="gstatic card">
-        <div class="card-lbl" style="margin-bottom:14px">Customer Portal Text</div>
-        <div class="mfield"><label>Page Title (Main)</label><input type="text" id="cu-title" value="Welcome Back"></div>
-        <div class="mfield"><label>Dashboard Sub-Greeting</label><input type="text" id="cu-greeting" value="Here's your laundry status at a glance."></div>
-        <div class="mfield"><label>No-Order Message</label><input type="text" id="cu-noorder" value="No active service right now."></div>
-        <div class="mfield"><label>Ticker Text</label><input type="text" id="cu-ticker" value="Laundry Lounge · Monitor Your Laundry Live · Wash · Dry · Fold"></div>
-        <div style="display:flex;justify-content:flex-end;margin-top:8px">
-          <button class="btn-primary" onclick="saveCustomerUI()">Save Customer UI</button>
-        </div>
-      </div>
+  <div class="divider"><div class="rule"></div><div class="dia"></div><div class="rule"></div></div>
+  <div class="gstatic table-card">
+    <div class="table-head-bar">
+      <div class="table-lbl">Encoded Today <span class="count-pill" id="sa-enc-count">0</span></div>
+      <button class="btn-ghost" onclick="loadSaEncoded()" style="height:30px;font-size:.46rem;padding:0 13px">&#x21BB; Refresh</button>
     </div>
-  </div>
-
-  <!-- OPERATOR PANEL TAB -->
-  <div class="ui-pane" id="uipane-operator">
-    <div class="grid-2">
-      <div class="gstatic card">
-        <div class="card-lbl" style="margin-bottom:14px">Operator Panel Sections</div>
-        <div class="section-toggle-grid">
-          <div class="section-toggle-card">
-            <div class="stc-icon">&#x1F4CA;</div>
-            <div class="stc-info"><div class="stc-name">Dashboard</div><div class="stc-desc">Machine overview + stats</div></div>
-            <label class="toggle"><input type="checkbox" id="op-sec-dashboard" checked onchange="markUIDirty()"><span class="toggle-slider"></span></label>
-          </div>
-          <div class="section-toggle-card">
-            <div class="stc-icon">&#x1FAE7;</div>
-            <div class="stc-info"><div class="stc-name">Machines</div><div class="stc-desc">8-unit machine status view</div></div>
-            <label class="toggle"><input type="checkbox" id="op-sec-machines" checked onchange="markUIDirty()"><span class="toggle-slider"></span></label>
-          </div>
-          <div class="section-toggle-card">
-            <div class="stc-icon">&#x1F4CB;</div>
-            <div class="stc-info"><div class="stc-name">Service Queue</div><div class="stc-desc">Queue management + assign/start</div></div>
-            <label class="toggle"><input type="checkbox" id="op-sec-queue" checked onchange="markUIDirty()"><span class="toggle-slider"></span></label>
-          </div>
-          <div class="section-toggle-card">
-            <div class="stc-icon">&#x270F;&#xFE0F;</div>
-            <div class="stc-info"><div class="stc-name">Encode Service</div><div class="stc-desc">New order registration form</div></div>
-            <label class="toggle"><input type="checkbox" id="op-sec-encode" checked onchange="markUIDirty()"><span class="toggle-slider"></span></label>
-          </div>
-          <div class="section-toggle-card">
-            <div class="stc-icon">&#x1F455;</div>
-            <div class="stc-info"><div class="stc-name">Folding Queue</div><div class="stc-desc">Post-wash fold management</div></div>
-            <label class="toggle"><input type="checkbox" id="op-sec-folding" checked onchange="markUIDirty()"><span class="toggle-slider"></span></label>
-          </div>
-          <div class="section-toggle-card">
-            <div class="stc-icon">&#x1F4E6;</div>
-            <div class="stc-info"><div class="stc-name">Ready for Pickup</div><div class="stc-desc">Pickup &amp; completion screen</div></div>
-            <label class="toggle"><input type="checkbox" id="op-sec-pickup" checked onchange="markUIDirty()"><span class="toggle-slider"></span></label>
-          </div>
-          <div class="section-toggle-card">
-            <div class="stc-icon">&#x1F381;</div>
-            <div class="stc-info"><div class="stc-name">Promos View</div><div class="stc-desc">Active promo code list</div></div>
-            <label class="toggle"><input type="checkbox" id="op-sec-promos" checked onchange="markUIDirty()"><span class="toggle-slider"></span></label>
-          </div>
-          <div class="section-toggle-card">
-            <div class="stc-icon">&#x26A0;&#xFE0F;</div>
-            <div class="stc-info"><div class="stc-name">Issue Reports</div><div class="stc-desc">Submit machine/item issues</div></div>
-            <label class="toggle"><input type="checkbox" id="op-sec-issues" checked onchange="markUIDirty()"><span class="toggle-slider"></span></label>
-          </div>
-        </div>
-      </div>
-      <div class="gstatic card">
-        <div class="card-lbl" style="margin-bottom:14px">Operator Panel Text</div>
-        <div class="mfield"><label>Panel Title</label><input type="text" id="op-title" value="Machine Operator"></div>
-        <div class="mfield"><label>Eyebrow Label</label><input type="text" id="op-eyebrow" value="Operator Portal · 2026"></div>
-        <div class="mfield"><label>Top Badge</label><input type="text" id="op-badge" value="Operator Access"></div>
-        <div class="mfield"><label>Logout Label</label><input type="text" id="op-logout" value="Logout"></div>
-        <div style="display:flex;justify-content:flex-end;margin-top:8px">
-          <button class="btn-primary" onclick="saveOperatorUI()">Save Operator UI</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ADMIN PANEL TAB -->
-  <div class="ui-pane" id="uipane-admin">
-    <div class="grid-2">
-      <div class="gstatic card">
-        <div class="card-lbl" style="margin-bottom:14px">Admin Panel Sections</div>
-        <div class="section-toggle-grid">
-          <div class="section-toggle-card">
-            <div class="stc-icon">&#x1F4CA;</div>
-            <div class="stc-info"><div class="stc-name">Dashboard</div><div class="stc-desc">Charts, stats &amp; revenue overview</div></div>
-            <label class="toggle"><input type="checkbox" id="adm-sec-dashboard" checked onchange="markUIDirty()"><span class="toggle-slider"></span></label>
-          </div>
-          <div class="section-toggle-card">
-            <div class="stc-icon">&#x1F4C8;</div>
-            <div class="stc-info"><div class="stc-name">Analytics</div><div class="stc-desc">Service breakdown &amp; trends</div></div>
-            <label class="toggle"><input type="checkbox" id="adm-sec-analytics" checked onchange="markUIDirty()"><span class="toggle-slider"></span></label>
-          </div>
-          <div class="section-toggle-card">
-            <div class="stc-icon">&#x1F4B0;</div>
-            <div class="stc-info"><div class="stc-name">Revenue</div><div class="stc-desc">Income charts &amp; profit data</div></div>
-            <label class="toggle"><input type="checkbox" id="adm-sec-revenue" checked onchange="markUIDirty()"><span class="toggle-slider"></span></label>
-          </div>
-          <div class="section-toggle-card">
-            <div class="stc-icon">&#x1F9D2;&#x200D;&#x1F4BB;</div>
-            <div class="stc-info"><div class="stc-name">Service Status</div><div class="stc-desc">Real-time order monitoring</div></div>
-            <label class="toggle"><input type="checkbox" id="adm-sec-orders" checked onchange="markUIDirty()"><span class="toggle-slider"></span></label>
-          </div>
-          <div class="section-toggle-card">
-            <div class="stc-icon">&#x1F9D1;&#x200D;&#x1F4BB;</div>
-            <div class="stc-info"><div class="stc-name">Staff Management</div><div class="stc-desc">Add, edit &amp; manage operators</div></div>
-            <label class="toggle"><input type="checkbox" id="adm-sec-staff" checked onchange="markUIDirty()"><span class="toggle-slider"></span></label>
-          </div>
-          <div class="section-toggle-card">
-            <div class="stc-icon">&#x1F464;</div>
-            <div class="stc-info"><div class="stc-name">Customers</div><div class="stc-desc">Customer directory &amp; actions</div></div>
-            <label class="toggle"><input type="checkbox" id="adm-sec-customers" checked onchange="markUIDirty()"><span class="toggle-slider"></span></label>
-          </div>
-          <div class="section-toggle-card">
-            <div class="stc-icon">&#x1F4E6;</div>
-            <div class="stc-info"><div class="stc-name">Archives</div><div class="stc-desc">Archived staff &amp; customers</div></div>
-            <label class="toggle"><input type="checkbox" id="adm-sec-archives" checked onchange="markUIDirty()"><span class="toggle-slider"></span></label>
-          </div>
-          <div class="section-toggle-card">
-            <div class="stc-icon">&#x2B50;</div>
-            <div class="stc-info"><div class="stc-name">Customer Feedback</div><div class="stc-desc">Ratings &amp; reviews viewer</div></div>
-            <label class="toggle"><input type="checkbox" id="adm-sec-feedback" checked onchange="markUIDirty()"><span class="toggle-slider"></span></label>
-          </div>
-          <div class="section-toggle-card">
-            <div class="stc-icon">&#x1F4C4;</div>
-            <div class="stc-info"><div class="stc-name">Reports</div><div class="stc-desc">Export CSV/PDF reports</div></div>
-            <label class="toggle"><input type="checkbox" id="adm-sec-reports" checked onchange="markUIDirty()"><span class="toggle-slider"></span></label>
-          </div>
-        </div>
-      </div>
-      <div class="gstatic card">
-        <div class="card-lbl" style="margin-bottom:14px">Admin Panel Text</div>
-        <div class="mfield"><label>Panel Title</label><input type="text" id="adm-title" value="Admin Panel"></div>
-        <div class="mfield"><label>Eyebrow Label</label><input type="text" id="adm-eyebrow" value="Admin Panel · 2026"></div>
-        <div class="mfield"><label>Top Badge Label</label><input type="text" id="adm-badge" value="Admin Access"></div>
-        <div class="mfield"><label>Dashboard Greeting</label><input type="text" id="adm-greeting" value="Welcome back. Here's today's operational overview."></div>
-        <div style="display:flex;justify-content:flex-end;margin-top:8px">
-          <button class="btn-primary" onclick="saveAdminUI()">Save Admin UI</button>
-        </div>
-      </div>
-    </div>
-    <div class="apply-banner">
-      <span class="apply-msg">&#x26A0;&#xFE0F; All section visibility changes take effect immediately on next login. Disabled sections are hidden from navigation.</span>
-      <div class="apply-btns">
-        <button class="btn-ghost" onclick="resetAdminSections()">Reset All Sections</button>
-        <button class="btn-primary" onclick="saveAllUISettings()">Save All UI Settings</button>
-      </div>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>#</th><th>Tracking</th><th>Customer</th><th>Email</th><th>Service</th><th>Weight</th><th>Amount</th><th>Status</th></tr></thead>
+        <tbody id="sa-enc-tbody"><tr><td colspan="8" style="text-align:center;padding:28px;color:var(--text3);font-family:'DM Mono',monospace;font-size:.58rem">No services encoded today</td></tr></tbody>
+      </table>
     </div>
   </div>
 </div>
@@ -1125,12 +694,9 @@ td{padding:12px 16px;vertical-align:middle}
       </div>
       <select class="filter-select" id="log-filter" onchange="filterTable('log-tbody',document.getElementById('log-search').value,this.value)">
         <option value="">All Actions</option>
-        <option value="login">Login</option>
-        <option value="create">Create</option>
-        <option value="update">Update</option>
-        <option value="delete">Delete</option>
-        <option value="block">Block</option>
-        <option value="emergency">Emergency</option>
+        <option value="login">Login</option><option value="create">Create</option>
+        <option value="update">Update</option><option value="delete">Delete</option>
+        <option value="block">Block</option><option value="emergency">Emergency</option>
       </select>
     </div>
     <button class="btn-export" onclick="exportLogsCSV()">
@@ -1139,9 +705,7 @@ td{padding:12px 16px;vertical-align:middle}
     </button>
   </div>
   <div class="gstatic table-card">
-    <div class="table-head-bar">
-      <div class="table-lbl">System Logs <span class="count-pill" id="log-count">0 entries</span></div>
-    </div>
+    <div class="table-head-bar"><div class="table-lbl">System Logs <span class="count-pill" id="log-count">0 entries</span></div></div>
     <div class="table-scroll">
       <table>
         <thead><tr><th>Actor</th><th>Action</th><th>Target</th><th>IP Address</th><th>Timestamp</th></tr></thead>
@@ -1159,7 +723,7 @@ td{padding:12px 16px;vertical-align:middle}
     <div class="page-sub">Change your superadmin password and manage recovery options.</div>
   </div>
   <div class="divider"><div class="rule"></div><div class="dia"></div><div class="rule"></div></div>
-  <div class="alert-box info" style="margin-bottom:16px">
+  <div class="alert-box info">
     &#x1F511; <strong>Locked out?</strong> A server administrator can run
     <code style="font-family:'DM Mono',monospace;background:var(--blue-bg);padding:2px 7px;border-radius:5px;font-size:.8em">flask recover-superadmin</code>
     in the terminal to reset the password directly.
@@ -1167,10 +731,7 @@ td{padding:12px 16px;vertical-align:middle}
   <div class="grid-2">
     <div class="sec-card">
       <div class="card-lbl" style="margin-bottom:16px">&#x1F510; Change Password</div>
-      <div class="mfield">
-        <label>Current Password</label>
-        <input type="password" id="sec-cur" placeholder="Your current password">
-      </div>
+      <div class="mfield"><label>Current Password</label><input type="password" id="sec-cur" placeholder="Your current password"></div>
       <div class="mfield">
         <label>New Password <span style="color:var(--text3);font-size:.9em">(min 8 chars)</span></label>
         <div style="position:relative">
@@ -1180,10 +741,7 @@ td{padding:12px 16px;vertical-align:middle}
         <div style="margin-top:6px;height:3px;border-radius:10px;background:var(--border);overflow:hidden"><div id="pw-strength-bar" style="height:100%;width:0%;border-radius:10px;transition:width .3s,background .3s;background:var(--danger)"></div></div>
         <div id="pw-strength-label" style="font-family:'DM Mono',monospace;font-size:.42rem;color:var(--text3);margin-top:3px;letter-spacing:.08em"></div>
       </div>
-      <div class="mfield">
-        <label>Confirm New Password</label>
-        <input type="password" id="sec-confirm" placeholder="Repeat new password">
-      </div>
+      <div class="mfield"><label>Confirm New Password</label><input type="password" id="sec-confirm" placeholder="Repeat new password"></div>
       <div id="sec-msg" style="display:none;margin-bottom:12px"></div>
       <button class="btn-primary" id="sec-btn" onclick="changeOwnPassword()" style="width:100%;height:40px;border-radius:10px">Update Password</button>
     </div>
@@ -1192,10 +750,6 @@ td{padding:12px 16px;vertical-align:middle}
       <div style="padding:12px 14px;border-radius:10px;background:var(--bg3);border:1px solid var(--border);margin-bottom:10px">
         <div style="display:flex;align-items:center;gap:9px;margin-bottom:5px"><span style="font-size:1rem">&#x1F4E7;</span><span style="font-family:'DM Mono',monospace;font-size:.54rem;letter-spacing:.1em;color:var(--text);font-weight:600;text-transform:uppercase">Email Reset</span><span class="pill green" style="margin-left:auto">Available</span></div>
         <div style="font-size:.76rem;color:var(--text3);line-height:1.5">Use the <strong style="color:var(--text2)">Forgot Password?</strong> link on the login page.</div>
-      </div>
-      <div style="padding:12px 14px;border-radius:10px;background:var(--bg3);border:1px solid var(--border);margin-bottom:10px">
-        <div style="display:flex;align-items:center;gap:9px;margin-bottom:5px"><span style="font-size:1rem">&#x1F5DD;&#xFE0F;</span><span style="font-family:'DM Mono',monospace;font-size:.54rem;letter-spacing:.1em;color:var(--text);font-weight:600;text-transform:uppercase">Recovery Phrase</span><span class="pill amber" style="margin-left:auto">Check .env</span></div>
-        <div style="font-size:.76rem;color:var(--text3);line-height:1.5">Set <code style="font-family:'DM Mono',monospace;background:var(--input-bg);padding:1px 6px;border-radius:4px">SA_RECOVERY_PHRASE</code> in your <code style="font-family:'DM Mono',monospace;background:var(--input-bg);padding:1px 6px;border-radius:4px">.env</code> file.</div>
       </div>
       <div style="padding:12px 14px;border-radius:10px;background:var(--bg3);border:1px solid var(--border)">
         <div style="display:flex;align-items:center;gap:9px;margin-bottom:5px"><span style="font-size:1rem">&#x1F4BB;</span><span style="font-family:'DM Mono',monospace;font-size:.54rem;letter-spacing:.1em;color:var(--text);font-weight:600;text-transform:uppercase">Terminal CLI</span><span class="pill blue" style="margin-left:auto">Always Works</span></div>
@@ -1280,6 +834,7 @@ td{padding:12px 16px;vertical-align:middle}
       <div class="card-lbl">System Toggles</div>
       <div class="toggle-wrap"><div><div class="toggle-label">Maintenance Mode</div><div class="toggle-desc">Block all non-admin access</div></div><label class="toggle"><input type="checkbox" id="sys-maintenance" onchange="saveSetting('maintenance_mode',this.checked?'1':'0')"><span class="toggle-slider"></span></label></div>
       <div class="toggle-wrap"><div><div class="toggle-label">Promo Codes Active</div><div class="toggle-desc">Allow promo redemptions</div></div><label class="toggle"><input type="checkbox" id="sys-promos" checked onchange="saveSetting('promos_enabled',this.checked?'1':'0')"><span class="toggle-slider"></span></label></div>
+      <div class="toggle-wrap"><div><div class="toggle-label">Customer Registration</div><div class="toggle-desc">Allow new accounts on login page</div></div><label class="toggle"><input type="checkbox" id="sys-registration" checked onchange="saveSetting('allow_registration',this.checked?'1':'0')"><span class="toggle-slider"></span></label></div>
     </div>
     <div class="gstatic card">
       <div class="card-lbl">Business Hours</div>
@@ -1347,17 +902,13 @@ td{padding:12px 16px;vertical-align:middle}
       </div>
       <select class="filter-select" id="usr-filter" onchange="filterTableByRole('usr-tbody',this.value)">
         <option value="">All Roles</option>
-        <option value="superadmin">Superadmin</option>
-        <option value="admin">Admin</option>
-        <option value="staff">Staff</option>
-        <option value="customer">Customer</option>
+        <option value="superadmin">Superadmin</option><option value="admin">Admin</option>
+        <option value="staff">Staff</option><option value="customer">Customer</option>
       </select>
     </div>
   </div>
   <div class="gstatic table-card">
-    <div class="table-head-bar">
-      <div class="table-lbl">All System Users <span class="count-pill" id="usr-count">0 total</span></div>
-    </div>
+    <div class="table-head-bar"><div class="table-lbl">All System Users <span class="count-pill" id="usr-count">0 total</span></div></div>
     <div class="table-scroll">
       <table>
         <thead><tr><th>User</th><th>Role</th><th>Status</th><th>Joined</th><th>Actions</th></tr></thead>
@@ -1373,10 +924,7 @@ td{padding:12px 16px;vertical-align:middle}
 <!-- ══ MODALS ══ -->
 <div class="modal-overlay" id="modal-add-admin">
   <div class="modal">
-    <div class="modal-hdr">
-      <div class="modal-ttl">Add Administrator</div>
-      <button class="modal-close" onclick="closeModal('add-admin')">&#x2715;</button>
-    </div>
+    <div class="modal-hdr"><div class="modal-ttl">Add Administrator</div><button class="modal-close" onclick="closeModal('add-admin')">&#x2715;</button></div>
     <div class="mfield"><label>Full Name</label><input type="text" id="af-name" placeholder="e.g. Maria Santos"></div>
     <div class="mfield"><label>Email Address</label><input type="email" id="af-email" placeholder="admin@laundry.com"></div>
     <div class="mfield"><label>Password (min. 8 characters)</label><input type="password" id="af-pass" placeholder="Secure password"></div>
@@ -1389,16 +937,11 @@ td{padding:12px 16px;vertical-align:middle}
 
 <div class="modal-overlay" id="modal-edit-admin">
   <div class="modal">
-    <div class="modal-hdr">
-      <div class="modal-ttl">Edit Administrator</div>
-      <button class="modal-close" onclick="closeModal('edit-admin')">&#x2715;</button>
-    </div>
+    <div class="modal-hdr"><div class="modal-ttl">Edit Administrator</div><button class="modal-close" onclick="closeModal('edit-admin')">&#x2715;</button></div>
     <input type="hidden" id="ef-id">
     <div class="mfield"><label>Full Name</label><input type="text" id="ef-name"></div>
     <div class="mfield"><label>Email Address</label><input type="email" id="ef-email"></div>
-    <div class="mfield"><label>Status</label>
-      <select id="ef-status"><option value="active">Active</option><option value="inactive">Inactive</option></select>
-    </div>
+    <div class="mfield"><label>Status</label><select id="ef-status"><option value="active">Active</option><option value="inactive">Inactive</option></select></div>
     <div class="modal-btns">
       <button class="btn-ghost" onclick="closeModal('edit-admin')">Cancel</button>
       <button class="btn-primary" id="btn-edit-admin" onclick="editAdminSubmit()">Save Changes</button>
@@ -1408,10 +951,7 @@ td{padding:12px 16px;vertical-align:middle}
 
 <div class="modal-overlay" id="modal-confirm">
   <div class="modal">
-    <div class="modal-hdr">
-      <div class="modal-ttl">Confirm Action</div>
-      <button class="modal-close" onclick="closeModal('confirm')">&#x2715;</button>
-    </div>
+    <div class="modal-hdr"><div class="modal-ttl">Confirm Action</div><button class="modal-close" onclick="closeModal('confirm')">&#x2715;</button></div>
     <p id="confirm-msg" style="font-size:.88rem;color:var(--text2);line-height:1.6;margin-bottom:18px"></p>
     <div class="modal-btns">
       <button class="btn-ghost" onclick="closeModal('confirm')">Cancel</button>
@@ -1426,27 +966,39 @@ td{padding:12px 16px;vertical-align:middle}
   <div class="ticker-inner">
     <span class="ticker-item">Super Admin Panel</span><span class="ticker-dot"></span>
     <span class="ticker-item">Laundry Lounge HQ</span><span class="ticker-dot"></span>
-    <span class="ticker-item">Full System Control &middot; Role Permissions &middot; UI Customizer</span><span class="ticker-dot"></span>
+    <span class="ticker-item">Analytics &middot; Machine Monitoring &middot; Encode Service</span><span class="ticker-dot"></span>
     <span class="ticker-item">Root Access &middot; 2026</span><span class="ticker-dot"></span>
     <span class="ticker-item">Super Admin Panel</span><span class="ticker-dot"></span>
     <span class="ticker-item">Laundry Lounge HQ</span><span class="ticker-dot"></span>
-    <span class="ticker-item">Full System Control &middot; Role Permissions &middot; UI Customizer</span><span class="ticker-dot"></span>
+    <span class="ticker-item">Analytics &middot; Machine Monitoring &middot; Encode Service</span><span class="ticker-dot"></span>
     <span class="ticker-item">Root Access &middot; 2026</span><span class="ticker-dot"></span>
   </div>
 </div>
 
 <script>
+'use strict';
+
+// ── CONSTANTS ──
+const DRYER_SURCHARGE = 20.0;
+const SA_SERVICE_RATES = {
+  single_wash: {label:'Single Wash', rate:30},
+  double_wash: {label:'Double Wash', rate:35},
+  household:   {label:'Household Items', rate:45},
+  heavy_wash:  {label:'Heavy Wash (Comforter)', rate:75},
+  soak_whites: {label:'Soak for Whites', rate:50},
+};
+const STATUS_PILL = {pending:'amber',washing:'blue',drying:'teal',downy:'purple',folding:'amber',completed:'green',done:'green',cancelled:'red'};
+const STATUS_LABEL = {pending:'Pending',washing:'🫧 Washing',drying:'💨 Drying',downy:'🌸 Downy',folding:'👕 Folding',completed:'✅ Done',done:'✅ Done',cancelled:'❌ Cancelled'};
+
 // ── THEME ──
 function toggleTheme(){
   const h=document.documentElement,isDark=h.getAttribute('data-theme')==='dark';
   h.setAttribute('data-theme',isDark?'light':'dark');
   document.getElementById('themeBtn').textContent=isDark?'\u263E':'\u2600';
   localStorage.setItem('sa-theme',isDark?'light':'dark');
+  setTimeout(()=>rebuildAllCharts(),80);
 }
-(function(){
-  const t=localStorage.getItem('sa-theme');
-  if(t){document.documentElement.setAttribute('data-theme',t);document.getElementById('themeBtn').textContent=t==='dark'?'\u263E':'\u2600';}
-})();
+(function(){const t=localStorage.getItem('sa-theme');if(t){document.documentElement.setAttribute('data-theme',t);document.getElementById('themeBtn').textContent=t==='dark'?'\u263E':'\u2600';}})();
 
 // ── SIDEBAR ──
 const sidebar=document.getElementById('sidebar'),overlay=document.getElementById('overlay');
@@ -1462,23 +1014,24 @@ function showSection(id,el){
   document.getElementById('sec-'+id).classList.add('active');
   if(el)el.classList.add('active');
   if(window.innerWidth<900)closeSidebar();
-  const loaders={overview:loadOverview,admins:loadAdmins,auditlogs:loadAuditLogs,monitoring:loadMonitoring,users:loadAllUsers,permissions:loadPermissions,backup:()=>{}};
+  const loaders={
+    overview:loadOverview, analytics:loadAnalytics,
+    admins:loadAdmins, machines:loadMachineMonitor,
+    encode:loadSaEncoded, auditlogs:loadAuditLogs,
+    monitoring:loadMonitoring, users:loadAllUsers,
+    backup:()=>{}, security:()=>{}, config:loadConfig, emergency:()=>{}
+  };
   if(loaders[id])loaders[id]();
 }
 
 // ── TOAST ──
-function showToast(msg,type='info'){
-  const t=document.getElementById('toast');
-  t.textContent=msg;
-  t.className='toast '+type+' show';
-  setTimeout(()=>t.classList.remove('show'),3500);
-}
+function showToast(msg,type='info'){const t=document.getElementById('toast');t.textContent=msg;t.className='toast '+type+' show';setTimeout(()=>t.classList.remove('show'),3500);}
 
 // ── MODAL ──
 function openModal(id){document.getElementById('modal-'+id).classList.add('open')}
 function closeModal(id){document.getElementById('modal-'+id).classList.remove('open')}
 
-// ── API HELPER ──
+// ── API ──
 async function api(url,opts={}){
   try{
     const defaults={headers:{'Content-Type':'application/json','X-Requested-With':'XMLHttpRequest'}};
@@ -1487,39 +1040,20 @@ async function api(url,opts={}){
     const r=await fetch(url,merged);
     const data=await r.json();
     if(!r.ok)throw new Error(data.error||'Request failed');
-    return {ok:true,data};
-  }catch(e){return {ok:false,error:e.message}}
+    return{ok:true,data};
+  }catch(e){return{ok:false,error:e.message}}
 }
 
-// ── AVATAR COLORS ──
+// ── HELPERS ──
 const avBg=['linear-gradient(135deg,#00B4D8,#0077A8)','linear-gradient(135deg,#0077A8,#005580)','linear-gradient(135deg,#1A8080,#0F5555)','linear-gradient(135deg,#40A8D4,#1A6FA8)','linear-gradient(135deg,#00D4F5,#0099CC)'];
-
-// ── FILTER HELPERS ──
-function filterTable(tbodyId,query,actionFilter=''){
-  const q=query.toLowerCase(),af=actionFilter.toLowerCase();
-  document.querySelectorAll('#'+tbodyId+' tr').forEach(r=>{
-    const txt=r.innerText.toLowerCase();
-    r.style.display=((!q||txt.includes(q))&&(!af||txt.includes(af)))?'':'none';
-  });
-}
-function filterTableByStatus(tbodyId,val){
-  document.querySelectorAll('#'+tbodyId+' tr').forEach(r=>{
-    if(!val){r.style.display='';return;}
-    r.style.display=r.innerText.toLowerCase().includes(val)?'':'none';
-  });
-}
-function filterTableByRole(tbodyId,val){
-  document.querySelectorAll('#'+tbodyId+' tr').forEach(r=>{
-    if(!val){r.style.display='';return;}
-    const chip=r.querySelector('.role-chip');
-    if(!chip){r.style.display='none';return;}
-    r.style.display=chip.classList.contains(val)?'':'none';
-  });
-}
-
+function fmtPHP(n){return '₱'+Number(n||0).toLocaleString('en-PH',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function calcMachines(w){return Math.max(1,Math.ceil(w/8))}
+function filterTable(tbodyId,query,actionFilter=''){const q=query.toLowerCase(),af=actionFilter.toLowerCase();document.querySelectorAll('#'+tbodyId+' tr').forEach(r=>{const txt=r.innerText.toLowerCase();r.style.display=((!q||txt.includes(q))&&(!af||txt.includes(af)))?'':'none';});}
+function filterTableByStatus(tbodyId,val){document.querySelectorAll('#'+tbodyId+' tr').forEach(r=>{if(!val){r.style.display='';return;}r.style.display=r.innerText.toLowerCase().includes(val)?'':'none';});}
+function filterTableByRole(tbodyId,val){document.querySelectorAll('#'+tbodyId+' tr').forEach(r=>{if(!val){r.style.display='';return;}const chip=r.querySelector('.role-chip');if(!chip){r.style.display='none';return;}r.style.display=chip.classList.contains(val)?'':'none';});}
 function logIconClass(a){if(!a)return 'info';a=a.toLowerCase();if(a.includes('delete')||a.includes('block'))return 'danger';if(a.includes('login'))return 'info';if(a.includes('create')||a.includes('add'))return 'success';if(a.includes('update')||a.includes('edit'))return 'warn';if(a.includes('emergency'))return 'danger';return 'info';}
 function logIconEmoji(a){if(!a)return '\u2139\uFE0F';a=a.toLowerCase();if(a.includes('delete'))return '\uD83D\uDDD1\uFE0F';if(a.includes('block'))return '\uD83D\uDEAB';if(a.includes('login'))return '\uD83D\uDD10';if(a.includes('create')||a.includes('add'))return '\u2705';if(a.includes('update'))return '\u270F\uFE0F';if(a.includes('emergency'))return '\u26A0\uFE0F';return '\u2139\uFE0F';}
-function formatTime(ts){if(!ts)return '\u2014';try{return new Date(ts).toLocaleString('en-PH',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});}catch{return ts;}}
+function formatTime(ts){if(!ts)return '—';try{return new Date(ts).toLocaleString('en-PH',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});}catch{return ts;}}
 
 // ── SYSTEM STATUS SYNC ──
 let _lastMaintState=null;
@@ -1533,350 +1067,360 @@ async function syncSystemStatus(){
     if(isActive){crown.style.background='rgba(192,57,43,.12)';crown.style.borderColor='rgba(192,57,43,.35)';crown.style.color='var(--danger)';crown.textContent='\uD83D\uDD27 Maintenance Mode';}
     else{crown.style.background='';crown.style.borderColor='';crown.style.color='';crown.textContent='\uD83D\uDC51 Root Access';}
   }
-  if(_lastMaintState!==null&&_lastMaintState!==isActive)showToast(isActive?'\uD83D\uDD27 System is now in maintenance mode':'\u2705 System is back online',isActive?'error':'success');
+  if(_lastMaintState!==null&&_lastMaintState!==isActive)showToast(isActive?'\uD83D\uDD27 Maintenance mode ON':'\u2705 System back online',isActive?'error':'success');
   _lastMaintState=isActive;
 }
 setInterval(syncSystemStatus,10000);
 
+// ══════════════════════════════════════════
+//  CHART ENGINE
+// ══════════════════════════════════════════
+const _charts={};
+function isDark(){return document.documentElement.getAttribute('data-theme')==='dark'}
+function accentColor(){return isDark()?'#00D4F5':'#00B4D8'}
+function gridColor(){return isDark()?'rgba(255,255,255,0.06)':'rgba(0,0,0,0.06)'}
+function textColor(){return isDark()?'rgba(128,200,220,0.7)':'rgba(27,94,114,0.6)'}
+const PIE_COLORS=['#00B4D8','#0077A8','#1A8080','#6A35A0','#A07010','#B85000'];
+const PIE_DARK=['#00D4F5','#0099CC','#40C0C0','#A878E0','#D4A030','#F4A460'];
+
+function baseChartOpts(){
+  return{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{titleFont:{size:12},bodyFont:{size:11}}},scales:{x:{ticks:{color:textColor(),font:{size:11},autoSkip:false,maxRotation:0},grid:{color:gridColor()},border:{display:false}},y:{ticks:{color:textColor(),font:{size:11}},grid:{color:gridColor()},border:{display:false}}}};
+}
+function makeChart(id,type,data,options){
+  if(_charts[id]){_charts[id].destroy();delete _charts[id];}
+  const canvas=document.getElementById(id);
+  if(!canvas)return;
+  _charts[id]=new Chart(canvas,{type,data,options});
+}
+function rebuildAllCharts(){
+  if(_anData)buildAllAnalyticsCharts(_anData);
+}
+window.addEventListener('resize',()=>rebuildAllCharts());
+
+function buildLineChart(id,labels,values,label='Revenue'){
+  const ac=accentColor();
+  makeChart(id,'line',{labels,datasets:[{label,data:values,borderColor:ac,borderWidth:2.5,pointBackgroundColor:ac,pointRadius:3,pointHoverRadius:5,backgroundColor:isDark()?'rgba(0,212,245,0.10)':'rgba(0,180,216,0.10)',fill:true,tension:0.35}]},{...baseChartOpts(),plugins:{...baseChartOpts().plugins,tooltip:{callbacks:{label:c=>'₱'+Number(c.raw).toLocaleString()}}}});
+}
+function buildBarChart(id,labels,values,label='Revenue'){
+  const ac=accentColor();
+  makeChart(id,'bar',{labels,datasets:[{label,data:values,backgroundColor:isDark()?'rgba(0,212,245,0.55)':'rgba(0,180,216,0.55)',borderColor:ac,borderWidth:1.5,borderRadius:6}]},{...baseChartOpts(),plugins:{...baseChartOpts().plugins,tooltip:{callbacks:{label:c=>'₱'+Number(c.raw).toLocaleString()}}}});
+}
+function buildPieChart(id,mix,legendId){
+  if(!mix||!mix.length)return;
+  const colors=isDark()?PIE_DARK:PIE_COLORS;
+  makeChart(id,'doughnut',{labels:mix.map(m=>m.label),datasets:[{data:mix.map(m=>m.value),backgroundColor:mix.map((_,i)=>colors[i%colors.length]),borderWidth:2,borderColor:isDark()?'rgba(0,0,0,0.4)':'rgba(255,255,255,0.6)'}]},{responsive:true,maintainAspectRatio:false,cutout:'52%',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.label}: ${c.raw}`}}}});
+  if(legendId){const total=mix.reduce((s,m)=>s+m.value,0);document.getElementById(legendId).innerHTML=mix.map((m,i)=>`<div class="chart-legend-item"><div class="chart-legend-dot" style="background:${colors[i%colors.length]}"></div>${m.label} ${total?Math.round(m.value/total*100)+'%':''}</div>`).join('');}
+}
+
+// ── DATA FETCHERS ──
+async function fetchWeeklyRevenue(){
+  const res=await api('/api/admin/orders');if(!res.ok)return new Array(7).fill(0);
+  const orders=res.data||[];const today=new Date();const dayRevenue=new Array(7).fill(0);
+  orders.forEach(o=>{if(!o.created_at||['cancelled'].includes(o.status))return;const d=new Date(o.created_at);for(let i=6;i>=0;i--){const ref=new Date(today);ref.setDate(ref.getDate()-i);if(d.toDateString()===ref.toDateString())dayRevenue[6-i]+=Number(o.amount||0);}});
+  return dayRevenue;
+}
+async function fetchMonthlyRevenue(){
+  const res=await api('/api/admin/orders');if(!res.ok)return new Array(6).fill(0);
+  const orders=res.data||[];const today=new Date();const monthRevenue=new Array(6).fill(0);
+  orders.forEach(o=>{if(!o.created_at||['cancelled'].includes(o.status))return;const d=new Date(o.created_at);for(let i=5;i>=0;i--){const ref=new Date(today.getFullYear(),today.getMonth()-i,1);if(d.getFullYear()===ref.getFullYear()&&d.getMonth()===ref.getMonth())monthRevenue[5-i]+=Number(o.amount||0);}});
+  return monthRevenue;
+}
+async function fetchDailyRevMonth(){
+  const res=await api('/api/admin/orders');if(!res.ok)return{labels:[],values:[]};
+  const orders=res.data||[];const today=new Date();const curDay=today.getDate();const values=new Array(curDay).fill(0);const labels=[];
+  for(let i=1;i<=curDay;i++)labels.push(String(i));
+  orders.forEach(o=>{if(!o.created_at||['cancelled'].includes(o.status))return;const d=new Date(o.created_at);if(d.getFullYear()===today.getFullYear()&&d.getMonth()===today.getMonth()){const day=d.getDate();if(day>=1&&day<=curDay)values[day-1]+=Number(o.amount||0);}});
+  return{labels,values};
+}
+async function fetchServiceMix(){
+  const res=await api('/api/admin/orders');if(!res.ok)return[];
+  const orders=res.data||[];const map={};
+  orders.forEach(o=>{if(['cancelled'].includes(o.status))return;const k=SA_SERVICE_RATES[o.service_type]?.label||o.service_type||'Unknown';map[k]=(map[k]||0)+1;});
+  return Object.entries(map).map(([label,value])=>({label,value}));
+}
+function buildWeekLabels(){const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],out=[],today=new Date();for(let i=6;i>=0;i--){const d=new Date(today);d.setDate(d.getDate()-i);out.push(days[d.getDay()]);}return out;}
+function buildMonthLabels(){const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],out=[],today=new Date();for(let i=5;i>=0;i--){const d=new Date(today.getFullYear(),today.getMonth()-i,1);out.push(months[d.getMonth()]);}return out;}
+
+let _anData=null;
+function buildAllAnalyticsCharts(data){
+  if(!data)return;
+  buildLineChart('an-line-chart',data.dailyMonth.labels,data.dailyMonth.values);
+  buildBarChart('an-bar-chart',data.weekLabels,data.weeklyRev);
+  buildPieChart('an-pie-chart',data.mix,'an-pie-legend');
+  buildBarChart('an-monthly-bar',data.monthLabels,data.monthlyRev);
+}
+
+async function loadAnalytics(){
+  const[ana,rev,promos,cust,perf,weeklyRev,monthlyRev,dailyMonth,mix]=await Promise.all([
+    api('/api/admin/analytics'),api('/api/admin/revenue'),api('/api/promos'),
+    api('/api/customers'),api('/api/admin/staff-performance'),
+    fetchWeeklyRevenue(),fetchMonthlyRevenue(),fetchDailyRevMonth(),fetchServiceMix()
+  ]);
+  if(ana.ok)document.getElementById('an-today').textContent=ana.data.today_services??'—';
+  if(rev.ok){const daily=Number(rev.data.daily_income)||0,monthly=Number(rev.data.monthly_income)||0;document.getElementById('an-daily-rev').textContent='₱'+(daily/1000).toFixed(1)+'K';document.getElementById('an-monthly-rev').textContent='₱'+(monthly/1000).toFixed(1)+'K';}
+  if(promos.ok)document.getElementById('an-promos').textContent=(promos.data||[]).length;
+  if(cust.ok)document.getElementById('an-customers').textContent=(cust.data||[]).length;
+  if(perf.ok){const p=perf.data||[];const max=Math.max(...p.map(x=>x.total_services||0))||1;document.getElementById('an-staff-perf').innerHTML=p.length?p.map(x=>`<div class="prog-row"><span class="prog-name">${x.full_name}</span><div class="prog-bg"><div class="prog-fill" style="width:${Math.round((x.total_services||0)/max*100)}%"></div></div><span class="prog-val">${x.total_services||0}</span></div>`).join(''):'<div class="empty-state">No staff data.</div>';}
+  const weekLabels=buildWeekLabels();const monthLabels=buildMonthLabels();
+  _anData={dailyMonth,weekLabels,weeklyRev,monthLabels,monthlyRev,mix};
+  buildAllAnalyticsCharts(_anData);
+}
+
 // ── OVERVIEW ──
 async function loadOverview(){
-  const [admins,rev,logs,promos,users,perf]=await Promise.all([api('/api/superadmin/admins'),api('/api/admin/revenue'),api('/api/superadmin/audit-logs'),api('/api/promos'),api('/api/superadmin/all-users'),api('/api/admin/staff-performance')]);
-  if(admins.ok){
-    const list=admins.data||[];
-    document.getElementById('ov-admins').textContent=list.length;
-    document.getElementById('ov-admin-list').innerHTML=list.length?list.slice(0,4).map((a,i)=>`<div class="inline-row"><span style="display:flex;align-items:center;gap:9px"><span style="width:24px;height:24px;border-radius:50%;background:${avBg[i%5]};display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:.75rem;color:#fff;flex-shrink:0">${(a.full_name||'A')[0]}</span><span class="ikey">${a.full_name||'\u2014'}</span></span><span class="pill ${a.status==='active'?'green':'red'}">${a.status||'active'}</span></div>`).join(''):'<div class="empty-state">No admins found.</div>';
-  }
-  if(rev.ok){const daily=Number(rev.data.daily_income)||0,monthly=Number(rev.data.monthly_income)||0;document.getElementById('ov-revenue').textContent='\u20B1'+(monthly/1000).toFixed(0)+'K';document.getElementById('ov-daily').textContent=daily.toLocaleString();document.getElementById('ov-monthly').textContent=monthly.toLocaleString();document.getElementById('ov-profit').textContent=Math.round(monthly*.6).toLocaleString();}
-  if(logs.ok){const list=logs.data||[];document.getElementById('ov-logs').textContent=list.length;document.getElementById('nb-logs').textContent=list.length;document.getElementById('ov-recent-logs').innerHTML=list.slice(0,4).map(l=>`<div class="log-item"><div class="log-icon ${logIconClass(l.action)}">${logIconEmoji(l.action)}</div><div><div class="log-msg">${l.actor||'System'} \u2014 ${l.action}</div><div class="log-meta">${l.target||''} \u00B7 ${formatTime(l.timestamp)}</div></div></div>`).join('')||'<div class="empty-state">No logs yet.</div>';}
+  const[admins,rev,logs,promos,users,perf]=await Promise.all([api('/api/superadmin/admins'),api('/api/admin/revenue'),api('/api/superadmin/audit-logs'),api('/api/promos'),api('/api/superadmin/all-users'),api('/api/admin/staff-performance')]);
+  if(admins.ok){const list=admins.data||[];document.getElementById('ov-admins').textContent=list.length;document.getElementById('ov-admin-list').innerHTML=list.length?list.slice(0,4).map((a,i)=>`<div class="inline-row"><span style="display:flex;align-items:center;gap:9px"><span style="width:24px;height:24px;border-radius:50%;background:${avBg[i%5]};display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:.75rem;color:#fff;flex-shrink:0">${(a.full_name||'A')[0]}</span><span class="ikey">${a.full_name||'—'}</span></span><span class="pill ${a.status==='active'?'green':'red'}">${a.status||'active'}</span></div>`).join(''):'<div class="empty-state">No admins found.</div>';}
+  if(rev.ok){const daily=Number(rev.data.daily_income)||0,monthly=Number(rev.data.monthly_income)||0;document.getElementById('ov-revenue').textContent='₱'+(monthly/1000).toFixed(0)+'K';document.getElementById('ov-daily').textContent=daily.toLocaleString();document.getElementById('ov-monthly').textContent=monthly.toLocaleString();document.getElementById('ov-profit').textContent=Math.round(monthly*.6).toLocaleString();}
+  if(logs.ok){const list=logs.data||[];document.getElementById('ov-logs').textContent=list.length;document.getElementById('nb-logs').textContent=list.length;document.getElementById('ov-recent-logs').innerHTML=list.slice(0,4).map(l=>`<div class="log-item"><div class="log-icon ${logIconClass(l.action)}">${logIconEmoji(l.action)}</div><div><div class="log-msg">${l.actor||'System'} — ${l.action}</div><div class="log-meta">${l.target||''} · ${formatTime(l.timestamp)}</div></div></div>`).join('')||'<div class="empty-state">No logs yet.</div>';}
   if(promos.ok)document.getElementById('ov-promos').textContent=(promos.data||[]).length;
   if(users.ok)document.getElementById('ov-users').textContent=(users.data||[]).length;
   if(perf.ok)document.getElementById('ov-staff').textContent=(perf.data||[]).length;
   const settings=await api('/api/system/settings');
-  if(settings.ok){const s=settings.data;const mm=s.maintenance_mode==='1';['cfg-maintenance','sys-maintenance'].forEach(id=>{const el=document.getElementById(id);if(el)el.checked=mm;});['cfg-promos','sys-promos'].forEach(id=>{const el=document.getElementById(id);if(el)el.checked=s.promos_enabled!=='0';});_lastMaintState=mm;}
+  if(settings.ok){const s=settings.data;const mm=s.maintenance_mode==='1';['cfg-maintenance','sys-maintenance'].forEach(id=>{const el=document.getElementById(id);if(el)el.checked=mm;});['cfg-promos','sys-promos'].forEach(id=>{const el=document.getElementById(id);if(el)el.checked=s.promos_enabled!=='0';});const reg=document.getElementById('sys-registration');if(reg)reg.checked=s.allow_registration!=='0';_lastMaintState=mm;}
 }
 
 // ── ADMINS ──
 async function loadAdmins(){
   const res=await api('/api/superadmin/admins');
   if(!res.ok){showToast('Failed to load admins','error');return;}
-  const data=res.data||[];
-  document.getElementById('adm-count').textContent=`${data.length} total`;
+  const data=res.data||[];document.getElementById('adm-count').textContent=`${data.length} total`;
   document.getElementById('adm-tbody').innerHTML=data.length?data.map((a,i)=>`
     <tr>
-      <td><div class="person-cell"><div class="p-avatar" style="background:${avBg[i%5]}">${(a.full_name||'A')[0]}</div><div><div class="p-name">${a.full_name||'\u2014'}</div><div class="p-email">${a.email||'\u2014'}</div></div></div></td>
+      <td><div class="person-cell"><div class="p-avatar" style="background:${avBg[i%5]}">${(a.full_name||'A')[0]}</div><div><div class="p-name">${a.full_name||'—'}</div><div class="p-email">${a.email||'—'}</div></div></div></td>
       <td><span class="pill ${a.status==='active'?'green':'red'}"><span class="pill-dot"></span>${a.status==='active'?'Active':'Inactive'}</span></td>
       <td><span class="role-chip admin">Admin</span></td>
-      <td><span class="mono-cell">${a.created_at?new Date(a.created_at).toLocaleDateString('en-PH'):'\u2014'}</span></td>
+      <td><span class="mono-cell">${a.created_at?new Date(a.created_at).toLocaleDateString('en-PH'):'—'}</span></td>
       <td><div class="action-group">
         <button class="act-btn" title="Edit" onclick="openEditAdmin(${a.user_id},'${(a.full_name||'').replace(/'/g,"\\'")}','${a.email||''}','${a.status||'active'}')">
           <svg viewBox="0 0 16 16" fill="none"><path d="M2 11.5V14h2.5l7-7-2.5-2.5-7 7z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M11.5 2L14 4.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
         </button>
         ${a.status==='active'
           ?`<button class="act-btn block" title="Deactivate" onclick="toggleAdmin(${a.user_id},'inactive')"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.2"/><path d="M3 8h10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></button>`
-          :`<button class="act-btn unlock" title="Activate" onclick="toggleAdmin(${a.user_id},'active')"><svg viewBox="0 0 16 16" fill="none"><path d="M3 8l4 4 6-7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>`
-        }
+          :`<button class="act-btn unlock" title="Activate" onclick="toggleAdmin(${a.user_id},'active')"><svg viewBox="0 0 16 16" fill="none"><path d="M3 8l4 4 6-7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>`}
       </div></td>
     </tr>`).join('')
   :'<tr><td colspan="5" style="text-align:center;padding:28px;color:var(--text3);font-family:\'DM Mono\',monospace;font-size:.58rem">No administrators found</td></tr>';
 }
-
 function openEditAdmin(id,name,email,status){document.getElementById('ef-id').value=id;document.getElementById('ef-name').value=name;document.getElementById('ef-email').value=email;document.getElementById('ef-status').value=status;openModal('edit-admin');}
-async function addAdminSubmit(){const name=document.getElementById('af-name').value.trim();const email=document.getElementById('af-email').value.trim();const password=document.getElementById('af-pass').value;if(!name||!email||!password){showToast('\u26A0\uFE0F Fill all fields','error');return;}if(password.length<8){showToast('Password must be at least 8 characters','error');return;}const btn=document.getElementById('btn-add-admin');btn.textContent='Creating\u2026';btn.disabled=true;const res=await api('/api/superadmin/admins/create',{method:'POST',body:{name,email,password}});btn.textContent='Create Admin';btn.disabled=false;if(res.ok){showToast('\u2705 Admin created','success');closeModal('add-admin');['af-name','af-email','af-pass'].forEach(id=>document.getElementById(id).value='');loadAdmins();}else{showToast('\u274C '+res.error,'error');}}
-async function editAdminSubmit(){const id=document.getElementById('ef-id').value;const name=document.getElementById('ef-name').value.trim();const email=document.getElementById('ef-email').value.trim();const status=document.getElementById('ef-status').value;const btn=document.getElementById('btn-edit-admin');btn.textContent='Saving\u2026';btn.disabled=true;const res=await api(`/api/superadmin/admins/update/${id}`,{method:'PUT',body:{name,email,status}});btn.textContent='Save Changes';btn.disabled=false;if(res.ok){showToast('\u2705 Admin updated','success');closeModal('edit-admin');loadAdmins();}else{showToast('\u274C '+res.error,'error');}}
-async function toggleAdmin(id,status){const res=await api(`/api/superadmin/admins/toggle/${id}`,{method:'PUT',body:{status}});if(res.ok){showToast(status==='active'?'\u2705 Admin activated':'Admin deactivated','success');loadAdmins();}else{showToast('\u274C '+res.error,'error');}}
+async function addAdminSubmit(){const name=document.getElementById('af-name').value.trim();const email=document.getElementById('af-email').value.trim();const password=document.getElementById('af-pass').value;if(!name||!email||!password){showToast('⚠️ Fill all fields','error');return;}if(password.length<8){showToast('Password must be at least 8 characters','error');return;}const btn=document.getElementById('btn-add-admin');btn.textContent='Creating…';btn.disabled=true;const res=await api('/api/superadmin/admins/create',{method:'POST',body:{name,email,password}});btn.textContent='Create Admin';btn.disabled=false;if(res.ok){showToast('✅ Admin created','success');closeModal('add-admin');['af-name','af-email','af-pass'].forEach(id=>document.getElementById(id).value='');loadAdmins();}else{showToast('❌ '+res.error,'error');}}
+async function editAdminSubmit(){const id=document.getElementById('ef-id').value;const name=document.getElementById('ef-name').value.trim();const email=document.getElementById('ef-email').value.trim();const status=document.getElementById('ef-status').value;const btn=document.getElementById('btn-edit-admin');btn.textContent='Saving…';btn.disabled=true;const res=await api(`/api/superadmin/admins/update/${id}`,{method:'PUT',body:{name,email,status}});btn.textContent='Save Changes';btn.disabled=false;if(res.ok){showToast('✅ Admin updated','success');closeModal('edit-admin');loadAdmins();}else{showToast('❌ '+res.error,'error');}}
+async function toggleAdmin(id,status){const res=await api(`/api/superadmin/admins/toggle/${id}`,{method:'PUT',body:{status}});if(res.ok){showToast(status==='active'?'✅ Admin activated':'Admin deactivated','success');loadAdmins();}else{showToast('❌ '+res.error,'error');}}
 
-// ── PERMISSIONS ──
-let _permDirtyRole='';
-function switchPermTab(role){
-  document.querySelectorAll('.perm-tab').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.perm-pane').forEach(p=>p.classList.remove('active'));
-  document.getElementById('ptab-'+role).classList.add('active');
-  document.getElementById('ppane-'+role).classList.add('active');
+// ══════════════════════════════════════════
+//  MACHINE STATUS MONITORING
+// ══════════════════════════════════════════
+const WASH_SECS=10*60,DRY_SECS=5*60,DOWNY_SECS=5*60;
+let _machineRefreshInterval=null;
+
+function renderMachineCard(m){
+  const isMaint=m.status==='maintenance',isBusy=m.status==='busy';
+  const cls=isMaint?'maintenance':isBusy?'busy':m.status==='free'?'free':'idle';
+  const icon=isMaint?'🔧':isBusy?'🫧':m.status==='free'?'🟢':'⏸';
+  const rem=m.remaining_seconds!=null?m.remaining_seconds:null;
+  const prog=m.progress_pct!=null?m.progress_pct:0;
+  const stageHtml=m.current_stage?`<div class="pill ${m.current_stage==='washing'?'blue':m.current_stage==='drying'?'teal':'purple'}" style="margin-top:6px;font-size:.38rem">${m.current_stage.toUpperCase()}</div>`:''
+  const timerHtml=(rem!=null&&isBusy)?`<div class="machine-order-info" data-ends="${Date.now()+rem*1000}">${fmtRemaining(rem)}</div>`:'';
+  const orderHtml=m.current_order_id?`<div class="machine-order-info">#${m.current_order_id}</div>`:'';
+  const progHtml=isBusy?`<div class="machine-progress"><div class="machine-progress-fill" style="width:${prog}%"></div></div>`:'';
+  return`<div class="machine-card ${cls}"><span class="machine-icon">${icon}</span><div class="machine-num">Unit ${m.unit_number}</div><div class="machine-status-lbl">${isMaint?'MAINTENANCE':m.status.toUpperCase()}</div>${stageHtml}${orderHtml}${timerHtml}${progHtml}</div>`;
 }
-function markPermDirty(){
-  const activePane=document.querySelector('.perm-pane.active');
-  if(!activePane)return;
-  const role=activePane.id.replace('ppane-','');
-  const msgEl=document.getElementById(`perm-${role}-dirty-msg`);
-  if(msgEl)msgEl.textContent='\u26A0\uFE0F Unsaved changes — click Save to apply.';
-  if(msgEl)msgEl.style.color='var(--warn)';
+function fmtRemaining(s){if(s==null||s<0)s=0;const m=Math.floor(s/60),sec=s%60;return String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0')}
+let _machTimerInterval=null;
+function startMachineTimers(){
+  if(_machTimerInterval)clearInterval(_machTimerInterval);
+  _machTimerInterval=setInterval(()=>{
+    document.querySelectorAll('[data-ends]').forEach(el=>{
+      const rem=Math.max(0,Math.round((parseFloat(el.dataset.ends)-Date.now())/1000));
+      el.textContent=fmtRemaining(rem);
+    });
+  },1000);
 }
-async function loadPermissions(){
-  const users=await api('/api/superadmin/all-users');
-  if(users.ok){
-    const all=users.data||[];
-    const adminCount=all.filter(u=>u.role==='admin').length;
-    const staffCount=all.filter(u=>u.role==='staff').length;
-    const custCount=all.filter(u=>u.role==='customer').length;
-    const rha=document.getElementById('rh-admin-count');const rhs=document.getElementById('rh-staff-count');const rhc=document.getElementById('rh-cust-count');
-    if(rha)rha.textContent=adminCount+' user'+(adminCount!==1?'s':'');
-    if(rhs)rhs.textContent=staffCount+' user'+(staffCount!==1?'s':'');
-    if(rhc)rhc.textContent=custCount+' user'+(custCount!==1?'s':'');
-  }
-  const settings=await api('/api/system/settings');
-  if(settings.ok){
-    const s=settings.data;
-    if(s.allow_registration!==undefined){const el=document.getElementById('perm-cust-register');if(el)el.checked=s.allow_registration!=='0';}
-    if(s.perm_admin)try{const p=JSON.parse(s.perm_admin);Object.entries(p).forEach(([k,v])=>{const el=document.getElementById('perm-admin-'+k);if(el)el.checked=v;});}catch(e){}
-    if(s.perm_staff)try{const p=JSON.parse(s.perm_staff);Object.entries(p).forEach(([k,v])=>{const el=document.getElementById('perm-staff-'+k);if(el)el.checked=v;});}catch(e){}
-    if(s.perm_customer)try{const p=JSON.parse(s.perm_customer);Object.entries(p).forEach(([k,v])=>{const el=document.getElementById('perm-cust-'+k);if(el)el.checked=v;});}catch(e){}
-  }
+
+async function loadMachineMonitor(){
+  const res=await api('/api/staff/machines');
+  if(!res.ok){document.getElementById('machine-monitor-grid').innerHTML='<div class="empty-state">Failed to load machines.</div>';return;}
+  const machines=res.data||[];
+  const now=Date.now();
+  machines.forEach(m=>{
+    if(m.status==='busy'&&m.remaining_seconds!=null){
+      const stageTot={washing:WASH_SECS,drying:DRY_SECS,downy:DOWNY_SECS}[m.current_stage||'washing']||WASH_SECS;
+      m.progress_pct=Math.max(0,Math.min(100,Math.round((1-m.remaining_seconds/stageTot)*100)));
+    }
+  });
+  // Summary
+  document.getElementById('mss-free').textContent=machines.filter(m=>m.status==='free').length;
+  document.getElementById('mss-busy').textContent=machines.filter(m=>m.status==='busy').length;
+  document.getElementById('mss-idle').textContent=machines.filter(m=>m.status==='idle').length;
+  document.getElementById('mss-maint').textContent=machines.filter(m=>m.status==='maintenance').length;
+  // Grid
+  document.getElementById('machine-monitor-grid').innerHTML=machines.map(m=>renderMachineCard(m)).join('');
+  // Active orders
+  const busy=machines.filter(m=>m.status==='busy'&&m.current_order_id);
+  document.getElementById('machine-active-orders').innerHTML=busy.length?busy.map(m=>`
+    <div class="inline-row">
+      <span class="ikey">Unit ${m.unit_number} → Order #${m.current_order_id} <span style="text-transform:uppercase;color:var(--accent)">(${m.current_stage||'—'})</span></span>
+      <span class="ival" ${m.remaining_seconds!=null?`data-ends="${Date.now()+m.remaining_seconds*1000}"`:''}>
+        ${m.remaining_seconds!=null?fmtRemaining(m.remaining_seconds)+' left':'—'}
+      </span>
+    </div>`).join(''):'<div class="empty-state">All machines are free.</div>';
+  startMachineTimers();
+  // Auto-refresh every 10 seconds
+  if(_machineRefreshInterval)clearInterval(_machineRefreshInterval);
+  _machineRefreshInterval=setInterval(loadMachineMonitor,10000);
 }
-async function savePermissions(role){
-  const prefixMap={admin:'perm-admin-',staff:'perm-staff-',customer:'perm-cust-'};
-  const prefix=prefixMap[role];
-  const perms={};
-  document.querySelectorAll(`[id^="${prefix}"]`).forEach(el=>{if(el.type==='checkbox'){const key=el.id.replace(prefix,'');perms[key]=el.checked;}});
-  const settingKey=`perm_${role}`;
-  const body={};body[settingKey]=JSON.stringify(perms);
-  const res=await api('/api/system/settings',{method:'POST',body});
-  if(res.ok){
-    showToast(`\u2705 ${role.charAt(0).toUpperCase()+role.slice(1)} permissions saved`,'success');
-    const msgEl=document.getElementById(`perm-${role}-dirty-msg`);
-    if(msgEl){msgEl.textContent='Permissions saved successfully.';msgEl.style.color='var(--success)';}
-  } else {showToast('\u274C '+res.error,'error');}
+
+// ══════════════════════════════════════════
+//  ENCODE SERVICE (SUPER ADMIN)
+// ══════════════════════════════════════════
+let _saValidatedPromoCode=null,_saValidatedDiscountPct=0;
+
+function saCalcPrice(){
+  const svc=document.getElementById('sa-enc-service').value;
+  const weight=parseFloat(document.getElementById('sa-enc-weight').value)||0;
+  const dryer=document.getElementById('sa-enc-dryer').checked;
+  const downy=document.getElementById('sa-enc-downy').checked;
+  const rate=SA_SERVICE_RATES[svc]?.rate||0;
+  const base=rate*weight;const disc=base*_saValidatedDiscountPct/100;
+  const total=(base-disc)+(dryer?DRYER_SURCHARGE:0);const mach=weight>0?calcMachines(weight):0;
+  document.getElementById('sa-calc-rate').textContent=rate?`₱${rate}/kg`:'—';
+  document.getElementById('sa-calc-weight').textContent=weight?`${weight} kg`:'—';
+  document.getElementById('sa-calc-base').textContent=base?fmtPHP(base):'—';
+  document.getElementById('sa-calc-discount').textContent=disc>0?`-${fmtPHP(disc)} (${_saValidatedDiscountPct}%)`:'—';
+  document.getElementById('sa-calc-dryer').textContent=dryer?'+₱20.00':'—';
+  document.getElementById('sa-calc-machines').textContent=mach?`${mach} unit(s)`:'—';
+  document.getElementById('sa-calc-total').textContent=fmtPHP(total);
+  const tl=['<span class="pill blue"><span class="pill-dot"></span>Washing 44m</span>'];
+  if(dryer)tl.push('<span class="pill teal"><span class="pill-dot"></span>Drying 40m</span>');
+  if(downy)tl.push('<span class="pill purple"><span class="pill-dot"></span>Downy 16m</span>');
+  tl.push('<span class="pill amber"><span class="pill-dot"></span>Folding</span>');
+  document.getElementById('sa-calc-timeline').innerHTML=tl.join('');
 }
-function resetPermissions(role){
-  const defaultsAdmin={analytics:true,revenue:true,export:true,'staff-manage':true,'staff-edit':true,'staff-archive':true,'cust-view':true,'cust-block':true,'cust-delete':true,promos:true,pricing:true,'settings-view':true,'settings-edit':false,feedback:true};
-  const defaultsStaff={encode:true,assign:true,fold:true,complete:true,'machines-view':true,'machines-toggle':true,'promos-view':true,'promos-apply':true,issues:true,email:true};
-  const defaultsCustomer={status:true,history:true,receipts:true,feedback:true,profile:true,changepass:true,register:true};
-  const map={admin:defaultsAdmin,staff:defaultsStaff,customer:defaultsCustomer};
-  const prefix={admin:'perm-admin-',staff:'perm-staff-',customer:'perm-cust-'}[role];
-  const defaults=map[role]||{};
-  Object.entries(defaults).forEach(([k,v])=>{const el=document.getElementById(prefix+k);if(el)el.checked=v;});
-  markPermDirty();showToast('Defaults restored — click Save to apply','info');
+async function saValidatePromo(){
+  const code=document.getElementById('sa-enc-promo').value.trim().toUpperCase();
+  const statusEl=document.getElementById('sa-promo-status');
+  if(!code){statusEl.innerHTML='';_saValidatedPromoCode=null;_saValidatedDiscountPct=0;saCalcPrice();return;}
+  statusEl.innerHTML='<span class="spinner" style="width:12px;height:12px;display:inline-block;vertical-align:middle"></span> Validating…';
+  const res=await api(`/api/staff/validate-promo/${encodeURIComponent(code)}`);
+  if(res.ok&&res.data.valid){_saValidatedPromoCode=code;_saValidatedDiscountPct=parseFloat(res.data.discount)||0;statusEl.innerHTML=`<span style="color:var(--success)">✅ Valid — ${res.data.discount}% discount applied</span>`;}
+  else{_saValidatedPromoCode=null;_saValidatedDiscountPct=0;statusEl.innerHTML='<span style="color:var(--danger)">❌ Invalid or expired promo code</span>';}
+  saCalcPrice();
+}
+async function saEncodeService(){
+  const firstName=document.getElementById('sa-enc-firstname').value.trim();
+  const lastName=document.getElementById('sa-enc-lastname').value.trim();
+  const email=document.getElementById('sa-enc-email').value.trim();
+  const svc=document.getElementById('sa-enc-service').value;
+  const weight=parseFloat(document.getElementById('sa-enc-weight').value);
+  const dryer=document.getElementById('sa-enc-dryer').checked;
+  const downy=document.getElementById('sa-enc-downy').checked;
+  if(!firstName||!lastName){showToast('⚠️ First and last name are required','error');return;}
+  if(!svc){showToast('⚠️ Select a service type','error');return;}
+  if(!weight||isNaN(weight)||weight<0.5){showToast('⚠️ Minimum weight is 0.5 kg','error');return;}
+  if(email&&!email.endsWith('@gmail.com')){showToast('⚠️ Email must end in @gmail.com','error');return;}
+  const btn=document.getElementById('sa-enc-submit-btn');btn.disabled=true;btn.textContent='Encoding…';
+  const payload={customer_name:`${firstName} ${lastName}`,service_type:svc,weight_kg:weight,with_dryer:dryer,with_downy:downy};
+  if(email)payload.customer_email=email;
+  if(_saValidatedPromoCode)payload.promo_code=_saValidatedPromoCode;
+  const res=await api('/api/staff/encode',{method:'POST',body:payload});
+  btn.disabled=false;btn.innerHTML='<svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M8 2v12M2 8h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> Encode Service';
+  if(res.ok){let msg=`✅ Encoded — ${res.data.tracking_id} · ${fmtPHP(res.data.amount)}`;if(email){msg+=res.data.linked_to_account?' · 🔗 Linked to account':' · 📧 Tracking sent';}else{msg+=' · Walk-in';}showToast(msg,'success');saClearEncodeForm();loadSaEncoded();}
+  else{showToast('❌ '+(res.error||'Failed to encode service.'),'error');}
+}
+function saClearEncodeForm(){
+  ['sa-enc-firstname','sa-enc-lastname','sa-enc-email','sa-enc-weight','sa-enc-promo'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('sa-enc-service').value='';
+  document.getElementById('sa-enc-dryer').checked=false;document.getElementById('sa-enc-downy').checked=false;
+  document.getElementById('sa-promo-status').innerHTML='';
+  _saValidatedPromoCode=null;_saValidatedDiscountPct=0;saCalcPrice();
+}
+async function loadSaEncoded(){
+  const res=await api('/api/staff/my-orders');
+  if(!res.ok){document.getElementById('sa-enc-tbody').innerHTML=`<tr><td colspan="8" style="text-align:center;padding:20px;color:var(--danger);font-family:'DM Mono',monospace;font-size:.58rem">Failed to load</td></tr>`;return;}
+  const data=res.data||[];document.getElementById('sa-enc-count').textContent=data.length;
+  if(!data.length){document.getElementById('sa-enc-tbody').innerHTML=`<tr><td colspan="8" style="text-align:center;padding:28px;color:var(--text3);font-family:'DM Mono',monospace;font-size:.58rem">No services encoded today</td></tr>`;return;}
+  document.getElementById('sa-enc-tbody').innerHTML=data.map(o=>`<tr>
+    <td><span class="mono-cell">#${o.order_id}</span></td>
+    <td><span class="mono-cell">${o.tracking_id||'—'}</span></td>
+    <td><span style="font-size:.9rem;font-weight:600;color:var(--text)">${o.customer_name||'—'}</span></td>
+    <td><span class="mono-cell">${o.customer_email||'<span style="opacity:.4">Walk-in</span>'}</span></td>
+    <td><span class="mono-cell">${SA_SERVICE_RATES[o.service_type]?.label||o.service_type||'—'}</span></td>
+    <td><span class="mono-cell">${o.weight_kg||'—'}kg</span></td>
+    <td><span class="mono-cell">${fmtPHP(o.amount)}</span></td>
+    <td><span class="pill ${STATUS_PILL[o.status]||'amber'}">${STATUS_LABEL[o.status]||o.status}</span></td>
+  </tr>`).join('');
 }
 
 // ── AUDIT LOGS ──
 let allLogs=[];
 async function loadAuditLogs(){
-  const res=await api('/api/superadmin/audit-logs');
-  if(!res.ok){showToast('Failed to load logs','error');return;}
-  allLogs=res.data||[];
-  document.getElementById('log-count').textContent=`${allLogs.length} entries`;
-  document.getElementById('nb-logs').textContent=allLogs.length;
+  const res=await api('/api/superadmin/audit-logs');if(!res.ok){showToast('Failed to load logs','error');return;}
+  allLogs=res.data||[];document.getElementById('log-count').textContent=`${allLogs.length} entries`;document.getElementById('nb-logs').textContent=allLogs.length;
   const pillFor=a=>{if(!a)return 'blue';a=a.toLowerCase();if(a.includes('delete'))return 'red';if(a.includes('create')||a.includes('add'))return 'green';if(a.includes('block'))return 'amber';if(a.includes('login'))return 'blue';if(a.includes('emergency'))return 'red';return 'acc';};
-  document.getElementById('log-tbody').innerHTML=allLogs.length?allLogs.map(l=>`
-    <tr>
-      <td><span class="mono-cell">${l.actor||'System'}</span></td>
-      <td><span class="pill ${pillFor(l.action)}">${l.action||'\u2014'}</span></td>
-      <td><span class="mono-cell" style="max-width:180px;display:inline-block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${l.target||''}">${l.target||'\u2014'}</span></td>
-      <td><span class="mono-cell">${l.ip_address||'\u2014'}</span></td>
-      <td><span class="mono-cell">${formatTime(l.timestamp)}</span></td>
-    </tr>`).join('')
+  document.getElementById('log-tbody').innerHTML=allLogs.length?allLogs.map(l=>`<tr><td><span class="mono-cell">${l.actor||'System'}</span></td><td><span class="pill ${pillFor(l.action)}">${l.action||'—'}</span></td><td><span class="mono-cell" style="max-width:180px;display:inline-block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${l.target||''}">${l.target||'—'}</span></td><td><span class="mono-cell">${l.ip_address||'—'}</span></td><td><span class="mono-cell">${formatTime(l.timestamp)}</span></td></tr>`).join('')
   :'<tr><td colspan="5" style="text-align:center;padding:28px;color:var(--text3);font-family:\'DM Mono\',monospace;font-size:.58rem">No logs found</td></tr>';
 }
-function exportLogsCSV(){
-  if(!allLogs.length){showToast('No logs to export','error');return;}
-  const rows=[['Actor','Action','Target','IP','Timestamp'],...allLogs.map(l=>[l.actor||'',l.action||'',l.target||'',l.ip_address||'',l.timestamp||''])];
-  const csv=rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
-  const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.download='audit_logs_'+new Date().toISOString().slice(0,10)+'.csv';a.click();
-  showToast('\uD83D\uDCCB Logs exported','success');
-}
+function exportLogsCSV(){if(!allLogs.length){showToast('No logs to export','error');return;}const rows=[['Actor','Action','Target','IP','Timestamp'],...allLogs.map(l=>[l.actor||'',l.action||'',l.target||'',l.ip_address||'',l.timestamp||''])];const csv=rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.download='audit_logs_'+new Date().toISOString().slice(0,10)+'.csv';a.click();showToast('📋 Logs exported','success');}
 
 // ── MONITORING ──
 async function loadMonitoring(){
-  const [ana,rev,promos,cust,perf]=await Promise.all([api('/api/admin/analytics'),api('/api/admin/revenue'),api('/api/promos'),api('/api/customers'),api('/api/admin/staff-performance')]);
-  if(ana.ok)document.getElementById('mon-today').textContent=ana.data.today_services??'\u2014';
-  if(rev.ok)document.getElementById('mon-daily').textContent='\u20B1'+(Number(rev.data.daily_income)||0).toLocaleString();
+  const[ana,rev,promos,cust,perf]=await Promise.all([api('/api/admin/analytics'),api('/api/admin/revenue'),api('/api/promos'),api('/api/customers'),api('/api/admin/staff-performance')]);
+  if(ana.ok)document.getElementById('mon-today').textContent=ana.data.today_services??'—';
+  if(rev.ok)document.getElementById('mon-daily').textContent='₱'+(Number(rev.data.daily_income)||0).toLocaleString();
   if(promos.ok)document.getElementById('mon-promos').textContent=(promos.data||[]).length;
-  if(cust.ok){
-    const c=cust.data||[];document.getElementById('mon-customers').textContent=c.length;
-    const blocked=c.filter(x=>x.status==='blocked');
-    document.getElementById('mon-blocked').innerHTML=blocked.length?blocked.map(x=>`<div class="inline-row"><span class="ikey">${x.full_name||'\u2014'} \u00B7 ${x.email||'\u2014'}</span><span class="pill red">Blocked</span></div>`).join(''):'<div class="empty-state">No blocked customers.</div>';
-  }
-  if(perf.ok){
-    const p=perf.data||[];const max=Math.max(...p.map(x=>x.total_services||0))||1;
-    if(ana.ok&&ana.data.top_service){document.getElementById('mon-top-service').innerHTML=`<div class="inline-row"><span class="ikey">Top Service</span><span class="ival">${ana.data.top_service.service_type||'\u2014'}</span></div><div class="inline-row"><span class="ikey">Total Orders</span><span class="ival">${ana.data.top_service.total||0}</span></div>`;}
-    document.getElementById('mon-staff-perf').innerHTML=p.length?p.map(x=>`<div class="prog-row"><span class="prog-name">${x.full_name}</span><div class="prog-bg"><div class="prog-fill" style="width:${Math.round((x.total_services||0)/max*100)}%"></div></div><span class="prog-val">${x.total_services||0}</span></div>`).join(''):'<div class="empty-state">No staff data.</div>';
-  }
+  if(cust.ok){const c=cust.data||[];document.getElementById('mon-customers').textContent=c.length;const blocked=c.filter(x=>x.status==='blocked');document.getElementById('mon-blocked').innerHTML=blocked.length?blocked.map(x=>`<div class="inline-row"><span class="ikey">${x.full_name||'—'} · ${x.email||'—'}</span><span class="pill red">Blocked</span></div>`).join(''):'<div class="empty-state">No blocked customers.</div>';}
+  if(perf.ok){const p=perf.data||[];const max=Math.max(...p.map(x=>x.total_services||0))||1;if(ana.ok&&ana.data.top_service){document.getElementById('mon-top-service').innerHTML=`<div class="inline-row"><span class="ikey">Top Service</span><span class="ival">${ana.data.top_service.service_type||'—'}</span></div><div class="inline-row"><span class="ikey">Total Orders</span><span class="ival">${ana.data.top_service.total||0}</span></div>`;}document.getElementById('mon-staff-perf').innerHTML=p.length?p.map(x=>`<div class="prog-row"><span class="prog-name">${x.full_name}</span><div class="prog-bg"><div class="prog-fill" style="width:${Math.round((x.total_services||0)/max*100)}%"></div></div><span class="prog-val">${x.total_services||0}</span></div>`).join(''):'<div class="empty-state">No staff data.</div>';}
 }
 
 // ── ALL USERS ──
 async function loadAllUsers(){
-  const res=await api('/api/superadmin/all-users');
-  if(!res.ok){showToast('Failed to load users','error');return;}
-  const data=res.data||[];
-  document.getElementById('usr-count').textContent=`${data.length} total`;
-  document.getElementById('usr-tbody').innerHTML=data.length?data.map((u,i)=>`
-    <tr>
-      <td><div class="person-cell"><div class="p-avatar" style="background:${avBg[i%5]}">${(u.full_name||'?')[0]}</div><div><div class="p-name">${u.full_name||'\u2014'}</div><div class="p-email">${u.email||'\u2014'}</div></div></div></td>
-      <td><span class="role-chip ${u.role||'customer'}">${u.role||'customer'}</span></td>
-      <td><span class="pill ${u.status==='blocked'?'red':'green'}"><span class="pill-dot"></span>${u.status==='blocked'?'Blocked':'Active'}</span></td>
-      <td><span class="mono-cell">${u.created_at?new Date(u.created_at).toLocaleDateString('en-PH'):'\u2014'}</span></td>
-      <td><div class="action-group">
-        ${u.role==='customer'?(u.status!=='blocked'
-          ?`<button class="act-btn block" title="Block" onclick="blockUser(${u.user_id},'block')"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.2"/><path d="M3 8h10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></button>`
-          :`<button class="act-btn unlock" title="Unblock" onclick="blockUser(${u.user_id},'unblock')"><svg viewBox="0 0 16 16" fill="none"><path d="M3 8l4 4 6-7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>`)
-        :'<span class="mono-cell">\u2014</span>'}
-      </div></td>
-    </tr>`).join('')
+  const res=await api('/api/superadmin/all-users');if(!res.ok){showToast('Failed to load users','error');return;}
+  const data=res.data||[];document.getElementById('usr-count').textContent=`${data.length} total`;
+  document.getElementById('usr-tbody').innerHTML=data.length?data.map((u,i)=>`<tr><td><div class="person-cell"><div class="p-avatar" style="background:${avBg[i%5]}">${(u.full_name||'?')[0]}</div><div><div class="p-name">${u.full_name||'—'}</div><div class="p-email">${u.email||'—'}</div></div></div></td><td><span class="role-chip ${u.role||'customer'}">${u.role||'customer'}</span></td><td><span class="pill ${u.status==='blocked'?'red':'green'}"><span class="pill-dot"></span>${u.status==='blocked'?'Blocked':'Active'}</span></td><td><span class="mono-cell">${u.created_at?new Date(u.created_at).toLocaleDateString('en-PH'):'—'}</span></td><td><div class="action-group">${u.role==='customer'?(u.status!=='blocked'?`<button class="act-btn block" title="Block" onclick="blockUser(${u.user_id},'block')"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.2"/><path d="M3 8h10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></button>`:`<button class="act-btn unlock" title="Unblock" onclick="blockUser(${u.user_id},'unblock')"><svg viewBox="0 0 16 16" fill="none"><path d="M3 8l4 4 6-7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>`):'<span class="mono-cell">—</span>'}</div></td></tr>`).join('')
   :'<tr><td colspan="5" style="text-align:center;padding:28px;color:var(--text3)">No users</td></tr>';
 }
-async function blockUser(id,action){const res=await api(`/api/customers/${action}/${id}`,{method:'PUT'});if(res.ok){showToast(action==='block'?'\uD83D\uDEAB User blocked':'\u2705 User unblocked','success');loadAllUsers();}else{showToast('\u274C '+res.error,'error');}}
+async function blockUser(id,action){const res=await api(`/api/customers/${action}/${id}`,{method:'PUT'});if(res.ok){showToast(action==='block'?'🚫 User blocked':'✅ User unblocked','success');loadAllUsers();}else{showToast('❌ '+res.error,'error');}}
 
 // ── SETTINGS ──
-async function toggleSetting(key,val){const body={};body[key]=val;const res=await api('/api/system/settings',{method:'POST',body});if(!res.ok)showToast('\u274C Failed to save setting','error');else{showToast('\u2705 Setting saved','success');syncSystemStatus();}}
+async function toggleSetting(key,val){const body={};body[key]=val;const res=await api('/api/system/settings',{method:'POST',body});if(!res.ok)showToast('❌ Failed to save setting','error');else{showToast('✅ Setting saved','success');syncSystemStatus();}}
 async function saveSetting(key,val){await toggleSetting(key,val);}
-async function saveConfig(){const open=document.getElementById('cfg-open').value;const close=document.getElementById('cfg-close').value;const res=await api('/api/system/settings',{method:'POST',body:{opening_time:open,closing_time:close}});if(res.ok)showToast('\u2705 Business hours saved','success');else showToast('\u274C '+res.error,'error');}
+async function saveConfig(){const open=document.getElementById('cfg-open').value;const close=document.getElementById('cfg-close').value;const res=await api('/api/system/settings',{method:'POST',body:{opening_time:open,closing_time:close}});if(res.ok)showToast('✅ Business hours saved','success');else showToast('❌ '+res.error,'error');}
+async function loadConfig(){const settings=await api('/api/system/settings');if(settings.ok){const s=settings.data;const mm=s.maintenance_mode==='1';['sys-maintenance'].forEach(id=>{const el=document.getElementById(id);if(el)el.checked=mm;});const reg=document.getElementById('sys-registration');if(reg)reg.checked=s.allow_registration!=='0';const promos=document.getElementById('sys-promos');if(promos)promos.checked=s.promos_enabled!=='0';if(s.opening_time&&document.getElementById('cfg-open'))document.getElementById('cfg-open').value=s.opening_time;if(s.closing_time&&document.getElementById('cfg-close'))document.getElementById('cfg-close').value=s.closing_time;}}
 
 // ── EMERGENCY ──
-const EMERGENCY_META={shutdown:{icon:'\uD83D\uDED1',label:'System Shutdown',theme:'danger',desc:'Maintenance mode is now ON.'},enable_system:{icon:'\u2705',label:'System Enabled',theme:'success',desc:'Maintenance mode is now OFF.'},reset_admin_passwords:{icon:'\uD83D\uDD11',label:'Admin Passwords Reset',theme:'warn',desc:'New temporary passwords generated.'},disable_promos:{icon:'\uD83C\uDF81',label:'All Promos Disabled',theme:'warn',desc:'All promo codes deactivated.'},force_logout:{icon:'\uD83D\uDD10',label:'All Sessions Invalidated',theme:'info',desc:'All active sessions invalidated.'}};
+const EMERGENCY_META={shutdown:{icon:'🛑',label:'System Shutdown',theme:'danger',desc:'Maintenance mode is now ON.'},enable_system:{icon:'✅',label:'System Enabled',theme:'success',desc:'System is back online.'},reset_admin_passwords:{icon:'🔑',label:'Admin Passwords Reset',theme:'warn',desc:'New temporary passwords generated.'},disable_promos:{icon:'🎁',label:'All Promos Disabled',theme:'warn',desc:'All promo codes deactivated.'},force_logout:{icon:'🔐',label:'All Sessions Invalidated',theme:'info',desc:'All active sessions invalidated.'}};
 function renderEmergencyResult(action,serverData){
-  const meta=EMERGENCY_META[action]||{icon:'\u26A1',label:action,theme:'info',desc:''};
+  const meta=EMERGENCY_META[action]||{icon:'⚡',label:action,theme:'info',desc:''};
   const themeMap={danger:{bg:'var(--danger-bg)',border:'var(--danger-border)',color:'var(--danger)'},success:{bg:'var(--success-bg)',border:'var(--success-border)',color:'var(--success)'},warn:{bg:'var(--warn-bg)',border:'var(--warn-border)',color:'var(--warn)'},info:{bg:'var(--blue-bg)',border:'var(--blue-border)',color:'var(--blue)'}};
   const t=themeMap[meta.theme]||themeMap.info;
   let extra='';
   if(action==='shutdown'){['cfg-maintenance','sys-maintenance'].forEach(id=>{const el=document.getElementById(id);if(el)el.checked=true;});_lastMaintState=true;}
   if(action==='enable_system'){['cfg-maintenance','sys-maintenance'].forEach(id=>{const el=document.getElementById(id);if(el)el.checked=false;});_lastMaintState=false;}
-  if(action==='reset_admin_passwords'&&serverData.reset_summary?.length){extra=`<div style="margin-top:12px;border-radius:8px;overflow:hidden;border:1px solid ${t.border}"><div style="padding:8px 12px;background:${t.bg};font-family:'DM Mono',monospace;font-size:.5rem;letter-spacing:.15em;text-transform:uppercase;color:${t.color}">\u26A0\uFE0F SAVE THESE NOW</div>${serverData.reset_summary.map(r=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-top:1px solid ${t.border};gap:12px"><span style="font-family:'DM Mono',monospace;font-size:.6rem;color:var(--text2)">${r.email}</span><span style="font-family:'DM Mono',monospace;font-size:.7rem;font-weight:600;color:var(--text);background:var(--bg3);padding:3px 10px;border-radius:6px">${r.tmp_password}</span></div>`).join('')}</div>`;}
-  return `<div style="padding:16px 18px;border-radius:12px;background:${t.bg};border:1px solid ${t.border};animation:fadeUp .3s var(--ease)"><div style="display:flex;align-items:center;gap:10px;margin-bottom:6px"><span style="font-size:1.2rem">${meta.icon}</span><span style="font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:${t.color};font-weight:600">${meta.label}</span></div><div style="font-size:.8rem;color:var(--text2)">${meta.desc}</div>${extra}</div>`;
+  if(action==='reset_admin_passwords'&&serverData.reset_summary?.length){extra=`<div style="margin-top:12px;border-radius:8px;overflow:hidden;border:1px solid ${t.border}"><div style="padding:8px 12px;background:${t.bg};font-family:'DM Mono',monospace;font-size:.5rem;letter-spacing:.15em;text-transform:uppercase;color:${t.color}">⚠️ SAVE THESE NOW</div>${serverData.reset_summary.map(r=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-top:1px solid ${t.border};gap:12px"><span style="font-family:'DM Mono',monospace;font-size:.6rem;color:var(--text2)">${r.email}</span><span style="font-family:'DM Mono',monospace;font-size:.7rem;font-weight:600;color:var(--text);background:var(--bg3);padding:3px 10px;border-radius:6px">${r.tmp_password}</span></div>`).join('')}</div>`;}
+  return`<div style="padding:16px 18px;border-radius:12px;background:${t.bg};border:1px solid ${t.border}"><div style="display:flex;align-items:center;gap:10px;margin-bottom:6px"><span style="font-size:1.2rem">${meta.icon}</span><span style="font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:${t.color};font-weight:600">${meta.label}</span></div><div style="font-size:.8rem;color:var(--text2)">${meta.desc}</div>${extra}</div>`;
 }
 function confirmEmergency(action,msg){
   confirmAction(msg,async()=>{
     const resultEl=document.getElementById('emergency-result');resultEl.style.display='block';
-    resultEl.innerHTML=`<div style="padding:14px 18px;border-radius:12px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;gap:10px"><span class="spinner"></span><span style="font-family:'DM Mono',monospace;font-size:.56rem;color:var(--text3)">Executing\u2026</span></div>`;
+    resultEl.innerHTML=`<div style="padding:14px 18px;border-radius:12px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;gap:10px"><span class="spinner"></span><span style="font-family:'DM Mono',monospace;font-size:.56rem;color:var(--text3)">Executing…</span></div>`;
     const res=await api(`/api/superadmin/emergency/${action}`,{method:'POST'});
-    if(res.ok){showToast(`\u2705 ${action.replace(/_/g,' ')} executed`,'success');resultEl.innerHTML=renderEmergencyResult(action,res.data);loadAuditLogs();}
-    else{showToast('\u274C '+res.error,'error');resultEl.innerHTML=`<div style="padding:14px 18px;border-radius:12px;background:var(--danger-bg);border:1px solid var(--danger-border)"><span style="font-family:'DM Mono',monospace;font-size:.56rem;color:var(--danger)">\u274C Error: ${res.error}</span></div>`;}
+    if(res.ok){showToast(`✅ ${action.replace(/_/g,' ')} executed`,'success');resultEl.innerHTML=renderEmergencyResult(action,res.data);loadAuditLogs();}
+    else{showToast('❌ '+res.error,'error');resultEl.innerHTML=`<div style="padding:14px 18px;border-radius:12px;background:var(--danger-bg);border:1px solid var(--danger-border)"><span style="font-family:'DM Mono',monospace;font-size:.56rem;color:var(--danger)">❌ Error: ${res.error}</span></div>`;}
   });
 }
 
 // ── ACCOUNT SECURITY ──
-function togglePw(inputId,btn){const el=document.getElementById(inputId);const isText=el.type==='text';el.type=isText?'password':'text';btn.textContent=isText?'\uD83D\uDC41':'\uD83D\uDE48';}
+function togglePw(inputId,btn){const el=document.getElementById(inputId);const isText=el.type==='text';el.type=isText?'password':'text';btn.textContent=isText?'👁':'😈';}
 function updatePasswordStrength(pw){const bar=document.getElementById('pw-strength-bar');const label=document.getElementById('pw-strength-label');if(!bar||!label)return;let score=0;if(pw.length>=8)score++;if(pw.length>=12)score++;if(/[A-Z]/.test(pw))score++;if(/[0-9]/.test(pw))score++;if(/[^A-Za-z0-9]/.test(pw))score++;const levels=[{pct:'0%',color:'var(--danger)',text:''},{pct:'20%',color:'var(--danger)',text:'Very Weak'},{pct:'40%',color:'var(--warn)',text:'Weak'},{pct:'60%',color:'var(--warn)',text:'Fair'},{pct:'80%',color:'var(--blue)',text:'Strong'},{pct:'100%',color:'var(--success)',text:'Very Strong'}];const l=levels[score]||levels[0];bar.style.width=l.pct;bar.style.background=l.color;label.textContent=l.text;label.style.color=l.color;}
 function setSecMsg(msg,type='error'){const el=document.getElementById('sec-msg');if(!el)return;el.style.cssText=`display:block;padding:9px 12px;border-radius:8px;font-size:.8rem;`+(type==='success'?'background:var(--success-bg);border:1px solid var(--success-border);color:var(--success);':'background:var(--danger-bg);border:1px solid var(--danger-border);color:var(--danger);');el.textContent=msg;}
-async function changeOwnPassword(){const cur=document.getElementById('sec-cur').value;const newPw=document.getElementById('sec-new').value;const confirm=document.getElementById('sec-confirm').value;const btn=document.getElementById('sec-btn');document.getElementById('sec-msg').style.display='none';if(!cur||!newPw||!confirm){setSecMsg('\u26A0\uFE0F All fields are required.');return;}if(newPw.length<8){setSecMsg('\u26A0\uFE0F Password must be at least 8 characters.');return;}if(newPw!==confirm){setSecMsg('\u26A0\uFE0F New passwords do not match.');return;}btn.textContent='Updating\u2026';btn.disabled=true;const res=await api('/api/superadmin/change-own-password',{method:'POST',body:{current_password:cur,new_password:newPw,confirm_password:confirm}});btn.textContent='Update Password';btn.disabled=false;if(res.ok){setSecMsg('\u2705 Password updated! Please log in again.','success');['sec-cur','sec-new','sec-confirm'].forEach(id=>document.getElementById(id).value='');updatePasswordStrength('');}else{setSecMsg('\u274C '+(res.error||'Failed to update password.'));}}
+async function changeOwnPassword(){const cur=document.getElementById('sec-cur').value;const newPw=document.getElementById('sec-new').value;const confirm=document.getElementById('sec-confirm').value;const btn=document.getElementById('sec-btn');document.getElementById('sec-msg').style.display='none';if(!cur||!newPw||!confirm){setSecMsg('⚠️ All fields are required.');return;}if(newPw.length<8){setSecMsg('⚠️ Password must be at least 8 characters.');return;}if(newPw!==confirm){setSecMsg('⚠️ New passwords do not match.');return;}btn.textContent='Updating…';btn.disabled=true;const res=await api('/api/superadmin/change-own-password',{method:'POST',body:{current_password:cur,new_password:newPw,confirm_password:confirm}});btn.textContent='Update Password';btn.disabled=false;if(res.ok){setSecMsg('✅ Password updated! Please log in again.','success');['sec-cur','sec-new','sec-confirm'].forEach(id=>document.getElementById(id).value='');updatePasswordStrength('');}else{setSecMsg('❌ '+(res.error||'Failed to update password.'));}}
 function copyCmd(btn){navigator.clipboard.writeText('flask recover-superadmin').then(()=>{btn.textContent='Copied!';setTimeout(()=>btn.textContent='Copy',2000);});}
 
 // ── BACKUP ──
 const backupHistory=[];
-async function createBackup(){
-  const res=await api('/api/superadmin/backup',{method:'POST'});
-  if(res.ok){const ts=res.data.timestamp||new Date().toLocaleString('en-PH');backupHistory.unshift(ts);document.getElementById('last-backup').textContent=ts;document.getElementById('backup-history').innerHTML=backupHistory.map(b=>`<div class="inline-row"><span class="ikey">${b}</span><span class="pill green">Saved</span></div>`).join('');showToast('\uD83D\uDCBE Backup created','success');}else{showToast('\u274C Backup failed','error');}
-}
+async function createBackup(){const res=await api('/api/superadmin/backup',{method:'POST'});if(res.ok){const ts=res.data.timestamp||new Date().toLocaleString('en-PH');backupHistory.unshift(ts);document.getElementById('last-backup').textContent=ts;document.getElementById('backup-history').innerHTML=backupHistory.map(b=>`<div class="inline-row"><span class="ikey">${b}</span><span class="pill green">Saved</span></div>`).join('');showToast('💾 Backup created','success');}else{showToast('❌ Backup failed','error');}}
 
 // ── CONFIRM ──
 function confirmAction(msg,callback){document.getElementById('confirm-msg').textContent=msg;const btn=document.getElementById('confirm-ok-btn');btn.onclick=()=>{closeModal('confirm');callback();};openModal('confirm');}
-
-// ══════════════════════════════════════════════════
-//  UI CUSTOMIZER
-// ══════════════════════════════════════════════════
-
-function switchUITab(tab){
-  document.querySelectorAll('.ui-page-tab').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.ui-pane').forEach(p=>p.classList.remove('active'));
-  document.getElementById('uitab-'+tab).classList.add('active');
-  document.getElementById('uipane-'+tab).classList.add('active');
-}
-
-let _selectedPreset='teal';
-const PRESETS={
-  teal:{name:'Ocean Teal',accent:'#00B4D8',accent2:'#0077A8',bg:'#E8F8FB',text:'#0A2A35'},
-  navy:{name:'Deep Navy',accent:'#1A6FA8',accent2:'#0C244A',bg:'#E6EFF8',text:'#0A1E30'},
-  emerald:{name:'Emerald Fresh',accent:'#059669',accent2:'#065F46',bg:'#ECFDF5',text:'#052e16'},
-  violet:{name:'Royal Violet',accent:'#7C3AED',accent2:'#4C1D95',bg:'#F5F3FF',text:'#1e0a40'},
-  rose:{name:'Rose Red',accent:'#E11D48',accent2:'#881337',bg:'#FFF1F2',text:'#3b0015'},
-  amber:{name:'Warm Amber',accent:'#D97706',accent2:'#92400E',bg:'#FFFBEB',text:'#451a03'}
-};
-
-function applyPreset(name){
-  _selectedPreset=name;
-  document.querySelectorAll('.theme-preset').forEach(p=>p.classList.remove('selected'));
-  document.getElementById('tp-'+name)?.classList.add('selected');
-  const disp=document.getElementById('preset-name-display');
-  if(disp)disp.textContent=PRESETS[name]?.name||name;
-  const preset=PRESETS[name];
-  if(preset){
-    const fields={accent:'color-accent',accent2:'color-accent2',bg:'color-bg',text:'color-text'};
-    Object.entries(fields).forEach(([key,id])=>{
-      const picker=document.getElementById(id);const hex=document.getElementById(id+'-hex');
-      if(picker)picker.value=preset[key];if(hex)hex.value=preset[key];
-    });
-  }
-}
-
-async function saveThemePreset(){
-  const preset=PRESETS[_selectedPreset];
-  if(!preset){showToast('No preset selected','error');return;}
-  const body={ui_theme_preset:_selectedPreset,ui_accent:preset.accent,ui_accent2:preset.accent2,ui_bg:preset.bg,ui_text:preset.text};
-  const res=await api('/api/system/settings',{method:'POST',body});
-  if(res.ok){showToast(`\u2705 Theme "${preset.name}" applied — refresh pages to see changes`,'success');}
-  else{showToast('\u274C '+res.error,'error');}
-}
-
-function updateColorPreview(key,val){const hex=document.getElementById('color-'+key+'-hex');if(hex)hex.value=val;}
-function syncColorPicker(key,val){if(val.match(/^#[0-9a-fA-F]{6}$/)){const picker=document.getElementById('color-'+key);if(picker)picker.value=val;}}
-function resetCustomColors(){applyPreset(_selectedPreset);showToast('Colors reset to preset','info');}
-async function applyCustomColors(){
-  const accent=document.getElementById('color-accent').value;
-  const accent2=document.getElementById('color-accent2').value;
-  const bg=document.getElementById('color-bg').value;
-  const text=document.getElementById('color-text').value;
-  const res=await api('/api/system/settings',{method:'POST',body:{ui_accent:accent,ui_accent2:accent2,ui_bg:bg,ui_text:text}});
-  if(res.ok){showToast('\u2705 Custom colors saved — refresh to apply','success');}
-  else{showToast('\u274C '+res.error,'error');}
-}
-
-let _selectedFont='dmsans';
-const FONT_NAMES={dmsans:'DM Sans',inter:'Inter',poppins:'Poppins',lato:'Lato'};
-function selectFont(font){
-  _selectedFont=font;
-  document.querySelectorAll('.font-option').forEach(f=>f.classList.remove('selected'));
-  document.querySelectorAll('.font-option .fo-check').forEach(f=>f.textContent='');
-  const optEl=document.getElementById('font-'+font);if(optEl){optEl.classList.add('selected');const chk=optEl.querySelector('.fo-check');if(chk)chk.textContent='\u2713';}
-  const disp=document.getElementById('font-name-display');if(disp)disp.textContent=FONT_NAMES[font]||font;
-}
-async function saveFont(){
-  const res=await api('/api/system/settings',{method:'POST',body:{ui_font:_selectedFont}});
-  if(res.ok){showToast(`\u2705 Font "${FONT_NAMES[_selectedFont]}" saved — refresh to apply`,'success');}
-  else{showToast('\u274C '+res.error,'error');}
-}
-
-async function saveBrandSettings(){
-  const body={ui_brand_name:document.getElementById('ui-brand-name').value,ui_tagline:document.getElementById('ui-tagline').value,ui_year:document.getElementById('ui-year').value,ui_location:document.getElementById('ui-location').value};
-  const res=await api('/api/system/settings',{method:'POST',body});
-  if(res.ok){showToast('\u2705 Brand settings saved','success');}else{showToast('\u274C '+res.error,'error');}
-}
-async function saveLoginPage(){
-  const body={login_h1:document.getElementById('login-h1').value,login_h2:document.getElementById('login-h2').value,login_h3:document.getElementById('login-h3').value,login_welcome:document.getElementById('login-welcome').value,login_sub:document.getElementById('login-sub').value};
-  const res=await api('/api/system/settings',{method:'POST',body});
-  if(res.ok){showToast('\u2705 Login page content saved','success');}else{showToast('\u274C '+res.error,'error');}
-}
-async function saveLoginFeatures(){
-  const body={login_f1:document.getElementById('login-f1').value,login_f2:document.getElementById('login-f2').value,login_f3:document.getElementById('login-f3').value,login_f4:document.getElementById('login-f4').value};
-  const res=await api('/api/system/settings',{method:'POST',body});
-  if(res.ok){showToast('\u2705 Feature points saved','success');}else{showToast('\u274C '+res.error,'error');}
-}
-async function saveTicker(){
-  const body={};for(let i=1;i<=6;i++){const el=document.getElementById('ticker-'+i);if(el)body['ui_ticker_'+i]=el.value;}
-  const res=await api('/api/system/settings',{method:'POST',body});
-  if(res.ok){showToast('\u2705 Ticker items saved','success');}else{showToast('\u274C '+res.error,'error');}
-}
-
-let _uiDirty=false;
-function markUIDirty(){_uiDirty=true;}
-async function saveCustomerUI(){
-  const body={cu_sec_dashboard:document.getElementById('cu-sec-dashboard')?.checked?'1':'0',cu_sec_status:document.getElementById('cu-sec-status')?.checked?'1':'0',cu_sec_history:document.getElementById('cu-sec-history')?.checked?'1':'0',cu_sec_feedback:document.getElementById('cu-sec-feedback')?.checked?'1':'0',cu_sec_profile:document.getElementById('cu-sec-profile')?.checked?'1':'0',cu_notif:document.getElementById('cu-notif')?.checked?'1':'0',cu_title:document.getElementById('cu-title')?.value,cu_greeting:document.getElementById('cu-greeting')?.value,cu_noorder:document.getElementById('cu-noorder')?.value,cu_ticker:document.getElementById('cu-ticker')?.value};
-  const res=await api('/api/system/settings',{method:'POST',body});
-  if(res.ok){showToast('\u2705 Customer portal UI saved','success');_uiDirty=false;}else{showToast('\u274C '+res.error,'error');}
-}
-async function saveOperatorUI(){
-  const keys=['dashboard','machines','queue','encode','folding','pickup','promos','issues'];
-  const body={};keys.forEach(k=>{const el=document.getElementById('op-sec-'+k);if(el)body['op_sec_'+k]=el.checked?'1':'0';});
-  body.op_title=document.getElementById('op-title')?.value;body.op_eyebrow=document.getElementById('op-eyebrow')?.value;body.op_badge=document.getElementById('op-badge')?.value;body.op_logout=document.getElementById('op-logout')?.value;
-  const res=await api('/api/system/settings',{method:'POST',body});
-  if(res.ok){showToast('\u2705 Operator panel UI saved','success');_uiDirty=false;}else{showToast('\u274C '+res.error,'error');}
-}
-async function saveAdminUI(){
-  const keys=['dashboard','analytics','revenue','orders','staff','customers','archives','feedback','reports'];
-  const body={};keys.forEach(k=>{const el=document.getElementById('adm-sec-'+k);if(el)body['adm_sec_'+k]=el.checked?'1':'0';});
-  body.adm_title=document.getElementById('adm-title')?.value;body.adm_eyebrow=document.getElementById('adm-eyebrow')?.value;body.adm_badge=document.getElementById('adm-badge')?.value;body.adm_greeting=document.getElementById('adm-greeting')?.value;
-  const res=await api('/api/system/settings',{method:'POST',body});
-  if(res.ok){showToast('\u2705 Admin panel UI saved','success');_uiDirty=false;}else{showToast('\u274C '+res.error,'error');}
-}
-function resetAdminSections(){const keys=['dashboard','analytics','revenue','orders','staff','customers','archives','feedback','reports'];keys.forEach(k=>{const el=document.getElementById('adm-sec-'+k);if(el)el.checked=true;});showToast('All sections re-enabled','info');}
-async function saveAllUISettings(){await saveCustomerUI();await saveOperatorUI();await saveAdminUI();showToast('\u2705 All UI settings saved','success');}
 
 // ── ME ──
 async function loadMe(){const res=await api('/api/me');if(res.ok&&res.data.full_name){document.getElementById('sb-saname').textContent=res.data.full_name;document.getElementById('sb-av').textContent=res.data.full_name.charAt(0).toUpperCase();}}
@@ -1887,10 +1431,10 @@ async function loadMe(){const res=await api('/api/me');if(res.ok&&res.data.full_
   const ctx=canvas.getContext('2d');let W,H,bubbles=[];
   function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
   resize();window.addEventListener('resize',resize);
-  const isDark=()=>document.documentElement.dataset.theme==='dark';
+  const isDarkM=()=>document.documentElement.dataset.theme==='dark';
   function makeBubble(){const r=5+Math.random()*22;return{x:Math.random()*W,y:H+r+Math.random()*200,r,speed:.3+Math.random()*.6,drift:(Math.random()-.5)*.5,wobble:Math.random()*Math.PI*2,wobbleSpeed:.015+Math.random()*.02,opacity:.08+Math.random()*.18};}
   for(let i=0;i<28;i++){const b=makeBubble();b.y=Math.random()*H;bubbles.push(b);}
-  function drawBubble(b){const base=isDark()?'0,212,245':'0,180,216';ctx.save();ctx.globalAlpha=b.opacity;const grad=ctx.createRadialGradient(b.x-b.r*.3,b.y-b.r*.3,b.r*.05,b.x,b.y,b.r);grad.addColorStop(0,'rgba(255,255,255,0.5)');grad.addColorStop(.5,`rgba(${base},0.07)`);grad.addColorStop(1,`rgba(${base},0.18)`);ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,Math.PI*2);ctx.fillStyle=grad;ctx.fill();ctx.strokeStyle=`rgba(${base},0.3)`;ctx.lineWidth=1;ctx.stroke();ctx.globalAlpha=b.opacity*.6;ctx.beginPath();ctx.arc(b.x-b.r*.28,b.y-b.r*.28,b.r*.18,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,0.8)';ctx.fill();ctx.restore();}
+  function drawBubble(b){const base=isDarkM()?'0,212,245':'0,180,216';ctx.save();ctx.globalAlpha=b.opacity;const grad=ctx.createRadialGradient(b.x-b.r*.3,b.y-b.r*.3,b.r*.05,b.x,b.y,b.r);grad.addColorStop(0,'rgba(255,255,255,0.5)');grad.addColorStop(.5,`rgba(${base},0.07)`);grad.addColorStop(1,`rgba(${base},0.18)`);ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,Math.PI*2);ctx.fillStyle=grad;ctx.fill();ctx.strokeStyle=`rgba(${base},0.3)`;ctx.lineWidth=1;ctx.stroke();ctx.globalAlpha=b.opacity*.6;ctx.beginPath();ctx.arc(b.x-b.r*.28,b.y-b.r*.28,b.r*.18,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,0.8)';ctx.fill();ctx.restore();}
   function animate(){ctx.clearRect(0,0,W,H);bubbles.forEach((b,i)=>{b.wobble+=b.wobbleSpeed;b.x+=b.drift+Math.sin(b.wobble)*.3;b.y-=b.speed;if(b.y+b.r<-10)bubbles[i]=makeBubble();drawBubble(b);});requestAnimationFrame(animate);}
   animate();
 })();
@@ -1899,6 +1443,7 @@ async function loadMe(){const res=await api('/api/me');if(res.ok&&res.data.full_
 loadMe();
 loadOverview();
 syncSystemStatus();
+saCalcPrice();
 </script>
 </body>
 </html>

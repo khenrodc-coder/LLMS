@@ -128,6 +128,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opa
 .stat-tag.up{background:var(--success-bg);color:var(--success)}
 .stat-tag.acc{background:rgba(0,180,216,.08);color:var(--accent)}
 .stat-tag.warn{background:var(--warn-bg);color:var(--warn)}
+.stat-tag.red{background:var(--danger-bg);color:var(--danger)}
 .grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin-bottom:14px}
 .card{padding:20px 22px;position:relative;overflow:hidden}
 .card-lbl{font-family:'DM Mono',monospace;font-size:.9rem;letter-spacing:.2em;text-transform:uppercase;color:var(--text3);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:8px}
@@ -139,6 +140,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opa
 .pill.acc{background:rgba(0,180,216,.08);color:var(--accent);border:1px solid var(--border-acc)}
 .pill.purple{background:var(--purple-bg);color:var(--purple);border:1px solid var(--purple-border)}
 .pill.teal{background:var(--teal-bg);color:var(--teal);border:1px solid var(--teal-border)}
+.pill.orange{background:var(--orange-bg);color:var(--orange);border:1px solid var(--orange-border)}
 .pill.archive{background:var(--archive-bg);color:var(--archive);border:1px solid var(--archive-border)}
 .pill-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;background:currentColor}
 .pill.green .pill-dot{animation:livePulse 2s ease-in-out infinite}
@@ -153,6 +155,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opa
 .table-lbl{font-family:'DM Mono',monospace;font-size:.9rem;letter-spacing:.2em;text-transform:uppercase;color:var(--text3);display:flex;align-items:center;gap:8px}
 .count-pill{padding:3px 9px;border-radius:20px;background:rgba(0,180,216,.08);border:1px solid var(--border-acc);color:var(--accent);font-size:.48rem;letter-spacing:.1em}
 .count-pill.archive{background:var(--archive-bg);border-color:var(--archive-border);color:var(--archive)}
+.count-pill.danger{background:var(--danger-bg);border-color:var(--danger-border);color:var(--danger)}
 .table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
 table{width:100%;border-collapse:collapse;min-width:520px}
 thead th{font-family:'DM Mono',monospace;font-size:.85rem;letter-spacing:.18em;text-transform:uppercase;color:var(--text3);padding:11px 16px;text-align:left;white-space:nowrap;font-weight:400;border-bottom:1px solid var(--border)}
@@ -190,6 +193,7 @@ td{padding:12px 16px;vertical-align:middle;font-size:.95rem}
 .filter-select option{background:var(--bg2);color:var(--text)}
 .btn-add{height:38px;padding:0 18px;border-radius:22px;background:var(--accent);color:#fff;border:none;font-family:'DM Mono',monospace;font-size:.52rem;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;gap:7px;transition:opacity .2s,transform .15s,box-shadow .2s}
 .btn-add:hover{opacity:.88;transform:translateY(-1px);box-shadow:0 6px 18px var(--accent-glow)}
+.btn-add:disabled{opacity:.45;cursor:not-allowed;transform:none}
 .btn-export{height:38px;padding:0 16px;border-radius:22px;border:1px solid var(--border-acc);background:rgba(0,180,216,.06);color:var(--accent);font-family:'DM Mono',monospace;font-size:.52rem;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;gap:7px;transition:opacity .2s,transform .15s}
 .btn-export:hover{opacity:.88;transform:translateY(-1px)}
 .promo-item{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)}
@@ -288,6 +292,39 @@ td{padding:12px 16px;vertical-align:middle;font-size:.95rem}
 .ticker-dot{display:inline-block;width:3px;height:3px;background:rgba(255,255,255,.4);border-radius:50%;vertical-align:middle;margin:0 8px}
 /* BUBBLES */
 #bubblesCanvas{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+
+/* ENCODE SECTION SPECIFIC */
+.price-calc-box{background:var(--bg2);border:1px solid var(--border-acc);border-radius:12px;padding:16px 18px;margin-top:14px}
+.price-line{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)}
+.price-line:last-child{border-bottom:none;padding-top:10px;margin-top:3px}
+.price-line.total{font-weight:600;color:var(--text)}
+.p-lbl{font-family:'DM Mono',monospace;font-size:.84rem;color:var(--text3)}
+.p-val{font-family:'DM Mono',monospace;font-size:.86rem;color:var(--text);font-weight:500}
+.price-rate-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:9px;margin-top:12px}
+.rate-card{border:1px solid var(--border);border-radius:10px;padding:11px 13px;background:var(--input-bg)}
+.rate-name{font-size:.9rem;font-weight:600;color:var(--text);margin-bottom:3px}
+.rate-price{font-family:'DM Mono',monospace;font-size:1rem;color:var(--accent)}
+.promo-status{font-family:'DM Mono',monospace;font-size:.75rem;margin-top:6px;min-height:18px}
+.name-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.sys-rule{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:5px;background:rgba(0,180,216,.06);border:1px solid var(--border-acc);font-family:'DM Mono',monospace;font-size:.44rem;letter-spacing:.12em;color:var(--accent);text-transform:uppercase}
+.info-notice{display:flex;align-items:flex-start;gap:11px;padding:12px 15px;background:rgba(0,180,216,.05);border:1px solid var(--border-acc);border-radius:11px;margin-bottom:16px}
+.info-notice .info-txt{font-family:'DM Mono',monospace;font-size:.75rem;letter-spacing:.04em;color:var(--accent);line-height:1.7}
+.cb-wrap{display:flex;align-items:center;gap:8px;cursor:pointer}
+.cb-wrap input[type=checkbox]{width:16px;height:16px;accent-color:var(--accent);cursor:pointer}
+.form-row-check{display:flex;gap:16px;margin-bottom:14px;flex-wrap:wrap}
+
+/* ISSUE REPORTS SPECIFIC */
+.issue-card{border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:10px;background:var(--surface)}
+.issue-type-lbl{font-family:'DM Mono',monospace;font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px}
+.issue-type-lbl.damaged_clothes,.issue-type-lbl.other{color:var(--danger)}
+.issue-type-lbl.lost_item{color:var(--warn)}
+.issue-type-lbl.machine_malfunction{color:var(--orange)}
+.issue-desc{font-size:.9rem;color:var(--text2);line-height:1.5}
+.issue-meta{font-family:'DM Mono',monospace;font-size:.48rem;color:var(--text3);margin-top:6px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.issue-status-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-family:'DM Mono',monospace;font-size:.42rem;letter-spacing:.1em;text-transform:uppercase}
+.issue-status-badge.open{background:var(--warn-bg);color:var(--warn);border:1px solid var(--warn-border)}
+.issue-status-badge.resolved{background:var(--success-bg);color:var(--success);border:1px solid var(--success-border)}
+.issue-reporter{font-size:.88rem;font-weight:600;color:var(--text2)}
 </style>
 </head>
 <body>
@@ -331,6 +368,11 @@ td{padding:12px 16px;vertical-align:middle;font-size:.95rem}
         <span class="nav-icon"><svg viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M5 6h6M5 9h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></span>
         Service Status
       </a>
+      <!-- NEW: Encode Service -->
+      <a class="nav-link" onclick="showSection('encode',this)">
+        <span class="nav-icon"><svg viewBox="0 0 16 16" fill="none"><path d="M8 2v12M2 8h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+        Encode Service
+      </a>
       <a class="nav-link" onclick="showSection('staff',this)">
         <span class="nav-icon"><svg viewBox="0 0 16 16" fill="none"><circle cx="6" cy="5" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M1.5 13c0-2.5 2-3.5 4.5-3.5s4.5 1 4.5 3.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M11 2l1.5 1.5L15 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
         Staff
@@ -339,7 +381,6 @@ td{padding:12px 16px;vertical-align:middle;font-size:.95rem}
         <span class="nav-icon"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="6" r="3" stroke="currentColor" stroke-width="1.2"/><path d="M2 14c0-3 2.5-5 6-5s6 2 6 5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></span>
         Customers
       </a>
-      <!-- MERGED ARCHIVE LINK -->
       <a class="nav-link archive-link" onclick="showSection('archives',this)">
         <span class="nav-icon" style="font-size:.85rem">📦</span>
         Archives
@@ -351,6 +392,11 @@ td{padding:12px 16px;vertical-align:middle;font-size:.95rem}
       <a class="nav-link" onclick="showSection('feedback',this)">
         <span class="nav-icon"><svg viewBox="0 0 16 16" fill="none"><path d="M8 2l1.5 3 3.5.5-2.5 2.5.6 3.5L8 10l-3.1 1.5.6-3.5L3 5.5 6.5 5z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg></span>
         Customer Feedback
+      </a>
+      <!-- NEW: Issue Reports -->
+      <a class="nav-link" onclick="showSection('issuereports',this)">
+        <span class="nav-icon"><svg viewBox="0 0 16 16" fill="none"><path d="M8 2L2 13h12L8 2z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M8 6v3M8 11v.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span>
+        Issue Reports
       </a>
       <a class="nav-link" onclick="showSection('reports',this)">
         <span class="nav-icon"><svg viewBox="0 0 16 16" fill="none"><rect x="2.5" y="1.5" width="11" height="13" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M5 5.5h6M5 8h6M5 10.5h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></span>
@@ -410,6 +456,7 @@ td{padding:12px 16px;vertical-align:middle;font-size:.95rem}
     <div class="glass stat-card"><div class="corner"></div><div class="stat-icon">💰</div><div class="stat-lbl">Daily Revenue</div><div class="stat-val" id="d-daily">—</div><div class="stat-tag up">↑ Today</div></div>
     <div class="glass stat-card"><div class="corner"></div><div class="stat-icon">👥</div><div class="stat-lbl">Staff Active</div><div class="stat-val" id="d-staff">—</div><div class="stat-tag acc">Active</div></div>
     <div class="glass stat-card"><div class="corner"></div><div class="stat-icon">🎁</div><div class="stat-lbl">Active Promos</div><div class="stat-val" id="d-promos">—</div><div class="stat-tag acc">Running</div></div>
+    <div class="glass stat-card"><div class="corner"></div><div class="stat-icon">⚠️</div><div class="stat-lbl">Open Issues</div><div class="stat-val" id="d-issues">—</div><div class="stat-tag warn">Reports</div></div>
   </div>
   <div class="divider"><div class="rule"></div><div class="dia"></div><div class="rule"></div></div>
   <div class="gstatic card" style="margin-bottom:14px">
@@ -524,6 +571,127 @@ td{padding:12px 16px;vertical-align:middle;font-size:.95rem}
   </div>
 </div>
 
+<!-- ═══════════ ENCODE SERVICE (NEW) ═══════════ -->
+<div id="sec-encode" class="section">
+  <div class="page-head">
+    <div class="live-tag"><div class="live-dot"></div>Encode Service</div>
+    <div class="page-title">Encode <em>Service</em></div>
+    <div class="page-sub">Register walk-in or customer services directly from the Admin panel.</div>
+  </div>
+  <div class="info-notice">
+    <div class="info-txt">📧 EMAIL IS OPTIONAL — Enter a customer email to send auto tracking &amp; link to their portal account. If email matches a registered customer, the order links to their account automatically.</div>
+  </div>
+  <div class="divider"><div class="rule"></div><div class="dia"></div><div class="rule"></div></div>
+  <div class="grid-2">
+    <div class="gstatic card">
+      <div class="card-lbl">Service Entry</div>
+      <div class="name-row">
+        <div class="mfield" style="margin-bottom:0">
+          <label>First Name *</label>
+          <input type="text" id="adm-enc-firstname" placeholder="e.g. Juan" autocomplete="off">
+        </div>
+        <div class="mfield" style="margin-bottom:0">
+          <label>Last Name *</label>
+          <input type="text" id="adm-enc-lastname" placeholder="e.g. dela Cruz" autocomplete="off">
+        </div>
+      </div>
+      <div class="mfield" style="margin-top:14px">
+        <label>Gmail Address <span style="font-size:.7rem;opacity:.7;color:var(--accent)">(optional — for tracking &amp; account link)</span></label>
+        <input type="email" id="adm-enc-email" placeholder="customer@gmail.com (optional)" autocomplete="off">
+        <div class="mfield-hint" id="adm-enc-email-hint">📧 Optional — must end in @gmail.com if provided</div>
+      </div>
+      <div class="mfield">
+        <label>Service Type *</label>
+        <select id="adm-enc-service" onchange="admCalcPrice()">
+          <option value="">Select service…</option>
+          <option value="single_wash">Single Wash — ₱30/kg</option>
+          <option value="double_wash">Double Wash — ₱35/kg</option>
+          <option value="household">Household Items — ₱45/kg</option>
+          <option value="heavy_wash">Heavy Wash (Comforter) — ₱75/kg</option>
+          <option value="soak_whites">Soak for Whites — ₱50/kg</option>
+        </select>
+      </div>
+      <div class="mfield">
+        <label>Total Weight (max 8kg) *</label>
+        <input type="number" id="adm-enc-weight" placeholder="e.g. 5.0" min="0.5" step="0.5" oninput="admCalcPrice()">
+      </div>
+      <div class="mfield">
+        <label>Promo Code <span style="font-size:.7rem;opacity:.7">(optional)</span></label>
+        <div style="display:flex;gap:8px">
+          <input type="text" id="adm-enc-promo" placeholder="e.g. SAVE10" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()">
+          <button class="btn-ghost" onclick="admValidatePromo()" style="white-space:nowrap;height:44px;padding:0 14px;font-size:.46rem;flex-shrink:0">Validate</button>
+        </div>
+        <div class="promo-status" id="adm-promo-status"></div>
+      </div>
+      <div class="form-row-check">
+        <label class="cb-wrap"><input type="checkbox" id="adm-enc-dryer" onchange="admCalcPrice()"><span style="font-size:.88rem;color:var(--text2)">With Dryer <span style="color:var(--text3);font-size:.8rem">(+₱20 flat)</span></span></label>
+        <label class="cb-wrap"><input type="checkbox" id="adm-enc-downy" onchange="admCalcPrice()"><span style="font-size:.88rem;color:var(--text2)">With Downy</span></label>
+      </div>
+      <div style="display:flex;gap:9px;flex-wrap:wrap;margin-top:4px">
+        <button class="btn-add" id="adm-enc-submit-btn" onclick="admEncodeService()">
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M8 2v12M2 8h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          Encode Service
+        </button>
+        <button class="btn-ghost" onclick="admClearEncodeForm()">Clear Form</button>
+      </div>
+    </div>
+
+    <div class="gstatic card">
+      <div class="card-lbl">Live Calculation <span class="sys-rule">⚙ System Computed</span></div>
+      <div class="price-calc-box">
+        <div class="price-line"><span class="p-lbl">Service Rate</span><span class="p-val" id="adm-calc-rate">—</span></div>
+        <div class="price-line"><span class="p-lbl">Weight</span><span class="p-val" id="adm-calc-weight">—</span></div>
+        <div class="price-line"><span class="p-lbl">Base Price</span><span class="p-val" id="adm-calc-base">—</span></div>
+        <div class="price-line"><span class="p-lbl">Promo Discount</span><span class="p-val" id="adm-calc-discount" style="color:var(--success)">—</span></div>
+        <div class="price-line"><span class="p-lbl">Dryer Surcharge</span><span class="p-val" id="adm-calc-dryer">—</span></div>
+        <div class="price-line"><span class="p-lbl">Machines Needed</span><span class="p-val" id="adm-calc-machines">—</span></div>
+        <div class="price-line total"><span class="p-lbl" style="color:var(--text);font-weight:600">Total Amount</span><span class="p-val" style="color:var(--accent);font-size:.9rem" id="adm-calc-total">₱0.00</span></div>
+      </div>
+      <div style="margin-top:16px">
+        <div class="card-lbl" style="margin-bottom:8px">Stage Timeline <span class="sys-rule">⚙ Fixed Timers</span></div>
+        <div id="adm-calc-timeline" style="display:flex;gap:6px;flex-wrap:wrap"><span class="pill blue"><span class="pill-dot"></span>Washing 44m</span></div>
+      </div>
+      <div style="margin-top:16px;padding:12px 14px;background:var(--success-bg);border:1px solid var(--success-border);border-radius:10px">
+        <div style="font-family:'DM Mono',monospace;font-size:.8rem;color:var(--success);letter-spacing:.1em;text-transform:uppercase;margin-bottom:7px">📋 Service Flow</div>
+        <div style="font-family:'DM Mono',monospace;font-size:.78rem;color:var(--text3);line-height:1.9">
+          1. Admin encodes → system saves &amp; generates tracking<br>
+          2. If email provided &amp; registered → 🔗 linked to customer portal<br>
+          3. If email provided → tracking email sent instantly<br>
+          4. Walk-in friendly — no email required<br>
+          5. Auto-timer: Wash(44m)→Dry(40m)?→Downy(16m)?→Folding<br>
+          6. Operator confirms folding → Ready for Pickup<br>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="gstatic card" style="margin-bottom:14px">
+    <div class="card-lbl">Pricing Rates Reference</div>
+    <div class="price-rate-grid">
+      <div class="rate-card"><div class="rate-name">Single Wash</div><div class="rate-price">₱30 / kg</div></div>
+      <div class="rate-card"><div class="rate-name">Double Wash</div><div class="rate-price">₱35 / kg</div></div>
+      <div class="rate-card"><div class="rate-name">Household Items</div><div class="rate-price">₱45 / kg</div></div>
+      <div class="rate-card"><div class="rate-name">Heavy Wash</div><div class="rate-price">₱75 / kg</div></div>
+      <div class="rate-card"><div class="rate-name">Soak for Whites</div><div class="rate-price">₱50 / kg</div></div>
+      <div class="rate-card"><div class="rate-name">Dryer Add-On</div><div class="rate-price">+₱20 flat fee</div></div>
+    </div>
+  </div>
+
+  <div class="divider"><div class="rule"></div><div class="dia"></div><div class="rule"></div></div>
+  <div class="gstatic table-card">
+    <div class="table-hdr">
+      <div class="table-lbl">My Encoded Services Today <span class="count-pill" id="adm-enc-count">0</span></div>
+      <button class="btn-ghost" onclick="loadAdminEncoded()" style="height:30px;font-size:.46rem;padding:0 13px">↻ Refresh</button>
+    </div>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>#</th><th>Tracking</th><th>Customer</th><th>Email</th><th>Service</th><th>Weight</th><th>Amount</th><th>Dryer</th><th>Downy</th><th>Status</th></tr></thead>
+        <tbody id="adm-enc-tbody"><tr><td colspan="10" style="text-align:center;padding:28px;color:var(--text3);font-family:'DM Mono',monospace;font-size:.9rem">No services encoded today</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
 <!-- ═══════════ STAFF ═══════════ -->
 <div id="sec-staff" class="section">
   <div class="page-head">
@@ -596,15 +764,12 @@ td{padding:12px 16px;vertical-align:middle;font-size:.95rem}
     <div class="page-title">Archived <em class="archive-em">Records</em></div>
     <div class="page-sub">Archived staff and customers are hidden from active lists. Restore or permanently delete here.</div>
   </div>
-
   <div class="archive-banner">
     <div class="archive-banner-ico">📦</div>
     <div class="archive-banner-text">
       Archived accounts cannot log in and are hidden from main listings. You can <strong>restore</strong> them to active status or <strong>permanently delete</strong> them — deletion is irreversible and removes all associated data.
     </div>
   </div>
-
-  <!-- TAB SWITCHER -->
   <div class="archive-tabs">
     <button class="archive-tab active" id="arc-tab-staff" onclick="switchArchiveTab('staff')">
       <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><circle cx="6" cy="5" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M1.5 13c0-2.5 2-3.5 4.5-3.5s4.5 1 4.5 3.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M11 2l1.5 1.5L15 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -617,8 +782,6 @@ td{padding:12px 16px;vertical-align:middle;font-size:.95rem}
       <span class="archive-tab-count" id="arc-cust-count-tab">0</span>
     </button>
   </div>
-
-  <!-- STAFF ARCHIVE PANE -->
   <div class="archive-pane active" id="arc-pane-staff">
     <div class="toolbar">
       <div class="toolbar-left">
@@ -629,17 +792,13 @@ td{padding:12px 16px;vertical-align:middle;font-size:.95rem}
       </div>
     </div>
     <div class="gstatic table-card">
-      <div class="table-hdr">
-        <div class="table-lbl">Archived Staff <span class="count-pill archive" id="sta-count">0 archived</span></div>
-      </div>
+      <div class="table-hdr"><div class="table-lbl">Archived Staff <span class="count-pill archive" id="sta-count">0 archived</span></div></div>
       <div class="table-scroll">
         <table><thead><tr><th>Staff Member</th><th>Email</th><th>Archived On</th><th>Actions</th></tr></thead>
         <tbody id="sta-tbody"><tr class="loading-row"><td colspan="4"><span class="spinner"></span>Loading…</td></tr></tbody></table>
       </div>
     </div>
   </div>
-
-  <!-- CUSTOMER ARCHIVE PANE -->
   <div class="archive-pane" id="arc-pane-customers">
     <div class="toolbar">
       <div class="toolbar-left">
@@ -650,9 +809,7 @@ td{padding:12px 16px;vertical-align:middle;font-size:.95rem}
       </div>
     </div>
     <div class="gstatic table-card">
-      <div class="table-hdr">
-        <div class="table-lbl">Archived Customers <span class="count-pill archive" id="cua-count">0 archived</span></div>
-      </div>
+      <div class="table-hdr"><div class="table-lbl">Archived Customers <span class="count-pill archive" id="cua-count">0 archived</span></div></div>
       <div class="table-scroll">
         <table><thead><tr><th>Customer</th><th>Email</th><th>Phone</th><th>Archived On</th><th>Actions</th></tr></thead>
         <tbody id="cua-tbody"><tr class="loading-row"><td colspan="5"><span class="spinner"></span>Loading…</td></tr></tbody></table>
@@ -671,9 +828,7 @@ td{padding:12px 16px;vertical-align:middle;font-size:.95rem}
   <div class="divider"><div class="rule"></div><div class="dia"></div><div class="rule"></div></div>
   <div style="background:var(--blue-bg);border:1px solid var(--blue-border);border-radius:12px;padding:14px 16px;margin-bottom:16px;display:flex;align-items:flex-start;gap:10px">
     <span style="font-size:1rem">ℹ️</span>
-    <div style="font-size:.88rem;color:var(--text2);line-height:1.6">
-      Promo codes created here are available for staff during order encoding. When a valid code is applied, the discount is automatically deducted from the service charge.
-    </div>
+    <div style="font-size:.88rem;color:var(--text2);line-height:1.6">Promo codes created here are available for staff during service encoding. When a valid code is applied, the discount is automatically deducted from the service charge.</div>
   </div>
   <div class="toolbar">
     <div class="toolbar-left"></div>
@@ -720,12 +875,55 @@ td{padding:12px 16px;vertical-align:middle;font-size:.95rem}
   </div>
 </div>
 
+<!-- ═══════════ ISSUE REPORTS (NEW) ═══════════ -->
+<div id="sec-issuereports" class="section">
+  <div class="page-head">
+    <div class="live-tag"><div class="live-dot"></div>Issue Reports</div>
+    <div class="page-title">Operator <em>Reports</em></div>
+    <div class="page-sub">All issue reports submitted by operators are received and displayed here for admin review.</div>
+  </div>
+  <div class="info-notice">
+    <div class="info-txt">📥 INCOMING REPORTS — Operators submit issue reports (damaged clothes, lost items, machine malfunctions) which are automatically stored here. Review and mark them as resolved.</div>
+  </div>
+  <div class="divider"><div class="rule"></div><div class="dia"></div><div class="rule"></div></div>
+  <div class="stats-row">
+    <div class="glass stat-card"><div class="corner"></div><div class="stat-icon">⚠️</div><div class="stat-lbl">Total Reports</div><div class="stat-val" id="ir-total">—</div><div class="stat-tag acc">All Time</div></div>
+    <div class="glass stat-card"><div class="corner"></div><div class="stat-icon">🔴</div><div class="stat-lbl">Open Issues</div><div class="stat-val" id="ir-open">—</div><div class="stat-tag warn">Pending</div></div>
+    <div class="glass stat-card"><div class="corner"></div><div class="stat-icon">✅</div><div class="stat-lbl">Resolved</div><div class="stat-val" id="ir-resolved">—</div><div class="stat-tag up">Done</div></div>
+  </div>
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <div class="search-wrap">
+        <svg viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.3"/><path d="M10 10l3 3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        <input class="search-input" id="ir-search" type="text" placeholder="Search reports…" oninput="filterIssueReports(this.value)">
+      </div>
+      <select class="filter-select" id="ir-filter-type" onchange="filterIssueReports(document.getElementById('ir-search').value)">
+        <option value="">All Types</option>
+        <option value="damaged_clothes">Damaged Clothes</option>
+        <option value="lost_item">Lost Item</option>
+        <option value="machine_malfunction">Machine Malfunction</option>
+        <option value="other">Other</option>
+      </select>
+      <select class="filter-select" id="ir-filter-status" onchange="filterIssueReports(document.getElementById('ir-search').value)">
+        <option value="">All Status</option>
+        <option value="open">Open</option>
+        <option value="resolved">Resolved</option>
+      </select>
+    </div>
+    <button class="btn-ghost" onclick="loadIssueReports()" style="height:38px;font-size:.52rem;padding:0 16px">↻ Refresh</button>
+  </div>
+  <div class="gstatic card">
+    <div class="card-lbl">All Operator Reports <span class="count-pill danger" id="ir-count">0</span></div>
+    <div id="ir-list"><div class="empty-state"><span class="spinner"></span>Loading reports…</div></div>
+  </div>
+</div>
+
 <!-- ═══════════ REPORTS ═══════════ -->
 <div id="sec-reports" class="section">
   <div class="page-head">
     <div class="live-tag"><div class="live-dot"></div>Reports</div>
     <div class="page-title">Export <em>Reports</em></div>
-    <div class="page-sub">Download order and revenue reports.</div>
+    <div class="page-sub">Download laundry and revenue reports.</div>
   </div>
   <div class="divider"><div class="rule"></div><div class="dia"></div><div class="rule"></div></div>
   <div class="grid-2">
@@ -870,23 +1068,54 @@ td{padding:12px 16px;vertical-align:middle;font-size:.95rem}
   </div>
 </div>
 
+<!-- Resolve Issue Modal -->
+<div class="modal-overlay" id="modal-resolve-issue">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-hdr"><div class="modal-ttl">Resolve Issue</div><button class="modal-close" onclick="closeModal('resolve-issue')">✕</button></div>
+    <input type="hidden" id="resolve-issue-id">
+    <div style="background:var(--success-bg);border:1px solid var(--success-border);border-radius:12px;padding:16px;margin-bottom:16px;font-size:.9rem;color:var(--text2);line-height:1.6">
+      Mark this issue as <strong>resolved</strong>? This will update its status and it will no longer appear in open reports.
+    </div>
+    <div class="modal-btns">
+      <button class="btn-ghost" onclick="closeModal('resolve-issue')">Cancel</button>
+      <button class="btn-primary" onclick="confirmResolveIssue()">✅ Mark Resolved</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <div class="ticker-wrap" aria-hidden="true">
   <div class="ticker-inner">
     <span class="ticker-item">Admin Dashboard</span><span class="ticker-dot"></span>
     <span class="ticker-item">Laundry Lounge</span><span class="ticker-dot"></span>
-    <span class="ticker-item">Revenue · Analytics · Staff · Orders · Feedback</span><span class="ticker-dot"></span>
+    <span class="ticker-item">Revenue · Analytics · Staff · Orders · Feedback · Issue Reports</span><span class="ticker-dot"></span>
     <span class="ticker-item">Est. 2026</span><span class="ticker-dot"></span>
     <span class="ticker-item">Admin Dashboard</span><span class="ticker-dot"></span>
     <span class="ticker-item">Laundry Lounge</span><span class="ticker-dot"></span>
-    <span class="ticker-item">Revenue · Analytics · Staff · Orders · Feedback</span><span class="ticker-dot"></span>
+    <span class="ticker-item">Revenue · Analytics · Staff · Orders · Feedback · Issue Reports</span><span class="ticker-dot"></span>
     <span class="ticker-item">Est. 2026</span><span class="ticker-dot"></span>
   </div>
 </div>
 
 <script>
 'use strict';
+
+// ── CONSTANTS ──
+const DRYER_SURCHARGE = 20.0;
+const SERVICE_RATES = {
+  single_wash: {label:'Single Wash', rate:30},
+  double_wash: {label:'Double Wash', rate:35},
+  household:   {label:'Household Items', rate:45},
+  heavy_wash:  {label:'Heavy Wash (Comforter)', rate:75},
+  soak_whites: {label:'Soak for Whites', rate:50},
+};
+const ISSUE_TYPE_LABELS = {
+  damaged_clothes:'🔴 Damaged Clothes',
+  lost_item:'🟠 Lost Item',
+  machine_malfunction:'🔧 Machine Malfunction',
+  other:'📌 Other'
+};
 
 // ── THEME ──
 function toggleTheme(){const h=document.documentElement,isDark=h.getAttribute('data-theme')==='dark';h.setAttribute('data-theme',isDark?'light':'dark');document.getElementById('themeBtn').textContent=isDark?'☀':'☾';localStorage.setItem('adm-theme',isDark?'light':'dark');setTimeout(()=>rebuildAllCharts(),60);}
@@ -908,9 +1137,9 @@ function showSection(id,el){
   if(window.innerWidth<900)closeSidebar();
   const map={
     dashboard:loadDashboard,analytics:loadAnalytics,revenue:loadRevenue,
-    orders:loadOrders,staff:loadStaff,archives:loadArchives,
+    orders:loadOrders,encode:loadAdminEncoded,staff:loadStaff,archives:loadArchives,
     customers:loadCustomers,promos:loadPromos,feedback:loadFeedback,
-    reports:loadReports,profile:loadAdminProfile
+    issuereports:loadIssueReports,reports:loadReports,profile:loadAdminProfile
   };
   if(map[id])map[id]();
 }
@@ -953,6 +1182,10 @@ const avBg=['linear-gradient(135deg,#00B4D8,#007A9E)','linear-gradient(135deg,#2
 const STATUS_PILL={pending:'amber',washing:'blue',drying:'teal',downy:'purple',folding:'amber',completed:'green',done:'green',cancelled:'red'};
 const STATUS_LABEL={pending:'Pending',washing:'🫧 Washing',drying:'💨 Drying',downy:'🌸 Downy',folding:'👕 Folding',completed:'✅ Done',done:'✅ Done',cancelled:'❌ Cancelled'};
 
+function fmtPHP(n){return '₱'+Number(n||0).toLocaleString('en-PH',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function calcMachines(w){return Math.max(1,Math.ceil(w/8))}
+function esc(s){return(s||'').replace(/'/g,"\\'").replace(/"/g,'&quot;')}
+
 // ── CHART HELPERS ──
 const _charts={};
 function isDark(){return document.documentElement.getAttribute('data-theme')==='dark'}
@@ -982,11 +1215,12 @@ function buildPieChart(id,mix,legendId){if(!mix||!mix.length)return;const colors
 // ── DASHBOARD ──
 function buildDashboardCharts(data){if(!data)return;buildLineChart('dash-daily-line',data.dailyMonth.labels,data.dailyMonth.values);buildBarChart('dash-weekly-bar',data.weekLabels,data.weeklyRev);buildPieChart('dash-pie',data.mix,'dash-pie-legend');}
 async function loadDashboard(){
-  const [ana,rev,perf,promos,staff,weeklyRev,dailyMonth,mix]=await Promise.all([api('/api/admin/analytics'),api('/api/admin/revenue'),api('/api/admin/staff-performance'),api('/api/promos'),api('/api/staff'),fetchWeeklyRevenue(),fetchDailyRevenueThisMonth(),fetchServiceMix()]);
+  const[ana,rev,perf,promos,staff,weeklyRev,dailyMonth,mix,issuesRes]=await Promise.all([api('/api/admin/analytics'),api('/api/admin/revenue'),api('/api/admin/staff-performance'),api('/api/promos'),api('/api/staff'),fetchWeeklyRevenue(),fetchDailyRevenueThisMonth(),fetchServiceMix(),api('/api/admin/issues')]);
   if(ana.ok){document.getElementById('d-today').textContent=ana.data.today_services??'—';if(ana.data.top_service){document.getElementById('top-svc-name').textContent=ana.data.top_service.service_type||'—';document.getElementById('top-svc-count').textContent=`${ana.data.top_service.total} orders total`;document.getElementById('top-svc-badge').textContent=ana.data.top_service.service_type||'—';}}
   if(rev.ok)document.getElementById('d-daily').textContent='₱'+(Number(rev.data.daily_income)||0).toLocaleString();
   if(promos.ok)document.getElementById('d-promos').textContent=(promos.data||[]).length;
   if(staff.ok)document.getElementById('d-staff').textContent=(staff.data||[]).filter(s=>s.status==='active').length;
+  if(issuesRes.ok){const open=(issuesRes.data||[]).filter(i=>i.status==='open').length;document.getElementById('d-issues').textContent=open;}
   if(perf.ok){const p=perf.data||[];const max=Math.max(...p.map(x=>x.total_services||0))||1;document.getElementById('d-perf-list').innerHTML=p.length?p.slice(0,4).map(x=>`<div class="prog-row"><span class="prog-name">${x.full_name}</span><div class="prog-bg"><div class="prog-fill" style="width:${Math.round((x.total_services||0)/max*100)}%"></div></div><span class="prog-val">${x.total_services||0}</span></div>`).join(''):'<div class="empty-state">No staff data.</div>';}
   const weekLabels=buildWeekLabels();
   _lastData.dash={dailyMonth,weekLabels,weeklyRev,mix};
@@ -996,7 +1230,7 @@ async function loadDashboard(){
 // ── ANALYTICS ──
 function buildAnalyticsCharts(data){if(!data)return;buildServicesBarChart('an-services-bar',data.weekLabels,data.weeklyServices);buildPieChart('an-pie',data.mix,'an-pie-legend');}
 async function loadAnalytics(){
-  const [ana,weeklyServices,mix]=await Promise.all([api('/api/admin/analytics'),fetchWeeklyServices(),fetchServiceMix()]);
+  const[ana,weeklyServices,mix]=await Promise.all([api('/api/admin/analytics'),fetchWeeklyServices(),fetchServiceMix()]);
   if(ana.ok){document.getElementById('an-today').textContent=ana.data.today_services||0;const ordRes=await api('/api/admin/orders');if(ordRes.ok){const today=new Date();const startOfWeek=new Date(today);startOfWeek.setDate(today.getDate()-6);startOfWeek.setHours(0,0,0,0);const startOfMonth=new Date(today.getFullYear(),today.getMonth(),1);let weekCount=0,monthCount=0;(ordRes.data||[]).forEach(o=>{if(!o.created_at)return;const d=new Date(o.created_at);if(d>=startOfWeek)weekCount++;if(d>=startOfMonth)monthCount++;});document.getElementById('an-week').textContent=weekCount;document.getElementById('an-month').textContent=monthCount;}if(ana.data.top_service){document.getElementById('an-top-svc').innerHTML=`<div class="inline-row"><span class="ikey">Top Service</span><span class="ival">${ana.data.top_service.service_type||'—'}</span></div><div class="inline-row"><span class="ikey">Total Orders</span><span class="ival">${ana.data.top_service.total||0}</span></div>`;}}
   const weekLabels=buildWeekLabels();
   _lastData.analytics={weekLabels,weeklyServices,mix};
@@ -1006,7 +1240,7 @@ async function loadAnalytics(){
 // ── REVENUE ──
 function buildRevenueCharts(data){if(!data)return;buildLineChart('rv-daily-line',data.dailyMonth.labels,data.dailyMonth.values);buildBarChart('rv-weekly-bar',data.weekLabels,data.weeklyRev);buildBarChart('rv-monthly-bar',data.monthLabels,data.monthlyRev);}
 async function loadRevenue(){
-  const [rev,weeklyRev,monthlyRev,dailyMonth]=await Promise.all([api('/api/admin/revenue'),fetchWeeklyRevenue(),fetchMonthlyRevenue(),fetchDailyRevenueThisMonth()]);
+  const[rev,weeklyRev,monthlyRev,dailyMonth]=await Promise.all([api('/api/admin/revenue'),fetchWeeklyRevenue(),fetchMonthlyRevenue(),fetchDailyRevenueThisMonth()]);
   if(rev.ok){const daily=Number(rev.data.daily_income)||0,monthly=Number(rev.data.monthly_income)||0;document.getElementById('rv-daily').textContent=daily.toLocaleString();document.getElementById('rv-monthly').textContent=monthly.toLocaleString();document.getElementById('rv-profit').textContent=Math.round(monthly*.6).toLocaleString();}
   const weekLabels=buildWeekLabels();const monthLabels=buildMonthLabels();
   _lastData.rev={dailyMonth,weekLabels,weeklyRev,monthLabels,monthlyRev};
@@ -1034,9 +1268,122 @@ async function loadOrders(){
   :'<tr><td colspan="9" class="loading-row">No orders found</td></tr>';
 }
 
+// ═══════════════════════════════════════════════════
+//  ADMIN ENCODE SERVICE (NEW)
+// ═══════════════════════════════════════════════════
+
+let _admValidatedPromoCode=null, _admValidatedDiscountPct=0;
+
+function admCalcPrice(){
+  const svc=document.getElementById('adm-enc-service').value;
+  const weight=parseFloat(document.getElementById('adm-enc-weight').value)||0;
+  const dryer=document.getElementById('adm-enc-dryer').checked;
+  const downy=document.getElementById('adm-enc-downy').checked;
+  const rate=SERVICE_RATES[svc]?.rate||0;
+  const base=rate*weight;
+  const disc=base*_admValidatedDiscountPct/100;
+  const total=(base-disc)+(dryer?DRYER_SURCHARGE:0);
+  const mach=weight>0?calcMachines(weight):0;
+  document.getElementById('adm-calc-rate').textContent=rate?`₱${rate}/kg`:'—';
+  document.getElementById('adm-calc-weight').textContent=weight?`${weight} kg`:'—';
+  document.getElementById('adm-calc-base').textContent=base?fmtPHP(base):'—';
+  document.getElementById('adm-calc-discount').textContent=disc>0?`-${fmtPHP(disc)} (${_admValidatedDiscountPct}%)`:'—';
+  document.getElementById('adm-calc-dryer').textContent=dryer?'+₱20.00':'—';
+  document.getElementById('adm-calc-machines').textContent=mach?`${mach} unit(s)`:'—';
+  document.getElementById('adm-calc-total').textContent=fmtPHP(total);
+  const tl=['<span class="pill blue"><span class="pill-dot"></span>Washing 44m</span>'];
+  if(dryer)tl.push('<span class="pill teal"><span class="pill-dot"></span>Drying 40m</span>');
+  if(downy)tl.push('<span class="pill purple"><span class="pill-dot"></span>Downy 16m</span>');
+  tl.push('<span class="pill amber"><span class="pill-dot"></span>Folding (manual)</span>');
+  document.getElementById('adm-calc-timeline').innerHTML=tl.join('');
+}
+
+async function admValidatePromo(){
+  const code=document.getElementById('adm-enc-promo').value.trim().toUpperCase();
+  const statusEl=document.getElementById('adm-promo-status');
+  if(!code){statusEl.innerHTML='';_admValidatedPromoCode=null;_admValidatedDiscountPct=0;admCalcPrice();return;}
+  statusEl.innerHTML='<span class="spinner" style="width:12px;height:12px;display:inline-block;vertical-align:middle"></span> Validating…';
+  const res=await api(`/api/staff/validate-promo/${encodeURIComponent(code)}`);
+  if(res.ok&&res.data.valid){
+    _admValidatedPromoCode=code;_admValidatedDiscountPct=parseFloat(res.data.discount)||0;
+    statusEl.innerHTML=`<span style="color:var(--success)">✅ Valid — ${res.data.discount}% discount applied</span>`;
+  }else{
+    _admValidatedPromoCode=null;_admValidatedDiscountPct=0;
+    statusEl.innerHTML='<span style="color:var(--danger)">❌ Invalid or expired promo code</span>';
+  }
+  admCalcPrice();
+}
+
+async function admEncodeService(){
+  const firstName=document.getElementById('adm-enc-firstname').value.trim();
+  const lastName=document.getElementById('adm-enc-lastname').value.trim();
+  const email=document.getElementById('adm-enc-email').value.trim();
+  const svc=document.getElementById('adm-enc-service').value;
+  const weight=parseFloat(document.getElementById('adm-enc-weight').value);
+  const dryer=document.getElementById('adm-enc-dryer').checked;
+  const downy=document.getElementById('adm-enc-downy').checked;
+
+  if(!firstName||!lastName){showToast('⚠️ First and last name are required','error');return;}
+  if(!svc){showToast('⚠️ Select a service type','error');return;}
+  if(!weight||isNaN(weight)||weight<0.5){showToast('⚠️ Minimum weight is 0.5 kg','error');return;}
+  if(email&&!email.endsWith('@gmail.com')){showToast('⚠️ Email must end in @gmail.com','error');return;}
+
+  const btn=document.getElementById('adm-enc-submit-btn');
+  btn.disabled=true;btn.innerHTML='<span class="spinner" style="width:12px;height:12px;display:inline-block;vertical-align:middle;margin-right:6px"></span>Encoding…';
+
+  const payload={customer_name:`${firstName} ${lastName}`,service_type:svc,weight_kg:weight,with_dryer:dryer,with_downy:downy};
+  if(email)payload.customer_email=email;
+  if(_admValidatedPromoCode)payload.promo_code=_admValidatedPromoCode;
+
+  const res=await api('/api/staff/encode',{method:'POST',body:payload});
+  btn.disabled=false;btn.innerHTML='<svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M8 2v12M2 8h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> Encode Service';
+
+  if(res.ok){
+    let msg=`✅ Encoded — ${res.data.tracking_id} · ${fmtPHP(res.data.amount)}`;
+    if(email){msg+=res.data.linked_to_account?' · 🔗 Linked to account':' · 📧 Tracking sent';}
+    else{msg+=' · Walk-in (no email)';}
+    showToast(msg,'success');
+    admClearEncodeForm();
+    loadAdminEncoded();
+  }else{
+    showToast('❌ '+(res.error||'Failed to encode service.'),'error');
+  }
+}
+
+function admClearEncodeForm(){
+  ['adm-enc-firstname','adm-enc-lastname','adm-enc-email','adm-enc-weight','adm-enc-promo'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('adm-enc-service').value='';
+  document.getElementById('adm-enc-dryer').checked=false;
+  document.getElementById('adm-enc-downy').checked=false;
+  document.getElementById('adm-promo-status').innerHTML='';
+  document.getElementById('adm-enc-email-hint').textContent='📧 Optional — must end in @gmail.com if provided';
+  _admValidatedPromoCode=null;_admValidatedDiscountPct=0;
+  admCalcPrice();
+}
+
+async function loadAdminEncoded(){
+  const res=await api('/api/staff/my-orders');
+  if(!res.ok){document.getElementById('adm-enc-tbody').innerHTML=`<tr><td colspan="10" style="text-align:center;padding:28px;color:var(--danger);font-family:'DM Mono',monospace;font-size:.9rem">Failed to load</td></tr>`;return;}
+  const data=res.data||[];
+  document.getElementById('adm-enc-count').textContent=data.length;
+  if(!data.length){document.getElementById('adm-enc-tbody').innerHTML=`<tr><td colspan="10" style="text-align:center;padding:28px;color:var(--text3);font-family:'DM Mono',monospace;font-size:.9rem">No services encoded today</td></tr>`;return;}
+  document.getElementById('adm-enc-tbody').innerHTML=data.map(o=>`<tr>
+    <td><span class="mono-cell">#${o.order_id}</span></td>
+    <td><span class="mono-cell">${o.tracking_id||'—'}</span></td>
+    <td><span style="font-size:.95rem;font-weight:600;color:var(--text)">${o.customer_name||'—'}</span></td>
+    <td><span class="mono-cell" style="font-size:.8rem">${o.customer_email||'<span style="opacity:.4">Walk-in</span>'}</span></td>
+    <td><span class="mono-cell">${SERVICE_RATES[o.service_type]?.label||o.service_type||'—'}</span></td>
+    <td><span class="mono-cell">${o.weight_kg||'—'}kg</span></td>
+    <td><span class="mono-cell">${fmtPHP(o.amount)}</span></td>
+    <td><span class="pill ${o.with_dryer?'teal':'red'}">${o.with_dryer?'Yes':'No'}</span></td>
+    <td><span class="pill ${o.with_downy?'purple':'red'}">${o.with_downy?'Yes':'No'}</span></td>
+    <td><span class="pill ${STATUS_PILL[o.status]||'amber'}">${STATUS_LABEL[o.status]||o.status}</span></td>
+  </tr>`).join('');
+}
+
 // ── STAFF ──
 async function loadStaff(){
-  const [staffRes,perfRes]=await Promise.all([api('/api/staff'),api('/api/admin/staff-performance')]);
+  const[staffRes,perfRes]=await Promise.all([api('/api/staff'),api('/api/admin/staff-performance')]);
   if(!staffRes.ok){showToast('Failed to load staff','error');return;}
   const staff=staffRes.data||[];const perf=perfRes.ok?(perfRes.data||[]):[];
   const perfMap={};perf.forEach(p=>{perfMap[p.full_name]={services:p.total_services||0,revenue:Number(p.total_revenue)||0};});
@@ -1067,16 +1414,11 @@ async function loadStaff(){
   if(perf.length)document.getElementById('st-perf-bars').innerHTML=perf.map(p=>`<div class="prog-row"><span class="prog-name">${p.full_name}</span><div class="prog-bg"><div class="prog-fill" style="width:${Math.round((p.total_services||0)/max*100)}%"></div></div><span class="prog-val">${p.total_services||0}</span></div>`).join('');
 }
 
-// ── ARCHIVES (MERGED) ──
-async function loadArchives(){
-  await Promise.all([loadStaffArchive(),loadCustomersArchive()]);
-}
-
+// ── ARCHIVES ──
+async function loadArchives(){await Promise.all([loadStaffArchive(),loadCustomersArchive()]);}
 async function loadStaffArchive(){
-  const res=await api('/api/staff/archived');
-  if(!res.ok){showToast('Failed to load archived staff','error');return;}
-  const data=res.data||[];
-  const count=data.length;
+  const res=await api('/api/staff/archived');if(!res.ok){showToast('Failed to load archived staff','error');return;}
+  const data=res.data||[];const count=data.length;
   document.getElementById('sta-count').textContent=`${count} archived`;
   document.getElementById('arc-staff-count-tab').textContent=count;
   document.getElementById('sta-tbody').innerHTML=data.length?data.map((s,i)=>`
@@ -1085,21 +1427,14 @@ async function loadStaffArchive(){
       <td><span class="mono-cell">${s.email||'—'}</span></td>
       <td><span class="mono-cell">${s.archived_at?new Date(s.archived_at).toLocaleDateString('en-PH'):'—'}</span></td>
       <td><div class="action-group">
-        <button class="act-btn restore" title="Restore" onclick="restoreStaff(${s.staff_id},'${esc(s.full_name)}')">
-          <svg viewBox="0 0 16 16" fill="none"><path d="M3 8l4 4 6-7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-        <button class="act-btn del" title="Delete Permanently" onclick="showDeleteConfirm('staff',${s.staff_id},'${esc(s.full_name)}')">
-          <svg viewBox="0 0 16 16" fill="none"><path d="M2.5 4.5h11M6 4.5V3h4v1.5M5 4.5l.5 9h5l.5-9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
+        <button class="act-btn restore" title="Restore" onclick="restoreStaff(${s.staff_id},'${esc(s.full_name)}')"><svg viewBox="0 0 16 16" fill="none"><path d="M3 8l4 4 6-7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <button class="act-btn del" title="Delete Permanently" onclick="showDeleteConfirm('staff',${s.staff_id},'${esc(s.full_name)}')"><svg viewBox="0 0 16 16" fill="none"><path d="M2.5 4.5h11M6 4.5V3h4v1.5M5 4.5l.5 9h5l.5-9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       </div></td>
     </tr>`).join(''):'<tr><td colspan="4" class="loading-row">No archived staff</td></tr>';
 }
-
 async function loadCustomersArchive(){
-  const res=await api('/api/customers/archived');
-  if(!res.ok){showToast('Failed to load archived customers','error');return;}
-  const data=res.data||[];
-  const count=data.length;
+  const res=await api('/api/customers/archived');if(!res.ok){showToast('Failed to load archived customers','error');return;}
+  const data=res.data||[];const count=data.length;
   document.getElementById('cua-count').textContent=`${count} archived`;
   document.getElementById('arc-cust-count-tab').textContent=count;
   document.getElementById('cua-tbody').innerHTML=data.length?data.map((c,i)=>`
@@ -1109,12 +1444,8 @@ async function loadCustomersArchive(){
       <td><span class="mono-cell">${c.phone||'—'}</span></td>
       <td><span class="mono-cell">${c.archived_at?new Date(c.archived_at).toLocaleDateString('en-PH'):'—'}</span></td>
       <td><div class="action-group">
-        <button class="act-btn restore" title="Restore" onclick="restoreCustomer(${c.user_id},'${esc(c.full_name)}')">
-          <svg viewBox="0 0 16 16" fill="none"><path d="M3 8l4 4 6-7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-        <button class="act-btn del" title="Delete Permanently" onclick="showDeleteConfirm('customer',${c.user_id},'${esc(c.full_name)}')">
-          <svg viewBox="0 0 16 16" fill="none"><path d="M2.5 4.5h11M6 4.5V3h4v1.5M5 4.5l.5 9h5l.5-9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
+        <button class="act-btn restore" title="Restore" onclick="restoreCustomer(${c.user_id},'${esc(c.full_name)}')"><svg viewBox="0 0 16 16" fill="none"><path d="M3 8l4 4 6-7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <button class="act-btn del" title="Delete Permanently" onclick="showDeleteConfirm('customer',${c.user_id},'${esc(c.full_name)}')"><svg viewBox="0 0 16 16" fill="none"><path d="M2.5 4.5h11M6 4.5V3h4v1.5M5 4.5l.5 9h5l.5-9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       </div></td>
     </tr>`).join(''):'<tr><td colspan="5" class="loading-row">No archived customers</td></tr>';
 }
@@ -1146,31 +1477,21 @@ async function loadCustomers(){
       </div></td>
     </tr>`).join(''):'<tr><td colspan="5" class="loading-row">No customers found</td></tr>';
 }
-
 async function toggleCustomer(id,action){const res=await api(`/api/customers/${action}/${id}`,{method:'PUT'});if(res.ok){showToast(action==='block'?'🚫 Customer blocked':'✅ Customer unblocked','success');loadCustomers();}else{showToast('❌ '+res.error,'error');}}
 async function archiveCustomer(id,name){if(!confirm(`Archive customer "${name}"?\n\nThey will be moved to the Archives and cannot log in.`))return;const res=await api(`/api/customers/archive/${id}`,{method:'PUT'});if(res.ok){showToast('📦 Customer archived','success');loadCustomers();}else{showToast('❌ '+res.error,'error');}}
 async function restoreCustomer(id,name){const res=await api(`/api/customers/unarchive/${id}`,{method:'PUT'});if(res.ok){showToast('✅ Customer restored','success');loadCustomersArchive();}else{showToast('❌ '+res.error,'error');}}
 
 // ── DELETE CONFIRM ──
 let _pendingDelete={type:null,id:null};
-function showDeleteConfirm(type,id,name){
-  _pendingDelete={type,id};
-  document.getElementById('del-target-name').textContent=name;
-  openModal('confirm-delete');
-}
+function showDeleteConfirm(type,id,name){_pendingDelete={type,id};document.getElementById('del-target-name').textContent=name;openModal('confirm-delete');}
 async function confirmDeleteAction(){
-  const{type,id}=_pendingDelete;
-  if(!type||!id)return;
+  const{type,id}=_pendingDelete;if(!type||!id)return;
   let url='';
   if(type==='staff')url=`/api/staff/delete/${id}`;
   else if(type==='customer')url=`/api/customers/delete/${id}`;
   const res=await api(url,{method:'DELETE'});
-  if(res.ok){
-    showToast('🗑️ Permanently deleted','success');
-    closeModal('confirm-delete');
-    if(type==='staff')loadStaffArchive();
-    else if(type==='customer')loadCustomersArchive();
-  }else{showToast('❌ '+res.error,'error');}
+  if(res.ok){showToast('🗑️ Permanently deleted','success');closeModal('confirm-delete');if(type==='staff')loadStaffArchive();else if(type==='customer')loadCustomersArchive();}
+  else{showToast('❌ '+res.error,'error');}
 }
 
 // ── PROMOS ──
@@ -1206,10 +1527,7 @@ async function deletePromo(id,code){if(!confirm(`Delete promo code "${code}"?`))
 let _allFeedback=[];
 async function loadFeedback(){
   const res=await api('/api/admin/feedbacks');
-  if(!res.ok){
-    document.getElementById('fb-list').innerHTML='<div class="empty-state">Could not load feedback. Ensure the /api/admin/feedbacks endpoint is registered in app.py.</div>';
-    return;
-  }
+  if(!res.ok){document.getElementById('fb-list').innerHTML='<div class="empty-state">Could not load feedback.</div>';return;}
   _allFeedback=res.data||[];
   const total=_allFeedback.length;
   const avg=total?(_allFeedback.reduce((s,f)=>s+(f.rating||0),0)/total).toFixed(1):'—';
@@ -1247,9 +1565,108 @@ function renderFeedback(data){
     </div>`).join('');
 }
 
+// ═══════════════════════════════════════════════════
+//  ISSUE REPORTS (NEW — receives operator reports)
+// ═══════════════════════════════════════════════════
+
+let _allIssueReports = [];
+
+async function loadIssueReports(){
+  document.getElementById('ir-list').innerHTML='<div class="empty-state"><span class="spinner"></span>Loading reports…</div>';
+  const res = await api('/api/admin/issues');
+  if(!res.ok){
+    document.getElementById('ir-list').innerHTML='<div class="empty-state">Could not load issue reports. Ensure /api/admin/issues is registered in app.py.</div>';
+    return;
+  }
+  _allIssueReports = res.data || [];
+  const total = _allIssueReports.length;
+  const open = _allIssueReports.filter(i=>i.status==='open').length;
+  const resolved = _allIssueReports.filter(i=>i.status==='resolved').length;
+  document.getElementById('ir-total').textContent = total;
+  document.getElementById('ir-open').textContent = open;
+  document.getElementById('ir-resolved').textContent = resolved;
+  document.getElementById('ir-count').textContent = total;
+  // Also update dashboard open issues badge
+  const dIssues = document.getElementById('d-issues');
+  if(dIssues) dIssues.textContent = open;
+  renderIssueReports(_allIssueReports);
+}
+
+function filterIssueReports(q){
+  const type = document.getElementById('ir-filter-type').value;
+  const status = document.getElementById('ir-filter-status').value;
+  const query = (q||'').toLowerCase();
+  const filtered = _allIssueReports.filter(i=>{
+    const matchQ = !query || (i.description||'').toLowerCase().includes(query) || (i.reporter_name||'').toLowerCase().includes(query) || String(i.issue_id).includes(query) || (i.issue_type||'').includes(query);
+    const matchT = !type || i.issue_type === type;
+    const matchS = !status || i.status === status;
+    return matchQ && matchT && matchS;
+  });
+  document.getElementById('ir-count').textContent = filtered.length;
+  renderIssueReports(filtered);
+}
+
+function renderIssueReports(data){
+  if(!data.length){
+    document.getElementById('ir-list').innerHTML='<div class="empty-state">No issue reports found.</div>';
+    return;
+  }
+  document.getElementById('ir-list').innerHTML = data.map(iss => {
+    const typeColor = {
+      damaged_clothes: 'var(--danger)',
+      lost_item: 'var(--warn)',
+      machine_malfunction: 'var(--orange)',
+      other: 'var(--text3)'
+    }[iss.issue_type] || 'var(--text3)';
+    const typeBg = {
+      damaged_clothes: 'var(--danger-bg)',
+      lost_item: 'var(--warn-bg)',
+      machine_malfunction: 'var(--orange-bg)',
+      other: 'var(--bg3)'
+    }[iss.issue_type] || 'var(--bg3)';
+    return `<div class="issue-card">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap">
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:7px;flex-wrap:wrap">
+            <span style="display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:5px;background:${typeBg};border:1px solid ${typeColor}22;font-family:'DM Mono',monospace;font-size:.48rem;letter-spacing:.1em;color:${typeColor};text-transform:uppercase">${ISSUE_TYPE_LABELS[iss.issue_type]||iss.issue_type}</span>
+            <span class="issue-status-badge ${iss.status}">${iss.status==='open'?'🔴 Open':'✅ Resolved'}</span>
+            ${iss.order_id?`<span class="mono-cell" style="font-size:.8rem">Order #${iss.order_id}</span>`:''}
+          </div>
+          <div class="issue-desc">${iss.description||'—'}</div>
+          <div class="issue-meta">
+            <span>Reported by: <strong>${iss.reporter_name||'Unknown Operator'}</strong></span>
+            <span>·</span>
+            <span>${iss.reported_at?new Date(iss.reported_at).toLocaleString('en-PH'):'—'}</span>
+            <span>·</span>
+            <span>Report #${iss.issue_id}</span>
+          </div>
+        </div>
+        ${iss.status==='open'?`<button class="btn-primary" style="height:32px;padding:0 14px;font-size:.48rem;flex-shrink:0" onclick="openResolveIssue(${iss.issue_id})">✅ Resolve</button>`:'<span style="font-family:\'DM Mono\',monospace;font-size:.5rem;color:var(--success);padding:6px 0;flex-shrink:0">✅ Resolved</span>'}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openResolveIssue(issueId){
+  document.getElementById('resolve-issue-id').value = issueId;
+  openModal('resolve-issue');
+}
+
+async function confirmResolveIssue(){
+  const id = document.getElementById('resolve-issue-id').value;
+  const res = await api(`/api/admin/issues/${id}/resolve`, {method:'PUT'});
+  if(res.ok){
+    showToast('✅ Issue marked as resolved','success');
+    closeModal('resolve-issue');
+    loadIssueReports();
+  } else {
+    showToast('❌ '+(res.error||'Failed to resolve issue'),'error');
+  }
+}
+
 // ── REPORTS ──
 async function loadReports(){
-  const [rev,ana]=await Promise.all([api('/api/admin/revenue'),api('/api/admin/analytics')]);
+  const[rev,ana]=await Promise.all([api('/api/admin/revenue'),api('/api/admin/analytics')]);
   if(rev.ok){const daily=Number(rev.data.daily_income)||0,monthly=Number(rev.data.monthly_income)||0;document.getElementById('rp-daily').textContent=daily.toLocaleString();document.getElementById('rp-monthly').textContent=monthly.toLocaleString();document.getElementById('rp-profit').textContent=Math.round(monthly*.6).toLocaleString();}
   if(ana.ok)document.getElementById('rp-today').textContent=ana.data.today_services??'—';
 }
@@ -1259,7 +1676,7 @@ async function exportPDF(){
   const orders=res.data||[];
   let html=`<html><head><title>Laundry Lounge — Orders Report</title><style>body{font-family:sans-serif;padding:20px;color:#111}h1{margin-bottom:4px}p{margin-bottom:16px;color:#666;font-size:13px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ddd;padding:8px 10px;text-align:left;font-size:12px}th{background:#E8F8FB}</style></head><body>`;
   html+=`<h1>Laundry Lounge — Orders Report</h1><p>Exported: ${new Date().toLocaleString()} · ${orders.length} records</p><table>`;
-  html+=`<tr><th>Order ID</th><th>Tracking ID</th><th>Customer</th><th>Service</th><th>Weight</th><th>Amount</th><th>Discount</th><th>Status</th><th>Date</th></tr>`;
+  html+=`<tr><th>Laundry ID</th><th>Tracking ID</th><th>Customer</th><th>Service</th><th>Weight</th><th>Amount</th><th>Discount</th><th>Status</th><th>Date</th></tr>`;
   orders.forEach(o=>{html+=`<tr><td>#${o.order_id}</td><td>${o.tracking_id||'—'}</td><td>${o.customer_name||'Walk-in'}</td><td>${o.service_type_label||o.service_type||'—'}</td><td>${o.weight_kg||'—'}kg</td><td>₱${Number(o.amount||0).toLocaleString()}</td><td>${o.discount_pct&&Number(o.discount_pct)>0?Number(o.discount_pct)+'%':'-'}</td><td>${o.status||'—'}</td><td>${o.created_at?new Date(o.created_at).toLocaleDateString('en-PH'):'—'}</td></tr>`;});
   html+=`</table></body></html>`;
   const w=window.open('','_blank');if(w){w.document.write(html);w.document.close();w.print();}else showToast('Popup blocked. Please allow popups.','error');
@@ -1267,8 +1684,7 @@ async function exportPDF(){
 
 // ── ADMIN PROFILE ──
 async function loadAdminProfile(){
-  const res=await api('/api/me');
-  if(!res.ok)return;
+  const res=await api('/api/me');if(!res.ok)return;
   const d=res.data;
   const initial=(d.full_name||'A')[0].toUpperCase();
   document.getElementById('profile-av-big').textContent=initial;
@@ -1318,9 +1734,6 @@ async function changeAdminPassword(){
   }else{showToast('❌ '+(res.error||'Could not change password'),'error');}
 }
 
-// ── UTILITY ──
-function esc(s){return(s||'').replace(/'/g,"\\'").replace(/"/g,'&quot;')}
-
 // ── ME ──
 async function loadMe(){const res=await api('/api/me');if(res.ok&&res.data.full_name){document.getElementById('sb-name').textContent=res.data.full_name;document.getElementById('sb-av').textContent=(res.data.full_name||'A')[0];}}
 
@@ -1328,7 +1741,7 @@ async function loadMe(){const res=await api('/api/me');if(res.ok&&res.data.full_
 setInterval(()=>{
   const active=document.querySelector('.section.active');if(!active)return;
   const id=active.id.replace('sec-','');
-  const map={dashboard:loadDashboard,analytics:loadAnalytics,revenue:loadRevenue,orders:loadOrders,staff:loadStaff,customers:loadCustomers,archives:loadArchives,promos:loadPromos,feedback:loadFeedback,reports:loadReports};
+  const map={dashboard:loadDashboard,analytics:loadAnalytics,revenue:loadRevenue,orders:loadOrders,encode:loadAdminEncoded,staff:loadStaff,customers:loadCustomers,archives:loadArchives,promos:loadPromos,feedback:loadFeedback,issuereports:loadIssueReports,reports:loadReports};
   if(map[id])map[id]();
 },60000);
 
@@ -1358,6 +1771,7 @@ setInterval(()=>{
 // ── INIT ──
 loadMe();
 loadDashboard();
+admCalcPrice();
 </script>
 </body>
 </html>

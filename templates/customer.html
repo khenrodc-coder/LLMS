@@ -417,7 +417,7 @@ td{padding:12px 16px;vertical-align:middle;font-size:1rem}
     <div style="font-size:1rem;color:var(--text3);margin-bottom:16px">You don't have an active service right now.<br>Visit our shop to drop off your laundry!</div>
     <div class="info-box blue" style="text-align:left;margin-top:10px">
       <span class="info-box-ico">📧</span>
-      <div class="info-box-text">Your laundry status appears here automatically when our staff encodes your order using your registered email address (<strong id="status-email-hint"></strong>).</div>
+      <div class="info-box-text">Your laundry status appears here automatically when our staff encodes your Service Information using your registered email address (<strong id="status-email-hint"></strong>).</div>
     </div>
   </div>
 
@@ -473,7 +473,7 @@ td{padding:12px 16px;vertical-align:middle;font-size:1rem}
   </div>
   <div class="divider"><div class="rule"></div><div class="dia"></div><div class="rule"></div></div>
   <div class="gstatic card">
-    <div class="card-lbl">Select Order to Rate</div>
+    <div class="card-lbl">Select Laundry Service to Rate</div>
     <div class="form-group">
       <label class="form-label">Completed Order</label>
       <select id="fb-order-select" class="form-input" style="height:42px;cursor:pointer"><option value="">Select completed order…</option></select>
@@ -646,7 +646,7 @@ const STATUS_BANNER_CONFIG={
   ready_for_pickup:{cls:'ready_for_pickup',stage:'📦 Ready for Pickup!',sub:'Your laundry is complete and ready. Please come pick it up!'},
   completed:{cls:'completed',stage:'✅ Completed',sub:'Your laundry has been picked up. Thank you for choosing Laundry Lounge!'},
   done:{cls:'completed',stage:'✅ Completed',sub:'Your laundry has been picked up. Thank you for choosing Laundry Lounge!'},
-  cancelled:{cls:'no-order',stage:'❌ Cancelled',sub:'This order has been cancelled.'},
+  cancelled:{cls:'no-order',stage:'❌ Cancelled',sub:'This Laundry Service has been cancelled.'},
 };
 
 /* PIPELINE */
@@ -908,12 +908,12 @@ async function loadFeedback(){
   const ratedOrderIds=new Set((fb||[]).map(f=>f.order_id));
   const unrated=done.filter(o=>!ratedOrderIds.has(o.order_id));
   const sel=document.getElementById('fb-order-select');
-  sel.innerHTML='<option value="">Select completed order…</option>'+unrated.map(o=>`<option value="${o.order_id}">${o.tracking_id||'Order #'+o.order_id} — ${o.service_type_label||o.service_type}</option>`).join('');
+  sel.innerHTML='<option value="">Select completed Services…</option>'+unrated.map(o=>`<option value="${o.order_id}">${o.tracking_id||'Services #'+o.order_id} — ${o.service_type_label||o.service_type}</option>`).join('');
   const fbEl=document.getElementById('fb-history');
   if(!fb||!fb.length){fbEl.innerHTML='<p style="color:var(--text3);font-size:1rem;padding:10px 0">No feedback submitted yet.</p>';return;}
   fbEl.innerHTML=fb.map(f=>`
     <div class="inline-row" style="align-items:flex-start">
-      <div><span class="mono-cell">${f.tracking_id||'Order #'+f.order_id}</span><div style="font-size:.82rem;color:var(--text2);margin-top:4px">${f.comment||'—'}</div></div>
+      <div><span class="mono-cell">${f.tracking_id||'Laundry Service #'+f.order_id}</span><div style="font-size:.82rem;color:var(--text2);margin-top:4px">${f.comment||'—'}</div></div>
       <div style="text-align:right;flex-shrink:0">
         <div style="color:var(--warn);font-size:1.1rem">${'★'.repeat(f.rating||0)}<span style="opacity:.25">${'★'.repeat(5-(f.rating||0))}</span></div>
         <div class="mono-cell">${f.created_at?new Date(f.created_at).toLocaleDateString('en-PH'):'—'}</div>
@@ -992,7 +992,7 @@ const STATUS_CHANGE_NOTIFS={
   folding:{ico:'👕',msg:'Almost done — folding stage in progress!'},
   ready_for_pickup:{ico:'📦',msg:'Your laundry is READY FOR PICKUP! Please come collect it.'},
   completed:{ico:'✅',msg:'Your laundry has been collected. Thank you!'},
-  cancelled:{ico:'❌',msg:'Your order has been cancelled.'},
+  cancelled:{ico:'❌',msg:'Your Laundry Service has been cancelled.'},
 };
 
 /* INIT */
@@ -1020,7 +1020,7 @@ const STATUS_CHANGE_NOTIFS={
     /* New orders detected */
     orders.forEach(o=>{
       if(!lastOrderIds.has(o.order_id)){
-        addNotif('🧺','New laundry order detected! Tracking: '+(o.tracking_id||''));
+        addNotif('🧺','New laundry Service detected! Tracking: '+(o.tracking_id||''));
         showToast('🧺 New order: '+o.tracking_id);
       }
     });
@@ -1040,8 +1040,8 @@ const STATUS_CHANGE_NOTIFS={
     /* Orders completed/gone */
     lastOrderIds.forEach(id=>{
       if(!currentIds.has(id)){
-        addNotif('✅','A laundry order is now complete. Visit History to view the receipt.');
-        showToast('✅ Order completed!');
+        addNotif('✅','A laundry Service is now complete. Visit History to view the receipt.');
+        showToast('✅ Service completed!');
         delete lastOrderStatuses[id];
         const activeSec=document.querySelector('.section.active');
         if(activeSec&&activeSec.id==='sec-dashboard')loadDashboard();

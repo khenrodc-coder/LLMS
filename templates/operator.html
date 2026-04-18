@@ -75,7 +75,6 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opa
 .sb-urole{font-family:'DM Mono',monospace;font-size:.48rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
 .sb-logout{display:flex;align-items:center;justify-content:center;gap:8px;padding:10px;border-radius:10px;background:var(--danger-bg);color:var(--danger);border:1px solid var(--danger-border);font-family:'DM Mono',monospace;font-size:.54rem;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;text-decoration:none;transition:background .2s,transform .15s}
 .sb-logout:hover{background:rgba(192,57,43,.15);transform:translateY(-1px)}
-/* NOTIFICATION BADGE */
 .notif-badge{position:absolute;top:6px;right:6px;min-width:16px;height:16px;border-radius:8px;background:var(--danger);color:#fff;font-family:'DM Mono',monospace;font-size:.4rem;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 4px;display:none}
 .notif-badge.visible{display:flex}
 .topbar{position:sticky;top:0;z-index:30;background:var(--surface);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:12px clamp(14px,4vw,28px);transition:background .4s}
@@ -194,7 +193,6 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opa
 .ws-dot.pending-dot{background:var(--bg3);border-color:var(--border);color:var(--text3)}
 .ws-arrow{font-size:.75rem;color:var(--text3)}
 .ws-lbl{font-family:'DM Mono',monospace;font-size:.9rem;color:var(--text3);letter-spacing:.08em;text-align:center;margin-top:2px;text-transform:uppercase}
-/* ENCODE FORM */
 .price-calc-box{background:var(--bg2);border:1px solid var(--border-acc);border-radius:12px;padding:16px 18px;margin-top:14px}
 .price-line{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)}
 .price-line:last-child{border-bottom:none;padding-top:10px;margin-top:3px}
@@ -323,12 +321,9 @@ td{padding:12px 16px;vertical-align:middle;font-size:1.3rem}
 .enc-email-hint.err{color:var(--danger)}
 .enc-email-hint.info{color:var(--accent)}
 .promo-status{font-family:'DM Mono',monospace;font-size:.46rem;margin-top:6px;min-height:18px}
-/* FIELD VALIDATION */
 .field-error{font-family:'DM Mono',monospace;font-size:.46rem;color:var(--danger);margin-top:5px;min-height:16px}
-/* NAME ROW */
 .name-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
 @media(max-width:500px){.name-row{grid-template-columns:1fr}}
-/* AUTOCOMPLETE */
 .autocomplete-wrap{position:relative}
 .autocomplete-dropdown{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--surface2);border:1px solid var(--border-acc);border-radius:12px;box-shadow:var(--shadow);z-index:200;max-height:220px;overflow-y:auto;display:none;animation:slideDown .18s var(--ease)}
 .autocomplete-dropdown.open{display:block}
@@ -338,16 +333,13 @@ td{padding:12px 16px;vertical-align:middle;font-size:1.3rem}
 .ac-name{font-size:.9rem;font-weight:600;color:var(--text)}
 .ac-email{font-family:'DM Mono',monospace;font-size:.46rem;color:var(--text3);margin-top:2px}
 .ac-badge{font-family:'DM Mono',monospace;font-size:.38rem;padding:2px 6px;border-radius:10px;background:rgba(0,180,216,.1);color:var(--accent);margin-left:6px;border:1px solid var(--border-acc)}
-/* PROMO CARD */
 .promo-card{border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:10px;background:var(--surface);display:flex;align-items:center;justify-content:space-between;gap:12px}
 .promo-card-left .promo-code{font-family:'DM Mono',monospace;font-size:1.1rem;font-weight:700;color:var(--accent);letter-spacing:.1em}
 .promo-card-left .promo-disc{font-family:'DM Mono',monospace;font-size:.52rem;color:var(--text3);margin-top:3px}
-/* NOTIFICATION BANNER */
 .notif-banner{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;background:rgba(160,112,16,0.06);border:1.5px solid var(--warn-border);border-radius:12px;margin-bottom:10px;animation:fadeUp .3s var(--ease)}
 .notif-banner .nb-icon{font-size:1.4rem;flex-shrink:0}
 .notif-banner .nb-txt{flex:1;font-family:'DM Mono',monospace;font-size:.52rem;color:var(--warn);line-height:1.7}
 .notif-banner .nb-new{display:inline-block;padding:2px 8px;border-radius:10px;background:var(--warn);color:#fff;font-size:.38rem;margin-left:6px;vertical-align:middle}
-/* PROFILE */
 .profile-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin-bottom:14px}
 .profile-avatar-wrap{display:flex;flex-direction:column;align-items:center;gap:14px;padding:26px 0 18px}
 .profile-avatar-big{width:88px;height:88px;border-radius:50%;background:rgba(0,180,216,.12);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:2.6rem;color:var(--accent);border:2px solid var(--border-acc)}
@@ -356,6 +348,8 @@ td{padding:12px 16px;vertical-align:middle;font-size:1.3rem}
 .pw-strength-bar{height:4px;border-radius:20px;background:var(--bg3);overflow:hidden;margin-top:6px}
 .pw-strength-fill{height:100%;border-radius:20px;transition:width .4s,background .4s}
 .pw-strength-label{font-family:'DM Mono',monospace;font-size:.46rem;letter-spacing:.1em;text-transform:uppercase;margin-top:4px}
+/* ── ISSUE SENT BADGE ── */
+.issue-sent-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;background:var(--success-bg);border:1px solid var(--success-border);font-family:'DM Mono',monospace;font-size:.4rem;color:var(--success);margin-top:4px}
 @media(max-width:640px){.grid-2{grid-template-columns:1fr}.search-input{width:100%}.toolbar{flex-direction:column;align-items:stretch}.toolbar-left{flex-direction:column}.name-row{grid-template-columns:1fr}}
 </style>
 </head>
@@ -566,19 +560,18 @@ td{padding:12px 16px;vertical-align:middle;font-size:1.3rem}
   <div class="page-head">
     <div class="live-tag"><div class="live-dot"></div>Encode</div>
     <div class="page-title">Encode <em>Service</em></div>
-    <div class="page-sub">Register walk-in customer. Enter email to send auto tracking &amp; link order to their account.</div>
+    <!-- UPDATED SUBTITLE: email is now optional -->
+    <div class="page-sub">Register walk-in customer. Email is optional &mdash; enter it to send auto tracking &amp; link to their account.</div>
   </div>
   <div class="info-notice">
     <div class="info-icon">&#x1F4E7;</div>
-    <div class="info-txt">EMAIL + ACCOUNT LINK &mdash; If the customer email matches a registered account, the order is automatically linked to their portal. Type the first name to search registered customers and auto-fill details.</div>
+    <!-- UPDATED INFO: clarifies email is optional -->
+    <div class="info-txt">EMAIL IS OPTIONAL &mdash; You can encode a service without a customer email. If an email is provided and matches a registered account, the Laundry Status is automatically linked to their portal. Type the first name to search registered customers and auto-fill details.</div>
   </div>
   <div class="divider"><div class="rule"></div><div class="dia"></div><div class="rule"></div></div>
   <div class="grid-2">
-    <!-- LEFT: Form -->
     <div class="gstatic card">
       <div class="card-lbl">Service Entry</div>
-
-      <!-- NAME FIELDS (split + autocomplete) -->
       <div class="name-row">
         <div class="mfield autocomplete-wrap" style="margin-bottom:0">
           <label>First Name *</label>
@@ -593,10 +586,11 @@ td{padding:12px 16px;vertical-align:middle;font-size:1.3rem}
         </div>
       </div>
 
+      <!-- UPDATED: Gmail field now optional — label changed, hint updated, no required validation -->
       <div class="mfield">
-        <label>Gmail Address <span style="font-size:.7rem;opacity:.7">(for tracking &amp; account link)</span></label>
-        <input type="email" id="enc-email" placeholder="customer@gmail.com" autocomplete="off" oninput="validateGmail()">
-        <span class="enc-email-hint info" id="enc-email-hint">&#x1F4E7; Must end in @gmail.com &middot; 6–30 characters</span>
+        <label>Gmail Address <span style="font-size:.7rem;opacity:.7;color:var(--accent)">(optional &mdash; for tracking &amp; account link)</span></label>
+        <input type="email" id="enc-email" placeholder="customer@gmail.com (optional)" autocomplete="off" oninput="validateGmail()">
+        <span class="enc-email-hint info" id="enc-email-hint">&#x1F4E7; Optional &mdash; must end in @gmail.com if provided &middot; 6&ndash;30 characters</span>
         <div class="field-error" id="enc-email-err"></div>
       </div>
 
@@ -628,12 +622,12 @@ td{padding:12px 16px;vertical-align:middle;font-size:1.3rem}
         <label class="cb-wrap"><input type="checkbox" id="enc-downy" onchange="calcPrice()"><span style="font-size:.88rem;color:var(--text2)">With Downy</span></label>
       </div>
       <div style="display:flex;gap:9px;flex-wrap:wrap;margin-top:4px">
-        <button class="btn-primary" id="enc-submit-btn" onclick="encodeService()">&#x1F4E7; Encode &amp; Send Tracking</button>
+        <!-- UPDATED button label: no email required anymore -->
+        <button class="btn-primary" id="enc-submit-btn" onclick="encodeService()">&#x2795; Encode Service</button>
         <button class="btn-ghost" onclick="clearEncodeForm()">Clear Form</button>
       </div>
     </div>
 
-    <!-- RIGHT: Calculation -->
     <div class="gstatic card">
       <div class="card-lbl">Live Calculation <span class="sys-rule">&#x2699; System Computed</span></div>
       <div class="price-calc-box">
@@ -650,12 +644,12 @@ td{padding:12px 16px;vertical-align:middle;font-size:1.3rem}
         <div id="calc-timeline" style="display:flex;gap:6px;flex-wrap:wrap"><span class="pill blue"><span class="pill-dot"></span>Washing 44m</span></div>
       </div>
       <div style="margin-top:16px;padding:12px 14px;background:var(--success-bg);border:1px solid var(--success-border);border-radius:10px">
-        <div style="font-family:'DM Mono',monospace;font-size:.86rem;color:var(--success);letter-spacing:.1em;text-transform:uppercase;margin-bottom:7px">&#x1F4E7; Auto Email &amp; Account Link Flow</div>
+        <div style="font-family:'DM Mono',monospace;font-size:.86rem;color:var(--success);letter-spacing:.1em;text-transform:uppercase;margin-bottom:7px">&#x1F4CB; Service Flow</div>
         <div style="font-family:'DM Mono',monospace;font-size:.86rem;color:var(--text3);line-height:1.9">
           1. Encode &rarr; System saves &amp; generates tracking code<br>
-          2. If email is a registered account &rarr; &#x1F517; order linked to their portal<br>
-          3. Email sent instantly (no login needed to track)<br>
-          4. Registered customer sees live status in dashboard automatically<br>
+          2. If email provided &amp; registered &rarr; &#x1F517; linked to their portal<br>
+          3. If email provided &rarr; tracking email sent instantly<br>
+          4. No email needed to proceed &mdash; walk-in friendly<br>
           5. Auto-timer: Wash(44m)&rarr;Dry(40m)?&rarr;Downy(16m)?&rarr;Folding Queue<br>
           6. Staff marks Fold Done &rarr; Ready for Pickup<br>
           7. Operator clicks &ldquo;Send Pickup Email&rdquo; to notify customer<br>
@@ -729,7 +723,7 @@ td{padding:12px 16px;vertical-align:middle;font-size:1.3rem}
   </div>
   <div class="info-notice">
     <div class="info-icon">&#x1F4E7;</div>
-    <div class="info-txt">PICKUP READY &mdash; Click <strong>Send Pickup Email</strong> to notify the customer. Then mark <strong>Completed</strong> when they collect.</div>
+    <div class="info-txt">PICKUP READY &mdash; Click <strong>Send Pickup Email</strong> to notify the customer (only available if email was provided). Then mark <strong>Completed</strong> when they collect.</div>
   </div>
   <div class="divider"><div class="rule"></div><div class="dia"></div><div class="rule"></div></div>
   <div class="toolbar">
@@ -748,7 +742,7 @@ td{padding:12px 16px;vertical-align:middle;font-size:1.3rem}
   </div>
   <div class="info-notice">
     <div class="info-icon">&#x1F3F7;&#xFE0F;</div>
-    <div class="info-txt">PROMO CODES &mdash; Use these codes in the Encode Service form. When Admin adds a new promo, you will see a notification here. These codes are managed by Admin — you can view but not edit them.</div>
+    <div class="info-txt">PROMO CODES &mdash; Use these codes in the Encode Service form. When Admin adds a new promo, you will see a notification here. These codes are managed by Admin &mdash; you can view but not edit them.</div>
   </div>
   <div class="divider"><div class="rule"></div><div class="dia"></div><div class="rule"></div></div>
   <div id="promo-notif-area" style="margin-bottom:4px"></div>
@@ -768,6 +762,11 @@ td{padding:12px 16px;vertical-align:middle;font-size:1.3rem}
     <div class="live-tag"><div class="live-dot"></div>Issues</div>
     <div class="page-title">Issue <em>Reports</em></div>
     <div class="page-sub">Report damaged clothes, lost items, or machine malfunctions to management.</div>
+  </div>
+  <!-- UPDATED: notice that reports go to admin -->
+  <div class="info-notice">
+    <div class="info-icon">&#x1F4E4;</div>
+    <div class="info-txt">ADMIN REPORTING &mdash; All issue reports you submit are automatically sent to and stored in the Admin Reports section for monitoring and review. Issues are visible to management immediately.</div>
   </div>
   <div class="divider"><div class="rule"></div><div class="dia"></div><div class="rule"></div></div>
   <div class="toolbar">
@@ -845,7 +844,7 @@ td{padding:12px 16px;vertical-align:middle;font-size:1.3rem}
   <div class="modal" style="max-width:540px">
     <div class="modal-hdr"><div class="modal-ttl">Assign Machine &amp; Start</div><button class="modal-close" onclick="closeModal('assign-start')">&#x2715;</button></div>
     <div style="margin-bottom:14px;padding:13px 15px;background:var(--bg2);border-radius:10px;border:1px solid var(--border)">
-      <div style="font-family:'DM Mono',monospace;font-size:.46rem;color:var(--text3);margin-bottom:5px;letter-spacing:.12em;text-transform:uppercase">Order Details</div>
+      <div style="font-family:'DM Mono',monospace;font-size:.46rem;color:var(--text3);margin-bottom:5px;letter-spacing:.12em;text-transform:uppercase">Laundry Service Details</div>
       <div id="as-order-info" style="font-size:.92rem;font-weight:600;color:var(--text)">&mdash;</div>
       <div id="as-order-meta" style="font-family:'DM Mono',monospace;font-size:.48rem;color:var(--text3);margin-top:4px"></div>
     </div>
@@ -865,6 +864,11 @@ td{padding:12px 16px;vertical-align:middle;font-size:1.3rem}
 <div class="modal-overlay" id="modal-add-issue">
   <div class="modal">
     <div class="modal-hdr"><div class="modal-ttl">Report Issue</div><button class="modal-close" onclick="closeModal('add-issue')">&#x2715;</button></div>
+    <!-- ADDED: admin notification note in modal -->
+    <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 13px;background:rgba(0,180,216,.05);border:1px solid var(--border-acc);border-radius:9px;margin-bottom:14px">
+      <span style="font-size:1rem;flex-shrink:0">&#x1F4E4;</span>
+      <div style="font-family:'DM Mono',monospace;font-size:.46rem;color:var(--accent);line-height:1.7">This report will be automatically sent to Admin for review and monitoring.</div>
+    </div>
     <div class="mfield">
       <label>Issue Type</label>
       <select id="iss-type">
@@ -874,11 +878,11 @@ td{padding:12px 16px;vertical-align:middle;font-size:1.3rem}
         <option value="other">&#x1F4CC; Other</option>
       </select>
     </div>
-    <div class="mfield"><label>Order ID (optional)</label><input type="number" id="iss-order-id" placeholder="e.g. 12" min="1"></div>
+    <div class="mfield"><label>Laundry ID (optional)</label><input type="number" id="iss-order-id" placeholder="e.g. 12" min="1"></div>
     <div class="mfield"><label>Description *</label><textarea id="iss-desc" placeholder="Describe the issue clearly&hellip;"></textarea></div>
     <div class="modal-btns">
       <button class="btn-ghost" onclick="closeModal('add-issue')">Cancel</button>
-      <button class="btn-primary" id="iss-submit-btn" onclick="submitIssue()">Submit Report</button>
+      <button class="btn-primary" id="iss-submit-btn" onclick="submitIssue()">&#x1F4E4; Submit &amp; Send to Admin</button>
     </div>
   </div>
 </div>
@@ -901,12 +905,12 @@ td{padding:12px 16px;vertical-align:middle;font-size:1.3rem}
     <span class="ticker-item">Laundry Lounge</span><span class="ticker-dot"></span>
     <span class="ticker-item">8 Machines &middot; 8kg Each &middot; Auto-Timer System</span><span class="ticker-dot"></span>
     <span class="ticker-item">Wash 44m &middot; Dry 40m &middot; Downy 16m &middot; Fold Manual</span><span class="ticker-dot"></span>
-    <span class="ticker-item">Auto Email Tracking &middot; Account Link &middot; No Login Required for Customers</span><span class="ticker-dot"></span>
+    <span class="ticker-item">Email Optional &middot; Walk-in Friendly &middot; Auto Link if Registered</span><span class="ticker-dot"></span>
     <span class="ticker-item">Machine Operator</span><span class="ticker-dot"></span>
     <span class="ticker-item">Laundry Lounge</span><span class="ticker-dot"></span>
     <span class="ticker-item">8 Machines &middot; 8kg Each &middot; Auto-Timer System</span><span class="ticker-dot"></span>
     <span class="ticker-item">Wash 44m &middot; Dry 40m &middot; Downy 16m &middot; Fold Manual</span><span class="ticker-dot"></span>
-    <span class="ticker-item">Auto Email Tracking &middot; Account Link &middot; No Login Required for Customers</span><span class="ticker-dot"></span>
+    <span class="ticker-item">Email Optional &middot; Walk-in Friendly &middot; Auto Link if Registered</span><span class="ticker-dot"></span>
   </div>
 </div>
 
@@ -920,15 +924,17 @@ const STATUS_PILL={pending:'amber',washing:'blue',drying:'teal',downy:'purple',f
 const STATUS_LABELS={pending:'\u23F3 Pending',washing:'\uD83E\uDEE7 Washing',drying:'\uD83D\uDCA8 Drying',downy:'\uD83C\uDF38 Downy',folding:'\uD83D\uDC55 Folding',ready_for_pickup:'\uD83D\uDCE6 Ready for Pickup',completed:'\u2705 Done',done:'\u2705 Done',cancelled:'\u274C Cancelled'};
 const ISSUE_TYPE_LABELS={damaged_clothes:'\uD83D\uDD34 Damaged Clothes',lost_item:'\uD83D\uDFE0 Lost Item',machine_malfunction:'\uD83D\uDD27 Machine Malfunction',other:'\uD83D\uDCCC Other'};
 
-// Gmail validation rules
+// ── GMAIL VALIDATION (optional field) ──
+// CHANGED: Gmail is now optional — empty string is valid
 const GMAIL_FORBIDDEN=/[&=_'\-+,<>]/;
 function validateGmail(){
   const val=document.getElementById('enc-email').value.trim();
   const hint=document.getElementById('enc-email-hint');
   const err=document.getElementById('enc-email-err');
   const inp=document.getElementById('enc-email');
+  // CHANGED: empty is perfectly fine now
   if(!val){
-    hint.textContent='\uD83D\uDCE7 Must end in @gmail.com \u00B7 6\u201330 characters';
+    hint.textContent='\uD83D\uDCE7 Optional \u2014 must end in @gmail.com if provided \u00B7 6\u201330 characters';
     hint.className='enc-email-hint info';
     err.textContent='';inp.classList.remove('error');return true;
   }
@@ -938,7 +944,7 @@ function validateGmail(){
   if(GMAIL_FORBIDDEN.test(val.replace('@gmail.com',''))){err.textContent='Contains forbidden characters: & = _ \u2019 - + , < >';inp.classList.add('error');return false;}
   if(!/^[^\s@]+@gmail\.com$/.test(val)){err.textContent='Invalid email format';inp.classList.add('error');return false;}
   err.textContent='';inp.classList.remove('error');
-  hint.textContent='\u2705 Valid Gmail address';hint.className='enc-email-hint ok';return true;
+  hint.textContent='\u2705 Valid Gmail address \u2014 tracking will be sent';hint.className='enc-email-hint ok';return true;
 }
 
 // ── THEME ──
@@ -1096,18 +1102,15 @@ function renderQueue(data){
     const assignBtn=o.status==='pending'?`<button class="btn-add" style="height:30px;font-size:.44rem;padding:0 12px;flex-shrink:0" data-order-id="${o.order_id}" data-customer="${escHtml(o.customer_name||'Walk-in')}" data-machines="${o.machines_needed}" data-service="${escHtml(o.service_type_label||SERVICE_RATES[o.service_type]?.label||o.service_type)}" data-weight="${o.weight_kg}" onclick="openAssignStartFromBtn(this)">Assign &amp; Start</button>`:'';
     const foldBtn=o.status==='folding'?`<button class="btn-success" style="height:30px;font-size:.44rem;padding:0 12px;flex-shrink:0" onclick="singleFoldDone(${o.order_id},this)">\u2705 Fold Done</button>`:'';
     const pickupBtn=o.status==='ready_for_pickup'?`${o.customer_email?`<button class="btn-primary" style="height:30px;font-size:.44rem;padding:0 11px;flex-shrink:0" onclick="sendPickupEmail(${o.order_id},this)">\uD83D\uDCE7 Notify</button>`:''}<button class="btn-orange" style="height:30px;font-size:.44rem;padding:0 12px;flex-shrink:0;margin-left:${o.customer_email?'4px':'auto'}" onclick="markCompleted(${o.order_id},this)">\u2714 Done</button>`:'';
-    const emailBadge=o.customer_email?(o.email_sent?'<span class="email-sent-badge">\uD83D\uDCE7 Email sent</span>':'<span class="email-pending-badge">\uD83D\uDCE7 No email yet</span>'):'';
+    const emailBadge=o.customer_email?(o.email_sent?'<span class="email-sent-badge">\uD83D\uDCE7 Email sent</span>':'<span class="email-pending-badge">\uD83D\uDCE7 No email yet</span>'):'<span class="pill amber" style="font-size:.36rem">No Email</span>';
     const linkedBadge=o.customer_id?'<span class="linked-account-badge">\uD83D\uDD17 Linked</span>':'';
     const workflow=buildWorkflowSteps(o.status,o.with_dryer,o.with_downy);
     return`<div class="queue-item ${o.status}"><div class="qi-top"><div><div class="qi-id">Order #${o.order_id} \u00B7 TRK: ${escHtml(o.tracking_id||'\u2014')}${o.queue_position?' \u00B7 Queue #'+o.queue_position:''}</div><div class="qi-customer">${escHtml(o.customer_name||'Walk-in')}</div><div class="qi-service">${escHtml(SERVICE_RATES[o.service_type]?.label||o.service_type)} \u00B7 ${o.weight_kg}kg \u00B7 ${o.machines_needed} unit(s)</div>${o.customer_email?`<div class="mono-cell" style="font-size:.52rem;margin-top:2px">\uD83D\uDCE7 ${escHtml(o.customer_email)}</div>`:''}</div><span class="pill ${STATUS_PILL[o.status]||'amber'}">${STATUS_LABELS[o.status]||o.status}</span></div>${workflow}<div class="qi-meta"><span class="mono-cell">${fmtPHP(o.amount)}</span>${o.with_dryer?'<span class="pill teal">\uD83D\uDCA8 Dryer</span>':''}${o.with_downy?'<span class="pill purple">\uD83C\uDF38 Downy</span>':''}${o.promo_code?`<span class="pill green">\uD83C\uDFF7 ${escHtml(o.promo_code)}</span>`:''}${emailBadge}${linkedBadge}${timerBadge}<span style="margin-left:auto;display:flex;gap:5px;align-items:center">${assignBtn}${foldBtn}${pickupBtn}</span></div>${stageBar}</div>`;
   }).join('');startLiveTimers();
 }
 
-// ══════════════════════════════════════════════════════════════
-//  AUTOCOMPLETE — Customer search
-// ══════════════════════════════════════════════════════════════
+// ── AUTOCOMPLETE ──
 let _acTimer=null,_acOpen=false;
-
 async function onFirstNameInput(){
   const q=document.getElementById('enc-firstname').value.trim();
   clearFieldErr('enc-firstname-err');
@@ -1119,7 +1122,6 @@ async function onFirstNameInput(){
     renderAutocomplete(data);
   },260);
 }
-
 function renderAutocomplete(customers){
   const dd=document.getElementById('ac-dropdown');
   dd.innerHTML=customers.slice(0,8).map(c=>{
@@ -1132,7 +1134,6 @@ function renderAutocomplete(customers){
   }).join('');
   dd.classList.add('open');_acOpen=true;
 }
-
 function selectCustomer(first,last,email){
   document.getElementById('enc-firstname').value=first;
   document.getElementById('enc-lastname').value=last;
@@ -1140,16 +1141,10 @@ function selectCustomer(first,last,email){
   closeAutocomplete();
   showToast('\uD83D\uDD17 Customer details auto-filled from registered account','success',2500);
 }
-
-function closeAutocomplete(){
-  const dd=document.getElementById('ac-dropdown');dd.classList.remove('open');_acOpen=false;
-}
-
+function closeAutocomplete(){const dd=document.getElementById('ac-dropdown');dd.classList.remove('open');_acOpen=false;}
 document.addEventListener('click',e=>{if(!e.target.closest('.autocomplete-wrap'))closeAutocomplete();});
 
-// ══════════════════════════════════════════════════════════════
-//  ENCODE SERVICE
-// ══════════════════════════════════════════════════════════════
+// ── ENCODE SERVICE ──
 let _validatedPromoCode=null,_validatedDiscountPct=0;
 
 async function validatePromoStaff(){
@@ -1187,6 +1182,7 @@ function calcPrice(){
   document.getElementById('calc-timeline').innerHTML=tl.join('');
 }
 
+// UPDATED encodeService — email is now optional, no email required to proceed
 async function encodeService(){
   const firstName=document.getElementById('enc-firstname').value.trim();
   const lastName=document.getElementById('enc-lastname').value.trim();
@@ -1196,12 +1192,12 @@ async function encodeService(){
   const dryer=document.getElementById('enc-dryer').checked;
   const downy=document.getElementById('enc-downy').checked;
 
-  // Validate
   let hasError=false;
   if(!firstName){document.getElementById('enc-firstname-err').textContent='First name is required';hasError=true;}
   if(!lastName){document.getElementById('enc-lastname-err').textContent='Last name is required';hasError=true;}
   if(!svc){showToast('\u26A0\uFE0F Select a service type','error');hasError=true;}
   if(!weight||isNaN(weight)||weight<0.5){showToast('\u26A0\uFE0F Minimum weight is 0.5 kg','error');hasError=true;}
+  // CHANGED: only validate email FORMAT if email was provided — empty is fine
   if(email&&!validateGmail()){hasError=true;}
   if(hasError)return;
 
@@ -1214,7 +1210,11 @@ async function encodeService(){
   btnRestore('enc-submit-btn');
   if(res&&res.ok){
     let msg=`\u2705 Encoded \u2014 ${res.tracking_id} \u00B7 ${fmtPHP(res.amount)}`;
-    if(email)msg+=res.linked_to_account?' \u00B7 \uD83D\uDD17 Linked to account':' \u00B7 \uD83D\uDCE7 Tracking sent';
+    if(email){
+      msg+=res.linked_to_account?' \u00B7 \uD83D\uDD17 Linked to account':' \u00B7 \uD83D\uDCE7 Tracking sent';
+    }else{
+      msg+=' \u00B7 Walk-in (no email)';
+    }
     showToast(msg,'success',6000);
     if(res.active_services_warning>0)setTimeout(()=>showToast(`\u26A0\uFE0F Note: ${email} already has ${res.active_services_warning} active service(s).`,'warn',7000),800);
     clearEncodeForm();loadEncoded();
@@ -1227,7 +1227,8 @@ function clearEncodeForm(){
   document.getElementById('enc-email').value='';document.getElementById('enc-service').value='';
   document.getElementById('enc-dryer').checked=false;document.getElementById('enc-downy').checked=false;
   document.getElementById('promo-status').innerHTML='';
-  document.getElementById('enc-email-hint').textContent='\uD83D\uDCE7 Must end in @gmail.com \u00B7 6\u201330 characters';
+  // UPDATED hint text reflects optional status
+  document.getElementById('enc-email-hint').textContent='\uD83D\uDCE7 Optional \u2014 must end in @gmail.com if provided \u00B7 6\u201330 characters';
   document.getElementById('enc-email-hint').className='enc-email-hint info';
   document.getElementById('enc-email').classList.remove('error');
   ['enc-firstname-err','enc-lastname-err','enc-email-err'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent='';});
@@ -1239,7 +1240,7 @@ async function loadEncoded(){
   if(!data){document.getElementById('enc-tbody').innerHTML=`<tr><td colspan="12" class="error-row" style="border-radius:0">Failed to load</td></tr>`;return;}
   document.getElementById('enc-count').textContent=data.length;
   if(!data.length){document.getElementById('enc-tbody').innerHTML=`<tr><td colspan="12" style="text-align:center;padding:28px;color:var(--text3);font-family:'DM Mono',monospace;font-size:.54rem">No services encoded today</td></tr>`;return;}
-  document.getElementById('enc-tbody').innerHTML=data.map(o=>`<tr><td><span class="mono-cell">#${o.order_id}</span></td><td><span style="font-size:.9rem;font-weight:600;color:var(--text)">${escHtml(o.customer_name||'\u2014')}</span></td><td><span class="mono-cell" style="font-size:.9rem">${escHtml(o.customer_email||'\u2014')}</span></td><td><span class="mono-cell">${escHtml(SERVICE_RATES[o.service_type]?.label||o.service_type||'\u2014')}</span></td><td><span class="mono-cell">${o.weight_kg||'\u2014'}kg</span></td><td><span class="mono-cell">${o.machines_needed||'\u2014'} unit(s)</span></td><td><span class="mono-cell">${fmtPHP(o.amount)}</span></td><td><span class="pill ${o.with_dryer?'teal':'red'}" style="font-size:.8rem">${o.with_dryer?'Yes':'No'}</span></td><td><span class="pill ${o.with_downy?'purple':'red'}" style="font-size:.8rem">${o.with_downy?'Yes':'No'}</span></td><td><span class="pill ${STATUS_PILL[o.status]||'amber'}">${STATUS_LABELS[o.status]||o.status}</span></td><td>${o.customer_email?(o.email_sent?`<span class="email-sent-badge">\uD83D\uDCE7 Sent</span>${o.customer_id?'<br><span class="linked-account-badge">\uD83D\uDD17 Linked</span>':''}`:`<span class="email-pending-badge">\uD83D\uDCE7 Pending</span>`):'<span class="mono-cell">\u2014</span>'}</td><td>${o.status==='pending'?`<button class="btn-add" style="height:28px;font-size:.43rem;padding:0 11px" data-order-id="${o.order_id}" data-customer="${escHtml(o.customer_name||'Walk-in')}" data-machines="${o.machines_needed}" data-service="${escHtml(SERVICE_RATES[o.service_type]?.label||o.service_type)}" data-weight="${o.weight_kg}" onclick="openAssignStartFromBtn(this)">\u25B6 Start</button>`:'<span class="mono-cell">\u2014</span>'}</td></tr>`).join('');
+  document.getElementById('enc-tbody').innerHTML=data.map(o=>`<tr><td><span class="mono-cell">#${o.order_id}</span></td><td><span style="font-size:.9rem;font-weight:600;color:var(--text)">${escHtml(o.customer_name||'\u2014')}</span></td><td><span class="mono-cell" style="font-size:.9rem">${o.customer_email?escHtml(o.customer_email):'<span style="opacity:.5">Walk-in</span>'}</span></td><td><span class="mono-cell">${escHtml(SERVICE_RATES[o.service_type]?.label||o.service_type||'\u2014')}</span></td><td><span class="mono-cell">${o.weight_kg||'\u2014'}kg</span></td><td><span class="mono-cell">${o.machines_needed||'\u2014'} unit(s)</span></td><td><span class="mono-cell">${fmtPHP(o.amount)}</span></td><td><span class="pill ${o.with_dryer?'teal':'red'}" style="font-size:.8rem">${o.with_dryer?'Yes':'No'}</span></td><td><span class="pill ${o.with_downy?'purple':'red'}" style="font-size:.8rem">${o.with_downy?'Yes':'No'}</span></td><td><span class="pill ${STATUS_PILL[o.status]||'amber'}">${STATUS_LABELS[o.status]||o.status}</span></td><td>${o.customer_email?(o.email_sent?`<span class="email-sent-badge">\uD83D\uDCE7 Sent</span>${o.customer_id?'<br><span class="linked-account-badge">\uD83D\uDD17 Linked</span>':''}`:`<span class="email-pending-badge">\uD83D\uDCE7 Pending</span>`):'<span class="mono-cell" style="opacity:.4">\u2014 Walk-in</span>'}</td><td>${o.status==='pending'?`<button class="btn-add" style="height:28px;font-size:.43rem;padding:0 11px" data-order-id="${o.order_id}" data-customer="${escHtml(o.customer_name||'Walk-in')}" data-machines="${o.machines_needed}" data-service="${escHtml(SERVICE_RATES[o.service_type]?.label||o.service_type)}" data-weight="${o.weight_kg}" onclick="openAssignStartFromBtn(this)">\u25B6 Start</button>`:'<span class="mono-cell">\u2014</span>'}</td></tr>`).join('');
 }
 
 // ── ASSIGN & START ──
@@ -1262,7 +1263,7 @@ async function openAssignStart(orderId,customerName,machinesNeeded,serviceLabel,
   const stuck=machines.filter(m=>m.status==='busy'&&m.remaining_seconds!=null&&m.remaining_seconds<=0);
   if(stuck.length){document.getElementById('as-stuck-text').textContent=`Unit(s) ${stuck.map(m=>m.unit_number).join(', ')} finished their cycle but haven't been freed yet.`;document.getElementById('as-stuck-warning').style.display='flex';}
   if(free.length===0){document.getElementById('as-no-machines').style.display='block';document.getElementById('as-no-machines').textContent='No free machines right now.';}
-  else if(free.length<machinesNeeded){document.getElementById('as-not-enough').style.display='block';document.getElementById('as-not-enough').textContent=`This order needs ${machinesNeeded} machine(s) but only ${free.length} are free.`;}
+  else if(free.length<machinesNeeded){document.getElementById('as-not-enough').style.display='block';document.getElementById('as-not-enough').textContent=`This Laundry needs ${machinesNeeded} machine(s) but only ${free.length} are free.`;}
   const sorted=[...machines].sort((a,b)=>a.unit_number-b.unit_number);
   document.getElementById('as-machine-grid').innerHTML=sorted.map(m=>{
     const isFree=m.status==='free',isMaint=m.status==='maintenance';
@@ -1314,81 +1315,60 @@ async function loadPickup(){
   if(!data){document.getElementById('pickup-list').innerHTML='<div class="error-row">Failed to load.</div>';return;}
   const pickupOrders=data.filter(o=>o.status==='ready_for_pickup');
   if(!pickupOrders.length){document.getElementById('pickup-list').innerHTML='<div class="empty-state"><span class="es-icon">\uD83D\uDCE6</span><span class="es-msg">No orders waiting for pickup</span></div>';return;}
-  document.getElementById('pickup-list').innerHTML=pickupOrders.map(o=>`<div class="pickup-banner" id="pickup-item-${o.order_id}"><div class="pb-icon">\uD83D\uDCE6</div><div class="pb-txt"><strong style="color:var(--text);font-size:.88rem">${escHtml(o.customer_name||'Walk-in')}</strong> \u2014 Order #${o.order_id} \u00B7 TRK: ${escHtml(o.tracking_id||'\u2014')}<br>${escHtml(SERVICE_RATES[o.service_type]?.label||o.service_type)} \u00B7 ${o.weight_kg}kg \u00B7 ${fmtPHP(o.amount)}<br>${o.customer_email?`\uD83D\uDCE7 ${escHtml(o.customer_email)} \u00B7 `:''}<span style="color:var(--orange)">Ready for pickup</span></div><div class="pb-btn">${o.customer_email?`<button class="btn-primary" style="height:34px;padding:0 16px;font-size:.5rem;white-space:nowrap" onclick="sendPickupEmail(${o.order_id},this)">\uD83D\uDCE7 Send Pickup Email</button>`:''}<button class="btn-success" style="height:36px;padding:0 18px;font-size:.52rem" onclick="markCompleted(${o.order_id},this)">\u2714 Mark Completed</button></div></div>`).join('');
+  document.getElementById('pickup-list').innerHTML=pickupOrders.map(o=>`<div class="pickup-banner" id="pickup-item-${o.order_id}"><div class="pb-icon">\uD83D\uDCE6</div><div class="pb-txt"><strong style="color:var(--text);font-size:.88rem">${escHtml(o.customer_name||'Walk-in')}</strong> \u2014 Order #${o.order_id} \u00B7 TRK: ${escHtml(o.tracking_id||'\u2014')}<br>${escHtml(SERVICE_RATES[o.service_type]?.label||o.service_type)} \u00B7 ${o.weight_kg}kg \u00B7 ${fmtPHP(o.amount)}<br>${o.customer_email?`\uD83D\uDCE7 ${escHtml(o.customer_email)} \u00B7 `:'<span style="opacity:.5">No email \u00B7 </span>'}<span style="color:var(--orange)">Ready for pickup</span></div><div class="pb-btn">${o.customer_email?`<button class="btn-primary" style="height:34px;padding:0 16px;font-size:.5rem;white-space:nowrap" onclick="sendPickupEmail(${o.order_id},this)">\uD83D\uDCE7 Send Pickup Email</button>`:''}<button class="btn-success" style="height:36px;padding:0 18px;font-size:.52rem" onclick="markCompleted(${o.order_id},this)">\u2714 Mark Completed</button></div></div>`).join('');
 }
 async function sendPickupEmail(orderId,btn){if(btn){btn.disabled=true;btn.textContent='\uD83D\uDCE7 Sending\u2026';}const res=await apiPost(`/api/staff/orders/send-pickup-email/${orderId}`,{});if(res&&res.ok){showToast(`\uD83D\uDCE7 Pickup email sent for Order #${orderId}`,'success');if(btn){btn.disabled=true;btn.textContent='\u2705 Email Sent';btn.style.opacity='.6';}}else{if(btn){btn.disabled=false;btn.textContent='\uD83D\uDCE7 Send Pickup Email';}showToast('\u274C '+(res?.error||'Failed to send email'),'error');}}
 async function markCompleted(orderId,btn){if(btn){btn.disabled=true;btn.textContent='Completing\u2026';}const res=await apiPut(`/api/staff/orders/complete/${orderId}`);if(res&&res.ok){showToast(`\u2705 Order #${orderId} marked Completed!`,'success');const item=document.getElementById(`pickup-item-${orderId}`);if(item){item.style.opacity='0';item.style.transform='translateY(-10px)';item.style.transition='opacity .3s,transform .3s';setTimeout(()=>loadPickup(),320);}else loadPickup();if(document.getElementById('sec-dashboard').classList.contains('active'))loadDashboard();if(document.getElementById('sec-queue').classList.contains('active'))loadQueue();}else{if(btn){btn.disabled=false;btn.textContent='\u2714 Mark Completed';}showToast('\u274C '+(res?.error||'Failed'),'error');}}
 
-// ══════════════════════════════════════════════════════════════
-//  PROMOS — View Only with New Promo Notifications
-// ══════════════════════════════════════════════════════════════
+// ── PROMOS ──
 const PROMO_SEEN_KEY='op-seen-promos';
 function getSeenPromos(){try{return new Set(JSON.parse(localStorage.getItem(PROMO_SEEN_KEY)||'[]'));}catch{return new Set();}}
-function markPromoSeen(id){const s=getSeenPromos();s.add(String(id));localStorage.setItem(PROMO_SEEN_KEY,JSON.stringify([...s]));}
 function markAllPromosSeen(promos){const s=getSeenPromos();promos.forEach(p=>s.add(String(p.promo_id)));localStorage.setItem(PROMO_SEEN_KEY,JSON.stringify([...s]));}
-
 async function loadPromos(){
   const data=await apiFetch('/api/promos');
   const promos=data||[];
   const seen=getSeenPromos();
   const newPromos=promos.filter(p=>!seen.has(String(p.promo_id)));
-
-  // Update badge
   const badge=document.getElementById('promo-nav-badge');
   if(newPromos.length>0){badge.textContent=newPromos.length;badge.classList.add('visible');}
   else badge.classList.remove('visible');
-
   document.getElementById('promos-count').textContent=promos.length;
-
-  // Render notifications
   const notifArea=document.getElementById('promo-notif-area');
   if(newPromos.length>0){
-    notifArea.innerHTML=newPromos.map(p=>`
-      <div class="notif-banner">
-        <div class="nb-icon">\uD83C\uDF89</div>
-        <div class="nb-txt">
-          <strong>NEW PROMO CODE</strong><span class="nb-new">NEW</span><br>
-          Admin just added <strong>${escHtml(p.code)}</strong> \u2014 <strong>${p.discount}%</strong> discount off service charges.<br>
-          You can now use this code when encoding services.
-        </div>
-      </div>`).join('');
-    // Mark as seen after display
+    notifArea.innerHTML=newPromos.map(p=>`<div class="notif-banner"><div class="nb-icon">\uD83C\uDF89</div><div class="nb-txt"><strong>NEW PROMO CODE</strong><span class="nb-new">NEW</span><br>Admin just added <strong>${escHtml(p.code)}</strong> \u2014 <strong>${p.discount}%</strong> discount off service charges.<br>You can now use this code when encoding services.</div></div>`).join('');
     setTimeout(()=>{markAllPromosSeen(promos);badge.classList.remove('visible');},5000);
   }else notifArea.innerHTML='';
-
-  // Render promo list
-  document.getElementById('promos-list').innerHTML=promos.length?promos.map(p=>`
-    <div class="promo-card">
-      <div class="promo-card-left">
-        <div class="promo-code">${escHtml(p.code)}</div>
-        <div class="promo-disc">${p.discount}% discount \u00B7 Apply during Encode Service</div>
-      </div>
-      <div style="display:flex;align-items:center;gap:8px">
-        ${!seen.has(String(p.promo_id))?'<span class="pill amber">New</span>':''}
-        <span class="pill green"><span class="pill-dot"></span>Active</span>
-      </div>
-    </div>`).join(''):'<div class="empty-state"><span class="es-icon">\uD83C\uDFF7\uFE0F</span><span class="es-msg">No active promo codes</span></div>';
+  document.getElementById('promos-list').innerHTML=promos.length?promos.map(p=>`<div class="promo-card"><div class="promo-card-left"><div class="promo-code">${escHtml(p.code)}</div><div class="promo-disc">${p.discount}% discount \u00B7 Apply during Encode Service</div></div><div style="display:flex;align-items:center;gap:8px">${!seen.has(String(p.promo_id))?'<span class="pill amber">New</span>':''}<span class="pill green"><span class="pill-dot"></span>Active</span></div></div>`).join(''):'<div class="empty-state"><span class="es-icon">\uD83C\uDFF7\uFE0F</span><span class="es-msg">No active promo codes</span></div>';
 }
 
 // ── ISSUES ──
+// UPDATED: submitIssue now explicitly notes that reports go to admin
 async function loadIssues(){
   const data=await apiFetch('/api/staff/issues');
   if(!data){document.getElementById('issues-list').innerHTML='<div class="error-row">Failed to load issues.</div>';return;}
   document.getElementById('issue-count').textContent=data.length;
   if(!data.length){document.getElementById('issues-list').innerHTML='<div class="empty-state"><span class="es-icon">\u2714\uFE0F</span><span class="es-msg">No issues reported</span></div>';return;}
-  document.getElementById('issues-list').innerHTML=data.map(iss=>`<div class="issue-card"><div class="issue-type-lbl">${ISSUE_TYPE_LABELS[iss.issue_type]||iss.issue_type}</div><div class="issue-desc">${escHtml(iss.description||'')}</div><div class="issue-meta">${iss.order_id?`Order #${iss.order_id} \u00B7 `:''} ${iss.reported_at?new Date(iss.reported_at).toLocaleString():''} \u00B7 <span style="color:${iss.status==='resolved'?'var(--success)':'var(--warn)'}">${(iss.status||'').toUpperCase()}</span></div></div>`).join('');
+  document.getElementById('issues-list').innerHTML=data.map(iss=>`<div class="issue-card"><div class="issue-type-lbl">${ISSUE_TYPE_LABELS[iss.issue_type]||iss.issue_type}</div><div class="issue-desc">${escHtml(iss.description||'')}</div><div class="issue-meta">${iss.order_id?`Order #${iss.order_id} \u00B7 `:''} ${iss.reported_at?new Date(iss.reported_at).toLocaleString():''} \u00B7 <span style="color:${iss.status==='resolved'?'var(--success)':'var(--warn)'}">${(iss.status||'').toUpperCase()}</span></div><div class="issue-sent-badge">\uD83D\uDCE4 Sent to Admin</div></div>`).join('');
 }
+
+// UPDATED submitIssue: uses the admin reporting endpoint and shows admin confirmation toast
 async function submitIssue(){
   const type=document.getElementById('iss-type').value,oid=document.getElementById('iss-order-id').value.trim(),desc=document.getElementById('iss-desc').value.trim();
   if(!desc){showToast('\u26A0\uFE0F Description is required','error');return;}
-  btnLoading('iss-submit-btn');const res=await apiPost('/api/staff/issues/report',{issue_type:type,order_id:oid?Number(oid):null,description:desc});btnRestore('iss-submit-btn');
-  if(res&&res.ok){showToast('\u2705 Issue reported successfully','success');closeModal('add-issue');document.getElementById('iss-order-id').value='';document.getElementById('iss-desc').value='';loadIssues();}
-  else showToast('\u274C '+(res?.error||'Failed to submit issue'),'error');
+  btnLoading('iss-submit-btn');
+  // POST to staff issues endpoint — backend should forward/store for admin view
+  const res=await apiPost('/api/staff/issues/report',{issue_type:type,order_id:oid?Number(oid):null,description:desc});
+  btnRestore('iss-submit-btn');
+  if(res&&res.ok){
+    showToast('\uD83D\uDCE4 Issue reported \u2014 Admin notified','success',4000);
+    closeModal('add-issue');
+    document.getElementById('iss-order-id').value='';
+    document.getElementById('iss-desc').value='';
+    loadIssues();
+  }else showToast('\u274C '+(res?.error||'Failed to submit issue'),'error');
 }
 
-// ══════════════════════════════════════════════════════════════
-//  PROFILE
-// ══════════════════════════════════════════════════════════════
+// ── PROFILE ──
 async function loadProfile(){
   const res=await apiFetch('/api/me');
   if(!res)return;
@@ -1402,7 +1382,6 @@ async function loadProfile(){
   document.getElementById('p-email').value=res.email||'';
   if(res.created_at){const dt=new Date(res.created_at);document.getElementById('profile-since').textContent=dt.toLocaleDateString('en-PH',{year:'numeric',month:'long',day:'numeric'});}
 }
-
 async function saveProfile(){
   const fullName=document.getElementById('p-fullname').value.trim();
   const phone=document.getElementById('p-phone').value.trim();
@@ -1411,7 +1390,6 @@ async function saveProfile(){
   if(res&&res.ok){showToast('\u2705 Profile updated!','success');document.getElementById('sb-name').textContent=fullName;document.getElementById('sb-av').textContent=fullName[0].toUpperCase();document.getElementById('profile-fullname').textContent=fullName;document.getElementById('profile-phone-disp').textContent=phone||'Not set';document.getElementById('profile-av-big').textContent=fullName[0].toUpperCase();}
   else showToast('\u274C '+(res?.error||'Could not update profile'),'error');
 }
-
 function checkPwStrength(pw){
   const fill=document.getElementById('pw-strength-fill'),lbl=document.getElementById('pw-strength-label');
   if(!pw){fill.style.width='0%';lbl.textContent='Enter a new password';lbl.style.color='var(--text3)';return;}
@@ -1419,7 +1397,6 @@ function checkPwStrength(pw){
   const configs=[{w:'20%',bg:'var(--danger)',label:'Very weak'},{w:'40%',bg:'var(--danger)',label:'Weak'},{w:'60%',bg:'var(--warn)',label:'Fair'},{w:'80%',bg:'var(--accent)',label:'Good'},{w:'100%',bg:'var(--success)',label:'Strong'}];
   const c=configs[Math.min(score,4)];fill.style.width=c.w;fill.style.background=c.bg;lbl.textContent=c.label;lbl.style.color=c.bg;
 }
-
 async function changePassword(){
   const curPw=document.getElementById('p-cur-pw').value,newPw=document.getElementById('p-new-pw').value,confirmPw=document.getElementById('p-confirm-pw').value;
   if(!curPw||!newPw||!confirmPw){showToast('\u26A0\uFE0F All password fields are required','error');return;}
@@ -1437,7 +1414,6 @@ setInterval(()=>{
   if(SECTION_LOADERS[id])SECTION_LOADERS[id]();
 },60000);
 
-// Check for new promos every 2 min in background
 setInterval(async()=>{
   const data=await apiFetch('/api/promos');const promos=data||[];
   const seen=getSeenPromos();const newCount=promos.filter(p=>!seen.has(String(p.promo_id))).length;
@@ -1464,7 +1440,6 @@ setInterval(async()=>{
 loadMe();
 loadDashboard();
 calcPrice();
-// Check promo notifications on load
 apiFetch('/api/promos').then(data=>{
   if(!data)return;
   const seen=getSeenPromos();const newCount=data.filter(p=>!seen.has(String(p.promo_id))).length;
