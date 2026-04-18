@@ -945,7 +945,7 @@ def _build_tracking_html(order, tracking_id):
   <div class="brand">🧺 Laundry Lounge</div>
   <div class="trk">TRACKING: {tracking_id}</div>
   <div class="status-badge" style="background:{disp['bg']};color:{disp['color']}">{disp['label']}</div>
-  <h2>Order Progress</h2>
+  <h2>Service Status</h2>
   <div class="stages">{stage_html}</div>
   <div style="margin-top:16px">
     <div class="row"><span class="lbl">Customer</span><span class="val">{order.get('customer_name', 'Walk-in')}</span></div>
