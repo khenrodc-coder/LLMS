@@ -69,9 +69,9 @@ mail = Mail(app)
 
 # ─── Constants ──────────────────────────────────────────────────
 MACHINE_CAPACITY = 8
-WASH_SECS = 10 * 60   # 10 min (dev); production = 44*60
-DRY_SECS = 5 * 60
-DOWNY_SECS = 5 * 60
+WASH_SECS = 1 * 60   # 10 min (dev); production = 44*60
+DRY_SECS = 1 * 60
+DOWNY_SECS = 1 * 60
 DRYER_SURCHARGE = 20.0
 FOLD_MIN_SECS = 10 * 60
 FOLD_MAX_SECS = 15 * 60
@@ -618,33 +618,91 @@ If you did not request a password reset, please ignore this email.
 — The Laundry Lounge Team
 """
             html_body = f"""<!DOCTYPE html>
-<html><body style="margin:0;padding:0;background:#F4EFE6;font-family:Arial,sans-serif">
-<div style="max-width:520px;margin:32px auto;color:#1A1309">
-  <div style="background:#C44F1F;padding:24px 28px;border-radius:12px 12px 0 0;text-align:center">
-    <h1 style="color:#fff;font-size:1.4rem;margin:0">🧺 Laundry Lounge</h1>
-    <p style="color:rgba(255,255,255,.8);margin:5px 0 0;font-size:.8rem;letter-spacing:.1em;text-transform:uppercase">
-      Password Reset Request
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Reset Your Password — Laundry Lounge</title>
+</head>
+<body style="margin:0;padding:0;background:#dff6fc;font-family:'DM Sans',Arial,sans-serif">
+
+<div style="max-width:540px;margin:40px auto;padding:0 16px 40px">
+
+  <!-- Header -->
+  <div style="background:#08202c;border-radius:16px 16px 0 0;padding:28px 32px;text-align:center;border-bottom:2px solid #00a8cc">
+    <p style="margin:0 0 4px;font-family:'Courier New',monospace;font-size:.52rem;letter-spacing:.3em;text-transform:uppercase;color:#00a8cc">
+      ◈ Laundry Lounge
+    </p>
+    <h1 style="margin:0;font-size:1.8rem;font-weight:700;color:#c8f0fa;letter-spacing:-.02em;line-height:1">
+      Password <span style="font-style:italic;font-weight:300;color:#00a8cc">Reset</span>
+    </h1>
+    <p style="margin:8px 0 0;font-family:'Courier New',monospace;font-size:.55rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(200,240,250,.4)">
+      Maharlika Hwy · Sta. Rosa · Nueva Ecija
     </p>
   </div>
-  <div style="background:#fff;padding:32px 28px;border:1px solid #e0e0e0;border-top:none">
-    <p style="margin:0 0 22px;font-size:.88rem;color:#5A4E3A;text-align:center;line-height:1.6">
-      Hello <strong>{full_name or 'there'}</strong>,<br>
-      Click the button below to reset your password.
+
+  <!-- Body -->
+  <div style="background:rgba(252,254,255,.97);border:1px solid rgba(0,160,200,.14);border-top:none;border-radius:0 0 16px 16px;padding:36px 32px 28px">
+
+    <!-- Greeting -->
+    <p style="margin:0 0 24px;font-size:.95rem;color:rgba(20,80,100,.7);line-height:1.75;text-align:center;font-weight:300">
+      Hello, <strong style="color:#082530;font-weight:600">{full_name or 'there'}</strong> —<br>
+      We received a request to reset your Laundry Lounge password.<br>
+      Click the button below to proceed.
     </p>
-    <div style="text-align:center;margin:26px 0">
+
+    <!-- Divider -->
+    <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(0,168,204,.3),transparent);margin:0 0 28px"></div>
+
+    <!-- CTA Button -->
+    <div style="text-align:center;margin:0 0 28px">
       <a href="{reset_url}"
-         style="display:inline-block;background:#C44F1F;color:#fff;padding:14px 36px;
-                border-radius:30px;text-decoration:none;font-weight:600">
-        🔒 Reset My Password
+         style="display:inline-flex;align-items:center;gap:10px;background:#00a8cc;color:#fff;
+                padding:15px 36px;border-radius:50px;text-decoration:none;
+                font-family:'Courier New',monospace;font-size:.7rem;letter-spacing:.18em;
+                text-transform:uppercase;font-weight:600;
+                box-shadow:0 8px 28px rgba(0,168,204,.38)">
+        🔒 Reset My Password &nbsp;→
       </a>
     </div>
-    <p style="margin:16px 0 0;font-size:.76rem;color:#999;text-align:center">
-      This link expires in <strong>1 hour</strong>. If you didn't request this, ignore this email.
+
+    <!-- URL fallback -->
+    <div style="background:rgba(0,168,204,.06);border:1px solid rgba(0,168,204,.18);border-radius:10px;padding:12px 16px;margin:0 0 24px;text-align:center">
+      <p style="margin:0 0 5px;font-family:'Courier New',monospace;font-size:.52rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(0,168,204,.7)">
+        Or copy this link
+      </p>
+      <p style="margin:0;font-family:'Courier New',monospace;font-size:.65rem;color:#00a8cc;word-break:break-all;line-height:1.5">
+        {reset_url}
+      </p>
+    </div>
+
+    <!-- Expiry notice -->
+    <div style="background:rgba(138,96,16,.07);border:1px solid rgba(138,96,16,.22);border-radius:10px;padding:11px 16px;margin:0 0 24px;display:flex;align-items:flex-start;gap:10px">
+      <span style="font-size:.9rem;flex-shrink:0">⏱</span>
+      <p style="margin:0;font-family:'Courier New',monospace;font-size:.58rem;letter-spacing:.06em;color:#8a6010;line-height:1.6">
+        This link expires in <strong>1 hour</strong>. If you didn't request a password reset, you can safely ignore this email — your account remains secure.
+      </p>
+    </div>
+
+    <!-- Divider -->
+    <div style="height:1px;background:rgba(0,160,196,.09);margin:0 0 20px"></div>
+
+    <!-- Footer note -->
+    <p style="margin:0;font-family:'Courier New',monospace;font-size:.5rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(20,80,100,.35);text-align:center;line-height:1.8">
+      Laundry Lounge Management System · Est. 2026<br>
+      Maharlika Hwy · Cojuangco · Sta. Rosa · Nueva Ecija
     </p>
+
   </div>
+
+  <!-- Email bottom tag -->
+  <p style="text-align:center;margin:14px 0 0;font-family:'Courier New',monospace;font-size:.48rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(8,37,48,.35)">
+    You're receiving this because a reset was requested for this address.
+  </p>
+
 </div>
-</body></html>
-"""
+</body>
+</html>"""
             msg = MailMessage(subject=subject, recipients=[email],
                               body=plain_body, html=html_body)
             mail.send(msg)
@@ -899,7 +957,8 @@ def _build_tracking_html(order, tracking_id):
     stage_html = "".join(
         f"""<div style="display:flex;flex-direction:column;align-items:center;gap:4px">
           <div style="width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;
-                      background:{'#1B7A4A' if i < cur_idx else ('#1A5DAA' if i == cur_idx else '#ddd')};
+                      background:{'#1B7A4A' if i < cur_idx else (
+            '#1A5DAA' if i == cur_idx else '#ddd')};
                       color:{'#fff' if i <= cur_idx else '#999'};font-size:.9rem">
             {'✓' if i < cur_idx else ('●' if i == cur_idx else '○')}
           </div>
@@ -911,55 +970,320 @@ def _build_tracking_html(order, tracking_id):
     )
 
     auto_refresh = s not in ("completed", "done", "cancelled")
-    done_banner = "" if auto_refresh else '<div class="auto-badge" style="background:#EEF3FB;border-color:#C44F1F;color:#C44F1F">✅ Order Complete — Thank you!</div>'
-    live_badge = '<div class="auto-badge">✅ This page updates automatically.</div>' if auto_refresh else done_banner
 
+    live_badge = (
+        '<div class="live-section">'
+        '<div class="auto-refresh-badge">'
+        '<div class="arb-dot"></div>'
+        '<span class="arb-text">This page refreshes automatically every 60 seconds</span>'
+        '</div>'
+        '</div>'
+    ) if auto_refresh else (
+        '<div class="live-section">'
+        '<div class="auto-refresh-badge" style="background:var(--success-bg);border-color:var(--success-border)">'
+        '<span style="font-size:1rem">✅</span>'
+        '<span class="arb-text">Service complete — thank you for choosing Laundry Lounge!</span>'
+        '</div>'
+        '</div>'
+    )
     trk_url = f"/track/{tracking_id}"
 
     return f"""<!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Track Order — {tracking_id}</title>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <style>
-    *{{box-sizing:border-box;margin:0;padding:0}}
-    body{{font-family:'DM Sans',sans-serif;background:#F5F0E8;min-height:100vh;padding:20px}}
-    .card{{background:#fff;border-radius:16px;padding:28px;max-width:480px;margin:0 auto;box-shadow:0 8px 32px rgba(10,30,60,.1)}}
-    .brand{{font-size:1.1rem;font-weight:700;color:#C44F1F;margin-bottom:6px}}
-    .trk{{font-family:'DM Mono',monospace;font-size:.75rem;color:#888;margin-bottom:20px;letter-spacing:.06em}}
-    .status-badge{{display:inline-block;padding:8px 20px;border-radius:30px;font-weight:600;font-size:1rem;margin-bottom:20px}}
-    .row{{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f0f0f0;font-size:.88rem}}
-    .row:last-child{{border-bottom:none}}
-    .lbl{{color:#888}}.val{{font-weight:600;color:#1a1a2e}}
-    .stages{{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:0;margin:20px 0;overflow-x:auto;padding:8px 0}}
-    .refresh{{text-align:center;margin-top:20px;font-size:.78rem;color:#aaa}}
-    .refresh a{{color:#C44F1F;text-decoration:none}}
-    h2{{font-size:1rem;color:#333;margin:20px 0 10px}}
-    .auto-badge{{background:#E8F5EE;border:1px solid #1B7A4A;border-radius:8px;padding:8px 12px;font-size:.78rem;color:#1B7A4A;margin-top:16px;text-align:center}}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Track Order — {tracking_id}</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{{box-sizing:border-box;margin:0;padding:0}}
+:root{{--ease:cubic-bezier(0.16,1,0.3,1);--ease-back:cubic-bezier(0.34,1.56,0.64,1)}}
+[data-theme="light"]{{
+  --bg:#dff6fc;--surface:rgba(255,255,255,0.82);--surface2:rgba(252,254,255,0.97);
+  --border:rgba(0,160,200,0.14);--border-acc:rgba(0,180,216,0.38);
+  --text:#082530;--text2:#1a5c72;--text3:rgba(20,80,100,0.52);
+  --accent:#00a8cc;--accent2:#0077a8;--accent-glow:rgba(0,168,204,0.18);
+  --danger:#b03020;--danger-bg:rgba(176,48,32,0.07);--danger-border:rgba(176,48,32,0.22);
+  --success:#0077a8;--success-bg:rgba(0,119,168,0.08);--success-border:rgba(0,119,168,0.22);
+  --warn:#8a6010;--warn-bg:rgba(138,96,16,0.09);--warn-border:rgba(138,96,16,0.25);
+  --mark-bg:#08202c;--mark-text:#e0f6fb;
+  --shadow:0 24px 64px rgba(0,80,120,0.13),0 4px 20px rgba(0,80,120,0.07);
+  --shadow-btn:0 6px 24px rgba(0,168,204,0.38);
+  --surface-input:rgba(255,255,255,0.9);--line-color:rgba(0,160,196,0.09);
+  --noise-op:0.022;--toggle-bg:rgba(8,37,48,0.07);
+  --hero-grad:linear-gradient(135deg,#c8f0f8 0%,#d8f4fc 35%,#b8ecf8 65%,#caf2fc 100%);
+}}
+[data-theme="dark"]{{
+  --bg:#050f14;--surface:rgba(8,22,32,0.9);--surface2:rgba(10,26,38,0.97);
+  --border:rgba(0,200,240,0.10);--border-acc:rgba(0,212,245,0.32);
+  --text:#c8f0fa;--text2:#74bcd4;--text3:rgba(100,180,210,0.5);
+  --accent:#00c8f0;--accent2:#0090c0;--accent-glow:rgba(0,200,240,0.22);
+  --danger:#d84040;--danger-bg:rgba(216,64,64,0.10);--danger-border:rgba(216,64,64,0.28);
+  --success:#00c8f0;--success-bg:rgba(0,200,240,0.10);--success-border:rgba(0,200,240,0.28);
+  --warn:#c89030;--warn-bg:rgba(200,144,48,0.10);--warn-border:rgba(200,144,48,0.28);
+  --mark-bg:#00c8f0;--mark-text:#050f14;
+  --shadow:0 24px 64px rgba(0,0,0,0.65),0 4px 20px rgba(0,0,0,0.4);
+  --shadow-btn:0 6px 28px rgba(0,200,240,0.42);
+  --surface-input:rgba(0,0,0,0.35);--line-color:rgba(0,200,240,0.07);
+  --noise-op:0.045;--toggle-bg:rgba(200,240,250,0.07);
+  --hero-grad:linear-gradient(135deg,#071820 0%,#0a2030 35%,#081c2c 65%,#0c2234 100%);
+}}
+html{{scroll-behavior:smooth}}
+body{{font-family:'DM Sans',sans-serif;background:var(--hero-grad);color:var(--text);min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden;transition:background .4s,color .4s;font-size:1rem;line-height:1.6;position:relative;}}
+body::before{{content:'';position:fixed;inset:0;z-index:1001;pointer-events:none;opacity:var(--noise-op);background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}}
+.ambient{{pointer-events:none;position:fixed;inset:0;z-index:0;overflow:hidden}}
+.amb-orb{{position:absolute;border-radius:50%;filter:blur(80px);opacity:.35;animation:orbDrift ease-in-out infinite alternate}}
+[data-theme="dark"] .amb-orb{{opacity:.18}}
+.amb-orb.o1{{width:60vw;height:60vw;background:radial-gradient(circle,rgba(0,180,220,.5),transparent 70%);top:-15%;left:-10%;animation-duration:18s}}
+.amb-orb.o2{{width:50vw;height:50vw;background:radial-gradient(circle,rgba(0,100,180,.4),transparent 70%);bottom:-10%;right:-5%;animation-duration:22s}}
+.amb-orb.o3{{width:35vw;height:35vw;background:radial-gradient(circle,rgba(0,220,255,.35),transparent 70%);top:30%;left:40%;animation-duration:15s}}
+#bubblesCanvas{{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}}
+.deco-bg{{pointer-events:none;position:fixed;inset:0;overflow:hidden;z-index:0}}
+.deco-word{{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:clamp(5rem,12vw,13rem);line-height:.82;color:var(--text);opacity:.025;position:absolute;white-space:nowrap;user-select:none;letter-spacing:-.02em}}
+.deco-word.w1{{top:-2%;left:-1%;transform:rotate(-2deg)}}
+.deco-word.w2{{bottom:-1%;right:-1%;transform:rotate(2deg);font-style:italic}}
+@media(max-width:540px){{.deco-word{{display:none}}}}
+#themeToggle{{position:fixed;top:16px;right:16px;z-index:600;width:42px;height:42px;border-radius:11px;background:var(--toggle-bg);border:1px solid var(--border);backdrop-filter:blur(16px);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.05rem;transition:all .2s;color:var(--text);-webkit-tap-highlight-color:transparent;}}
+#themeToggle:hover{{border-color:var(--accent);transform:scale(1.08);box-shadow:0 0 0 3px var(--accent-glow)}}
+.top-bar{{position:relative;z-index:200;background:var(--mark-bg);border-bottom:2px solid var(--accent);padding:14px clamp(16px,5vw,36px);display:flex;align-items:center;gap:14px;justify-content:space-between;animation:slideDown .65s var(--ease) both;box-shadow:0 6px 32px rgba(0,0,0,.28);}}
+@keyframes slideDown{{from{{opacity:0;transform:translateY(-12px)}}to{{opacity:1;transform:translateY(0)}}}}
+.top-bar-brand{{display:flex;align-items:center;gap:12px}}
+.top-bar-logo{{width:32px;height:32px;object-fit:contain;filter:drop-shadow(0 2px 8px var(--accent-glow))}}
+.top-bar-name{{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:1.25rem;color:var(--mark-text);letter-spacing:-.01em}}
+.top-bar-name em{{font-style:italic;font-weight:300;color:var(--accent)}}
+.top-bar-back{{display:flex;align-items:center;gap:6px;padding:7px 15px;border-radius:9px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);color:rgba(255,255,255,.7);font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;transition:all .2s;}}
+.top-bar-back:hover{{background:rgba(255,255,255,.14);color:#fff;border-color:var(--accent)}}
+.ticker-wrap{{width:100%;background:var(--accent);overflow:hidden;padding:6px 0;position:relative;z-index:100}}
+.ticker-inner{{display:flex;white-space:nowrap;animation:ticker 26s linear infinite}}
+.ticker-item{{font-family:'DM Mono',monospace;font-size:.5rem;letter-spacing:.18em;text-transform:uppercase;padding:0 24px;color:rgba(255,255,255,.92)}}
+.ticker-dot{{display:inline-block;width:3px;height:3px;background:rgba(255,255,255,.45);border-radius:50%;vertical-align:middle;margin:0 12px;opacity:.6}}
+.page-shell{{position:relative;z-index:10;flex:1;display:flex;flex-direction:column;align-items:center;padding:clamp(1.5rem,4vw,3rem) clamp(1rem,4vw,2rem);gap:1.5rem;}}
+.trk-header{{width:100%;max-width:820px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;animation:fadeUp .8s var(--ease) .1s both;flex-wrap:wrap;}}
+.trk-eyebrow{{display:inline-flex;align-items:center;gap:8px;padding:5px 13px;border:1px solid var(--border-acc);border-radius:5px;font-family:'DM Mono',monospace;font-size:.56rem;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);background:var(--accent-glow);margin-bottom:8px;}}
+.trk-eyebrow-dot{{width:5px;height:5px;background:var(--accent);border-radius:50%;animation:pulse 1.8s ease-in-out infinite}}
+.trk-big-id{{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:clamp(2rem,4vw,3.2rem);line-height:.9;letter-spacing:-.03em;color:var(--text)}}
+.trk-big-id em{{font-style:italic;font-weight:300;color:var(--accent)}}
+.trk-meta{{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text3);margin-top:6px}}
+.trk-status-pill{{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:30px;font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.16em;text-transform:uppercase;font-weight:500;border:1px solid;animation:fadeUp .8s var(--ease) .2s both;align-self:flex-start;margin-top:4px;}}
+.main-card{{width:100%;max-width:820px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;box-shadow:var(--shadow);overflow:hidden;animation:cardEnter .9s var(--ease) .25s both;position:relative;}}
+.main-card::before{{content:'';position:absolute;top:-1px;left:-1px;width:40px;height:40px;border-top:2px solid var(--accent);border-left:2px solid var(--accent);border-radius:20px 0 0 0;pointer-events:none;}}
+.main-card::after{{content:'';position:absolute;bottom:-1px;right:-1px;width:40px;height:40px;border-bottom:2px solid var(--accent);border-right:2px solid var(--accent);border-radius:0 0 20px 0;pointer-events:none;}}
+.card-drag-handle{{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;border-bottom:1px solid var(--line-color);background:var(--surface);}}
+.live-tag{{display:inline-flex;align-items:center;gap:7px;padding:4px 12px 4px 9px;background:var(--accent);color:#fff;border-radius:5px;font-family:'DM Mono',monospace;font-size:.52rem;letter-spacing:.16em;text-transform:uppercase;}}
+.live-dot{{width:6px;height:6px;background:rgba(255,255,255,.85);border-radius:50%;animation:pulse 1.8s ease-in-out infinite}}
+.card-handle-right{{font-family:'DM Mono',monospace;font-size:.52rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text3)}}
+.stages-section{{padding:clamp(1.4rem,3vw,2rem) clamp(1.4rem,3vw,2rem) 1rem;border-bottom:1px solid var(--line-color);}}
+.stages-label{{font-family:'DM Mono',monospace;font-size:.56rem;letter-spacing:.24em;text-transform:uppercase;color:var(--text3);margin-bottom:14px;display:flex;align-items:center;gap:8px}}
+.stages-label::before{{content:'';flex:none;width:20px;height:1px;background:var(--accent);opacity:.5}}
+.stages-pipeline{{display:flex;align-items:center;gap:0;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;}}
+.stages-pipeline::-webkit-scrollbar{{display:none}}
+.stage-item{{display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0;position:relative}}
+.stage-icon-wrap{{position:relative;width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:50%;border:2px solid var(--border);background:var(--surface);transition:all .3s;font-size:.9rem;}}
+.stage-item.done .stage-icon-wrap{{border-color:var(--accent);background:var(--accent-glow)}}
+.stage-item.active .stage-icon-wrap{{border-color:var(--accent);background:var(--accent);box-shadow:0 0 0 4px var(--accent-glow);animation:stagePulse 2s ease-in-out infinite}}
+.stage-item.pending .stage-icon-wrap{{opacity:.38}}
+.stage-label{{font-family:'DM Mono',monospace;font-size:.46rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);text-align:center;max-width:52px;line-height:1.3}}
+.stage-item.done .stage-label,.stage-item.active .stage-label{{color:var(--accent)}}
+.stage-connector{{width:28px;height:2px;background:var(--border);flex-shrink:0;margin-bottom:20px;}}
+.stage-connector.filled{{background:var(--accent)}}
+.info-section{{padding:clamp(1.2rem,2.5vw,1.8rem) clamp(1.4rem,3vw,2rem);}}
+.info-grid{{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1px;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:var(--border);}}
+.info-cell{{background:var(--surface2);padding:14px 18px;display:flex;flex-direction:column;gap:3px;transition:background .2s;}}
+.info-cell:hover{{background:var(--surface)}}
+.info-cell-label{{font-family:'DM Mono',monospace;font-size:.5rem;letter-spacing:.2em;text-transform:uppercase;color:var(--text3)}}
+.info-cell-value{{font-size:.92rem;font-weight:600;color:var(--text);line-height:1.3}}
+.info-cell-value.accent{{color:var(--accent)}}
+.addons-row{{display:flex;gap:10px;flex-wrap:wrap;padding:0 clamp(1.4rem,3vw,2rem) clamp(1.2rem,2.5vw,1.8rem);}}
+.addon-chip{{display:flex;align-items:center;gap:7px;padding:8px 14px;border-radius:8px;border:1px solid var(--border);background:var(--surface);font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);transition:all .2s;}}
+.addon-chip.on{{border-color:var(--accent);background:var(--accent-glow);color:var(--accent)}}
+.addon-chip-dot{{width:5px;height:5px;border-radius:50%;background:var(--border)}}
+.addon-chip.on .addon-chip-dot{{background:var(--accent);animation:pulse 1.8s ease-in-out infinite}}
+.live-section{{padding:0 clamp(1.4rem,3vw,2rem) clamp(1.2rem,2.5vw,1.8rem);}}
+.auto-refresh-badge{{display:flex;align-items:center;gap:10px;padding:12px 16px;border-radius:10px;background:var(--success-bg);border:1px solid var(--success-border);}}
+.arb-dot{{width:7px;height:7px;border-radius:50%;background:var(--success);flex-shrink:0;animation:pulse 1.8s ease-in-out infinite}}
+.arb-text{{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.1em;color:var(--success)}}
+.card-footer{{display:flex;align-items:center;justify-content:space-between;padding:14px clamp(1.4rem,3vw,2rem);border-top:1px solid var(--line-color);background:var(--surface);flex-wrap:wrap;gap:8px;}}
+.card-footer-left{{font-family:'DM Mono',monospace;font-size:.52rem;letter-spacing:.16em;text-transform:uppercase;color:var(--text3)}}
+.refresh-link{{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:9px;background:var(--accent);color:#fff;font-family:'DM Mono',monospace;font-size:.56rem;letter-spacing:.16em;text-transform:uppercase;text-decoration:none;transition:opacity .2s,transform .15s;box-shadow:var(--shadow-btn);}}
+.refresh-link:hover{{opacity:.85;transform:translateY(-1px)}}
+.wash-anim{{position:relative;width:32px;height:32px;flex-shrink:0}}
+.wash-ring{{position:absolute;inset:0;border-radius:50%;border:1px solid var(--border)}}
+.wash-arc{{position:absolute;inset:0;border-radius:50%;border:1.5px solid transparent;border-top-color:var(--accent);border-right-color:var(--accent);animation:spin 2.2s linear infinite}}
+.wash-arc2{{position:absolute;inset:6px;border-radius:50%;border:1px solid transparent;border-bottom-color:var(--accent2);animation:spin 3.5s linear infinite reverse;opacity:.55}}
+.wash-dot{{position:absolute;width:4px;height:4px;background:var(--accent);border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%)}}
+@keyframes fadeUp{{from{{opacity:0;transform:translateY(18px)}}to{{opacity:1;transform:translateY(0)}}}}
+@keyframes cardEnter{{from{{opacity:0;transform:translateY(22px) scale(.97)}}to{{opacity:1;transform:translateY(0) scale(1)}}}}
+@keyframes pulse{{0%,100%{{opacity:1;transform:scale(1)}}50%{{opacity:.3;transform:scale(.6)}}}}
+@keyframes spin{{to{{transform:rotate(360deg)}}}}
+@keyframes ticker{{from{{transform:translateX(0)}}to{{transform:translateX(-50%)}}}}
+@keyframes orbDrift{{0%{{transform:translate(0,0) scale(1)}}100%{{transform:translate(30px,-22px) scale(1.07)}}}}
+@keyframes stagePulse{{0%,100%{{box-shadow:0 0 0 4px var(--accent-glow)}}50%{{box-shadow:0 0 0 8px var(--accent-glow)}}}}
+@media(max-width:600px){{
+  .trk-header{{flex-direction:column}}
+  .info-grid{{grid-template-columns:1fr 1fr}}
+  .card-footer{{flex-direction:column;align-items:flex-start}}
+  .stage-icon-wrap{{width:36px;height:36px;font-size:.75rem}}
+  .stage-connector{{width:16px}}
+  .stage-label{{font-size:.4rem;max-width:40px}}
+}}
+</style>
 </head>
 <body>
-<div class="card">
-  <div class="brand">🧺 Laundry Lounge</div>
-  <div class="trk">TRACKING: {tracking_id}</div>
-  <div class="status-badge" style="background:{disp['bg']};color:{disp['color']}">{disp['label']}</div>
-  <h2>Service Status</h2>
-  <div class="stages">{stage_html}</div>
-  <div style="margin-top:16px">
-    <div class="row"><span class="lbl">Customer</span><span class="val">{order.get('customer_name', 'Walk-in')}</span></div>
-    <div class="row"><span class="lbl">Service</span><span class="val">{svc_lbl}</span></div>
-    <div class="row"><span class="lbl">Weight</span><span class="val">{order.get('weight_kg', 0)} kg</span></div>
-    <div class="row"><span class="lbl">Amount</span><span class="val">₱{float(order.get('amount', 0)):,.2f}</span></div>
-    <div class="row"><span class="lbl">Dryer</span><span class="val">{'Yes' if order.get('with_dryer') else 'No'}</span></div>
-    <div class="row"><span class="lbl">Downy</span><span class="val">{'Yes' if order.get('with_downy') else 'No'}</span></div>
-    <div class="row"><span class="lbl">Created</span><span class="val">{created}</span></div>
-  </div>
-  {live_badge}
-  <div class="refresh"><a href="{trk_url}">🔄 Refresh Status</a> &nbsp;·&nbsp; Laundry Lounge 2026</div>
+
+<canvas id="bubblesCanvas" aria-hidden="true"></canvas>
+<div class="ambient" aria-hidden="true">
+  <div class="amb-orb o1"></div>
+  <div class="amb-orb o2"></div>
+  <div class="amb-orb o3"></div>
 </div>
+<div class="deco-bg" aria-hidden="true">
+  <div class="deco-word w1">FRESH</div>
+  <div class="deco-word w2">Clean</div>
+</div>
+
+<button id="themeToggle" onclick="toggleTheme()" aria-label="Toggle theme">☾</button>
+
+<div class="top-bar">
+  <div class="top-bar-brand">
+    <img src="/static/img/icon.png" alt="" class="top-bar-logo" onerror="this.style.display='none'">
+    <span class="top-bar-name">Laundry <em>Lounge</em></span>
+  </div>
+  <a href="/" class="top-bar-back">← Back to Home</a>
+</div>
+
+<div class="ticker-wrap" aria-hidden="true">
+  <div class="ticker-inner">
+    <span class="ticker-item">Tracking Your Laundry</span><span class="ticker-dot"></span>
+    <span class="ticker-item">Real-Time Updates</span><span class="ticker-dot"></span>
+    <span class="ticker-item">Laundry Lounge</span><span class="ticker-dot"></span>
+    <span class="ticker-item">Fresh Every Time</span><span class="ticker-dot"></span>
+    <span class="ticker-item">Maharlika Hwy · Sta. Rosa · NE</span><span class="ticker-dot"></span>
+    <span class="ticker-item">Tracking Your Laundry</span><span class="ticker-dot"></span>
+    <span class="ticker-item">Real-Time Updates</span><span class="ticker-dot"></span>
+    <span class="ticker-item">Laundry Lounge</span><span class="ticker-dot"></span>
+    <span class="ticker-item">Fresh Every Time</span><span class="ticker-dot"></span>
+    <span class="ticker-item">Maharlika Hwy · Sta. Rosa · NE</span><span class="ticker-dot"></span>
+  </div>
+</div>
+
+<div class="page-shell">
+
+  <div class="trk-header">
+    <div>
+      <div class="trk-eyebrow"><div class="trk-eyebrow-dot"></div>Live Service Tracking</div>
+      <h1 class="trk-big-id">Laundry Service <em>#{tracking_id}</em></h1>
+      <p class="trk-meta">Customer: {order.get('customer_name', 'Walk-in')} &nbsp;·&nbsp; Created: {created}</p>
+    </div>
+    <div class="trk-status-pill" style="background:{disp['bg']};color:{disp['color']};border-color:{disp['color']}44">
+      <span style="width:7px;height:7px;border-radius:50%;background:{disp['color']};display:inline-block;flex-shrink:0;animation:pulse 1.8s ease-in-out infinite"></span>
+      {disp['label']}
+    </div>
+  </div>
+
+  <div class="main-card">
+    <div class="card-drag-handle">
+      <div class="live-tag"><div class="live-dot"></div>Live Tracking</div>
+      <span class="card-handle-right">TRK · {tracking_id}</span>
+    </div>
+
+    <div class="stages-section">
+      <div class="stages-label">Service Progress</div>
+      <div class="stages-pipeline">{stage_html}</div>
+    </div>
+
+    <div class="info-section">
+      <div class="info-grid">
+        <div class="info-cell">
+          <span class="info-cell-label">Service Type</span>
+          <span class="info-cell-value">{svc_lbl}</span>
+        </div>
+        <div class="info-cell">
+          <span class="info-cell-label">Weight</span>
+          <span class="info-cell-value">{order.get('weight_kg', 0)} kg</span>
+        </div>
+        <div class="info-cell">
+          <span class="info-cell-label">Amount Due</span>
+          <span class="info-cell-value accent">₱{float(order.get('amount', 0)):,.2f}</span>
+        </div>
+        <div class="info-cell">
+          <span class="info-cell-label">Customer</span>
+          <span class="info-cell-value">{order.get('customer_name', 'Walk-in')}</span>
+        </div>
+        <div class="info-cell">
+          <span class="info-cell-label">Date Placed</span>
+          <span class="info-cell-value">{created}</span>
+        </div>
+        <div class="info-cell">
+          <span class="info-cell-label">Tracking ID</span>
+          <span class="info-cell-value" style="font-family:'DM Mono',monospace;font-size:.82rem">{tracking_id}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="addons-row">
+      <div class="addon-chip {'on' if order.get('with_dryer') else ''}">
+        <div class="addon-chip-dot"></div>
+        🌀 Dryer {'Included' if order.get('with_dryer') else 'Not included'}
+      </div>
+      <div class="addon-chip {'on' if order.get('with_downy') else ''}">
+        <div class="addon-chip-dot"></div>
+        💧 Downy {'Included' if order.get('with_downy') else 'Not included'}
+      </div>
+    </div>
+
+    {live_badge}
+
+    <div class="card-footer">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="wash-anim">
+          <div class="wash-ring"></div>
+          <div class="wash-arc"></div>
+          <div class="wash-arc2"></div>
+          <div class="wash-dot"></div>
+        </div>
+        <span class="card-footer-left">Maharlika Hwy · Sta. Rosa · Nueva Ecija · Est. 2026</span>
+      </div>
+      <a href="{trk_url}" class="refresh-link">↻ Refresh Status</a>
+    </div>
+  </div>
+
+</div>
+
 {'<script>setTimeout(()=>location.reload(),60000)</script>' if auto_refresh else ''}
+<script>
+'use strict';
+function toggleTheme(){{
+  const html=document.documentElement,isDark=html.dataset.theme==='dark';
+  html.dataset.theme=isDark?'light':'dark';
+  document.getElementById('themeToggle').textContent=isDark?'☾':'☀';
+  localStorage.setItem('ll-theme',html.dataset.theme);
+  if(typeof restartBubbles==='function')restartBubbles();
+}}
+(function initTheme(){{
+  const saved=localStorage.getItem('ll-theme');
+  if(saved){{document.documentElement.dataset.theme=saved;const b=document.getElementById('themeToggle');if(b)b.textContent=saved==='dark'?'☾':'☀';}}
+}})();
+let _animFrameID=null;
+function restartBubbles(){{if(_animFrameID)cancelAnimationFrame(_animFrameID);initBubbles();}}
+function initBubbles(){{
+  const canvas=document.getElementById('bubblesCanvas');if(!canvas)return;
+  const ctx=canvas.getContext('2d');let W,H,bubbles=[];
+  function resize(){{W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}}
+  resize();window.addEventListener('resize',resize);
+  const isDark=()=>document.documentElement.dataset.theme==='dark';
+  const LIGHT=['0,180,216','0,119,168','0,212,240','30,144,255','0,150,200','100,200,240','0,100,180'];
+  const DARK=['0,200,240','0,150,200','0,100,160'];
+  function getColor(){{return isDark()?DARK[Math.floor(Math.random()*DARK.length)]:LIGHT[Math.floor(Math.random()*LIGHT.length)];}}
+  function getOp(){{return isDark()?{{min:.05,max:.14}}:{{min:.14,max:.42}};}}
+  function getCount(){{return isDark()?28:55;}}
+  function makeBubble(fy){{const r=4+Math.random()*28;const op=getOp();return{{x:Math.random()*W,y:fy!==undefined?fy:H+r+Math.random()*200,r,speed:.22+Math.random()*.7,drift:(Math.random()-.5)*.45,wobble:Math.random()*Math.PI*2,wobbleSpeed:.012+Math.random()*.02,opacity:op.min+Math.random()*(op.max-op.min),color:getColor()}};}}
+  const count=getCount();for(let i=0;i<count;i++)bubbles.push(makeBubble(Math.random()*H));
+  function drawBubble(b){{ctx.save();ctx.globalAlpha=b.opacity;const g=ctx.createRadialGradient(b.x-b.r*.3,b.y-b.r*.3,b.r*.05,b.x,b.y,b.r);g.addColorStop(0,'rgba(255,255,255,0.55)');g.addColorStop(.45,`rgba(${{b.color}},0.07)`);g.addColorStop(1,`rgba(${{b.color}},0.2)`);ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,Math.PI*2);ctx.fillStyle=g;ctx.fill();ctx.strokeStyle=`rgba(${{b.color}},0.28)`;ctx.lineWidth=isDark()?1:1.2;ctx.stroke();ctx.globalAlpha=b.opacity*.6;ctx.beginPath();ctx.arc(b.x-b.r*.28,b.y-b.r*.28,b.r*.22,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,0.85)';ctx.fill();ctx.restore();}}
+  function animate(){{ctx.clearRect(0,0,W,H);const t=getCount();while(bubbles.length<t)bubbles.push(makeBubble());while(bubbles.length>t)bubbles.pop();bubbles.forEach((b,i)=>{{b.wobble+=b.wobbleSpeed;b.x+=b.drift+Math.sin(b.wobble)*.4;b.y-=b.speed;if(b.y+b.r<-10)bubbles[i]=makeBubble();drawBubble(b);}});_animFrameID=requestAnimationFrame(animate);}}
+  animate();
+}}
+initBubbles();
+</script>
 </body>
 </html>"""
 
@@ -1020,17 +1344,158 @@ def public_track_by_name(name):
     ) or []
 
     if not orders:
-        return f"""<!DOCTYPE html><html>
-<head><title>No Orders Found</title>
+        return f"""<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<style>body{{font-family:sans-serif;text-align:center;padding:60px 20px;background:#F5F0E8}}
-h1{{color:#C44F1F}}p{{color:#666}}a{{color:#1A5DAA}}</style></head>
+<title>No Name Provided — Laundry Lounge</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,700;1,300;1,400&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{{box-sizing:border-box;margin:0;padding:0}}
+:root{{--ease:cubic-bezier(0.16,1,0.3,1)}}
+[data-theme="light"]{{
+  --hero-grad:linear-gradient(135deg,#c8f0f8 0%,#d8f4fc 35%,#b8ecf8 65%,#caf2fc 100%);
+  --surface2:rgba(252,254,255,.97);--border:rgba(0,160,200,.14);--border-acc:rgba(0,180,216,.38);
+  --text:#082530;--text3:rgba(20,80,100,.52);--accent:#00a8cc;--accent-glow:rgba(0,168,204,.18);
+  --warn:#8a6010;--warn-bg:rgba(138,96,16,.09);--warn-border:rgba(138,96,16,.25);
+  --shadow:0 24px 64px rgba(0,80,120,.13),0 4px 20px rgba(0,80,120,.07);
+  --shadow-btn:0 6px 24px rgba(0,168,204,.38);--line-color:rgba(0,160,196,.09);
+  --noise-op:.022;--toggle-bg:rgba(8,37,48,.07);--mark-bg:#08202c;--mark-text:#e0f6fb;
+}}
+[data-theme="dark"]{{
+  --hero-grad:linear-gradient(135deg,#071820 0%,#0a2030 35%,#081c2c 65%,#0c2234 100%);
+  --surface2:rgba(10,26,38,.97);--border:rgba(0,200,240,.10);--border-acc:rgba(0,212,245,.32);
+  --text:#c8f0fa;--text3:rgba(100,180,210,.5);--accent:#00c8f0;--accent-glow:rgba(0,200,240,.22);
+  --warn:#c89030;--warn-bg:rgba(200,144,48,.10);--warn-border:rgba(200,144,48,.28);
+  --shadow:0 24px 64px rgba(0,0,0,.65),0 4px 20px rgba(0,0,0,.4);
+  --shadow-btn:0 6px 28px rgba(0,200,240,.42);--line-color:rgba(0,200,240,.07);
+  --noise-op:.045;--toggle-bg:rgba(200,240,250,.07);--mark-bg:#00c8f0;--mark-text:#050f14;
+}}
+html{{scroll-behavior:smooth}}
+body{{font-family:'DM Sans',sans-serif;background:var(--hero-grad);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow-x:hidden;transition:background .4s,color .4s;position:relative;padding:2rem 1rem;}}
+body::before{{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;opacity:var(--noise-op);background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}}
+.amb-orb{{position:fixed;border-radius:50%;filter:blur(80px);opacity:.32;animation:orbDrift ease-in-out infinite alternate;pointer-events:none;}}
+[data-theme="dark"] .amb-orb{{opacity:.16}}
+.o1{{width:55vw;height:55vw;background:radial-gradient(circle,rgba(0,180,220,.5),transparent 70%);top:-10%;left:-8%;animation-duration:18s}}
+.o2{{width:45vw;height:45vw;background:radial-gradient(circle,rgba(0,100,180,.4),transparent 70%);bottom:-8%;right:-4%;animation-duration:22s}}
+.deco-word{{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:clamp(4rem,12vw,11rem);line-height:.82;color:var(--text);opacity:.025;position:fixed;white-space:nowrap;user-select:none;letter-spacing:-.02em;pointer-events:none;}}
+.deco-word.w1{{top:-1%;left:-1%;transform:rotate(-2deg)}}
+.deco-word.w2{{bottom:-1%;right:-1%;transform:rotate(2deg);font-style:italic}}
+@media(max-width:480px){{.deco-word{{display:none}}}}
+#themeToggle{{position:fixed;top:16px;right:16px;z-index:600;width:42px;height:42px;border-radius:11px;background:var(--toggle-bg);border:1px solid var(--border);backdrop-filter:blur(16px);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.05rem;transition:all .2s;color:var(--text);}}
+#themeToggle:hover{{border-color:var(--accent);transform:scale(1.08);box-shadow:0 0 0 3px var(--accent-glow)}}
+
+.error-card{{position:relative;z-index:10;width:100%;max-width:460px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;box-shadow:var(--shadow);overflow:hidden;animation:cardEnter .9s var(--ease) both;}}
+.error-card::before{{content:'';position:absolute;top:-1px;left:-1px;width:36px;height:36px;border-top:2px solid var(--accent);border-left:2px solid var(--accent);border-radius:20px 0 0 0;pointer-events:none;}}
+.error-card::after{{content:'';position:absolute;bottom:-1px;right:-1px;width:36px;height:36px;border-bottom:2px solid var(--accent);border-right:2px solid var(--accent);border-radius:0 0 20px 0;pointer-events:none;}}
+
+.card-top{{display:flex;align-items:center;justify-content:space-between;padding:10px 18px;background:var(--mark-bg);border-bottom:2px solid var(--accent);}}
+.brand-tag{{display:flex;align-items:center;gap:8px}}
+.brand-name{{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:1.1rem;color:var(--mark-text);letter-spacing:-.01em}}
+.brand-name em{{font-style:italic;font-weight:300;color:var(--accent)}}
+.live-tag{{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;background:var(--warn-bg);border:1px solid var(--warn-border);border-radius:4px;font-family:'DM Mono',monospace;font-size:.5rem;letter-spacing:.16em;text-transform:uppercase;color:var(--warn);}}
+
+.card-body{{padding:clamp(1.6rem,4vw,2.2rem) clamp(1.6rem,4vw,2.2rem) clamp(1.2rem,3vw,1.8rem);text-align:center;}}
+.error-icon-wrap{{position:relative;width:72px;height:72px;margin:0 auto 20px;display:flex;align-items:center;justify-content:center;}}
+.error-icon-ring{{position:absolute;inset:0;border-radius:50%;border:1px solid var(--warn-border);animation:ringPulse 2.5s ease-out infinite}}
+.error-icon-ring-2{{position:absolute;inset:-8px;border-radius:50%;border:1px solid var(--warn-border);animation:ringPulse 2.5s ease-out infinite .5s;opacity:.5}}
+.error-icon-core{{width:48px;height:48px;border-radius:50%;background:var(--warn-bg);border:1px solid var(--warn-border);display:flex;align-items:center;justify-content:center;font-size:1.3rem;}}
+.error-eyebrow{{display:inline-flex;align-items:center;gap:7px;padding:4px 12px;border:1px solid var(--warn-border);border-radius:4px;font-family:'DM Mono',monospace;font-size:.54rem;letter-spacing:.22em;text-transform:uppercase;color:var(--warn);background:var(--warn-bg);margin-bottom:12px;}}
+.error-eyebrow-dot{{width:4px;height:4px;background:var(--warn);border-radius:50%;animation:pulse 1.8s ease-in-out infinite}}
+.error-title{{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:clamp(1.8rem,4vw,2.4rem);line-height:.95;letter-spacing:-.02em;color:var(--text);margin-bottom:10px;}}
+.error-title em{{font-style:italic;font-weight:300;color:var(--accent)}}
+.error-msg{{font-size:.88rem;color:var(--text3);font-weight:300;line-height:1.75;margin-bottom:24px;}}
+
+.hint-box{{background:var(--warn-bg);border:1px solid var(--warn-border);border-radius:10px;padding:12px 16px;margin-bottom:24px;text-align:left;display:flex;align-items:flex-start;gap:10px;}}
+.hint-icon{{font-size:.85rem;flex-shrink:0;margin-top:1px}}
+.hint-text{{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.06em;color:var(--warn);line-height:1.6;}}
+
+.home-btn{{display:inline-flex;align-items:center;gap:9px;width:100%;padding:14px;background:var(--accent);color:#fff;border-radius:11px;text-decoration:none;font-family:'DM Mono',monospace;font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;font-weight:500;justify-content:center;transition:opacity .2s,transform .15s;box-shadow:var(--shadow-btn);margin-bottom:10px;}}
+.home-btn:hover{{opacity:.88;transform:translateY(-2px)}}
+.home-btn .btn-arrow{{margin-left:auto;opacity:.7}}
+
+.card-footer{{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-top:1px solid var(--line-color);}}
+.footer-label{{font-family:'DM Mono',monospace;font-size:.5rem;letter-spacing:.16em;text-transform:uppercase;color:var(--text3)}}
+.wash-anim{{position:relative;width:28px;height:28px;flex-shrink:0}}
+.wash-ring{{position:absolute;inset:0;border-radius:50%;border:1px solid var(--border)}}
+.wash-arc{{position:absolute;inset:0;border-radius:50%;border:1.5px solid transparent;border-top-color:var(--accent);border-right-color:var(--accent);animation:spin 2.2s linear infinite}}
+.wash-arc2{{position:absolute;inset:5px;border-radius:50%;border:1px solid transparent;border-bottom-color:var(--accent);animation:spin 3.5s linear infinite reverse;opacity:.55}}
+.wash-dot{{position:absolute;width:4px;height:4px;background:var(--accent);border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%)}}
+
+@keyframes cardEnter{{from{{opacity:0;transform:translateY(20px) scale(.97)}}to{{opacity:1;transform:translateY(0) scale(1)}}}}
+@keyframes orbDrift{{0%{{transform:translate(0,0) scale(1)}}100%{{transform:translate(28px,-20px) scale(1.06)}}}}
+@keyframes pulse{{0%,100%{{opacity:1;transform:scale(1)}}50%{{opacity:.3;transform:scale(.6)}}}}
+@keyframes spin{{to{{transform:rotate(360deg)}}}}
+@keyframes ringPulse{{0%{{opacity:.8;transform:scale(1)}}100%{{opacity:0;transform:scale(1.6)}}}}
+</style>
+</head>
 <body>
-<h1>🧺 No Orders Found</h1>
-<p>No laundry orders found for <strong>{name_clean}</strong>.</p>
-<p>Please check the name or ask staff for your tracking code.</p>
-<p style="margin-top:24px"><a href="/">← Return Home</a></p>
-</body></html>""", 404
+
+<div class="amb-orb o1"></div>
+<div class="amb-orb o2"></div>
+<div class="deco-word w1">FRESH</div>
+<div class="deco-word w2">Clean</div>
+
+<button id="themeToggle" onclick="toggleTheme()" aria-label="Toggle theme">☾</button>
+
+<div class="error-card" role="main">
+  <div class="card-top">
+    <div class="brand-tag">
+      <span class="brand-name">Laundry <em>Lounge</em></span>
+    </div>
+    <div class="live-tag">⚠ Input Required</div>
+  </div>
+
+  <div class="card-body">
+    <div class="error-icon-wrap">
+      <div class="error-icon-ring"></div>
+      <div class="error-icon-ring-2"></div>
+      <div class="error-icon-core">👤</div>
+    </div>
+
+    <div class="error-eyebrow"><div class="error-eyebrow-dot"></div>Missing Information</div>
+    <h1 class="error-title">No name <em>provided</em></h1>
+    <p class="error-msg">
+      Please enter a customer name to track your laundry order. A name is required to look up your service status.
+    </p>
+
+    <div class="hint-box">
+      <span class="hint-icon">💡</span>
+      <span class="hint-text">Use the name you gave when dropping off your laundry. If you're unsure, ask a staff member for your tracking details.</span>
+    </div>
+
+    <a href="/" class="home-btn">
+      ← Return to Home
+      <span class="btn-arrow">→</span>
+    </a>
+  </div>
+
+  <div class="card-footer">
+    <span class="footer-label">Laundry Lounge · Est. 2026 · Sta. Rosa, NE</span>
+    <div class="wash-anim">
+      <div class="wash-ring"></div>
+      <div class="wash-arc"></div>
+      <div class="wash-arc2"></div>
+      <div class="wash-dot"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+function toggleTheme(){{
+  const html=document.documentElement,isDark=html.dataset.theme==='dark';
+  html.dataset.theme=isDark?'light':'dark';
+  document.getElementById('themeToggle').textContent=isDark?'☾':'☀';
+  localStorage.setItem('ll-theme',html.dataset.theme);
+}}
+(function(){{
+  const s=localStorage.getItem('ll-theme');
+  if(s){{document.documentElement.dataset.theme=s;const b=document.getElementById('themeToggle');if(b)b.textContent=s==='dark'?'☾':'☀';}}
+}})();
+</script>
+</body>
+</html>""", 404
 
     # If only one order, show it directly
     if len(orders) == 1:
@@ -1080,25 +1545,167 @@ h1{{color:#C44F1F}}p{{color:#666}}a{{color:#1A5DAA}}</style></head>
 </a>"""
 
     return f"""<!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Orders for {name_clean}</title>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
-  <style>body{{font-family:'DM Sans',sans-serif;background:#F5F0E8;min-height:100vh;padding:20px}}
-  .card{{background:#fff;border-radius:16px;padding:28px;max-width:480px;margin:0 auto;box-shadow:0 8px 32px rgba(10,30,60,.1)}}</style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Laundry Service for {name_clean} — Laundry Lounge</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,700;1,300;1,400&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{{box-sizing:border-box;margin:0;padding:0}}
+:root{{--ease:cubic-bezier(0.16,1,0.3,1)}}
+[data-theme="light"]{{
+  --hero-grad:linear-gradient(135deg,#c8f0f8 0%,#d8f4fc 35%,#b8ecf8 65%,#caf2fc 100%);
+  --surface:rgba(255,255,255,0.82);--surface2:rgba(252,254,255,.97);
+  --border:rgba(0,160,200,.14);--border-acc:rgba(0,180,216,.38);
+  --text:#082530;--text3:rgba(20,80,100,.52);
+  --accent:#00a8cc;--accent2:#0077a8;--accent-glow:rgba(0,168,204,.18);
+  --success:#0077a8;--success-bg:rgba(0,119,168,.08);--success-border:rgba(0,119,168,.22);
+  --shadow:0 24px 64px rgba(0,80,120,.13),0 4px 20px rgba(0,80,120,.07);
+  --shadow-btn:0 6px 24px rgba(0,168,204,.38);--shadow-sm:0 4px 16px rgba(0,80,120,.08);
+  --line-color:rgba(0,160,196,.09);--noise-op:.022;--toggle-bg:rgba(8,37,48,.07);
+  --mark-bg:#08202c;--mark-text:#e0f6fb;
+}}
+[data-theme="dark"]{{
+  --hero-grad:linear-gradient(135deg,#071820 0%,#0a2030 35%,#081c2c 65%,#0c2234 100%);
+  --surface:rgba(8,22,32,0.9);--surface2:rgba(10,26,38,.97);
+  --border:rgba(0,200,240,.10);--border-acc:rgba(0,212,245,.32);
+  --text:#c8f0fa;--text3:rgba(100,180,210,.5);
+  --accent:#00c8f0;--accent2:#0090c0;--accent-glow:rgba(0,200,240,.22);
+  --success:#00c8f0;--success-bg:rgba(0,200,240,.10);--success-border:rgba(0,200,240,.28);
+  --shadow:0 24px 64px rgba(0,0,0,.65),0 4px 20px rgba(0,0,0,.4);
+  --shadow-btn:0 6px 28px rgba(0,200,240,.42);--shadow-sm:0 4px 16px rgba(0,0,0,.45);
+  --line-color:rgba(0,200,240,.07);--noise-op:.045;--toggle-bg:rgba(200,240,250,.07);
+  --mark-bg:#00c8f0;--mark-text:#050f14;
+}}
+html{{scroll-behavior:smooth}}
+body{{font-family:'DM Sans',sans-serif;background:var(--hero-grad);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;overflow-x:hidden;transition:background .4s,color .4s;position:relative;padding:2rem 1rem 3rem;}}
+body::before{{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;opacity:var(--noise-op);background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}}
+.amb-orb{{position:fixed;border-radius:50%;filter:blur(80px);opacity:.32;animation:orbDrift ease-in-out infinite alternate;pointer-events:none;}}
+[data-theme="dark"] .amb-orb{{opacity:.16}}
+.o1{{width:55vw;height:55vw;background:radial-gradient(circle,rgba(0,180,220,.5),transparent 70%);top:-10%;left:-8%;animation-duration:18s}}
+.o2{{width:45vw;height:45vw;background:radial-gradient(circle,rgba(0,100,180,.4),transparent 70%);bottom:-8%;right:-4%;animation-duration:22s}}
+.deco-word{{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:clamp(4rem,11vw,11rem);line-height:.82;color:var(--text);opacity:.025;position:fixed;white-space:nowrap;user-select:none;letter-spacing:-.02em;pointer-events:none;}}
+.deco-word.w1{{top:-1%;left:-1%;transform:rotate(-2deg)}}
+.deco-word.w2{{bottom:-1%;right:-1%;transform:rotate(2deg);font-style:italic}}
+@media(max-width:480px){{.deco-word{{display:none}}}}
+#themeToggle{{position:fixed;top:16px;right:16px;z-index:600;width:42px;height:42px;border-radius:11px;background:var(--toggle-bg);border:1px solid var(--border);backdrop-filter:blur(16px);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.05rem;transition:all .2s;color:var(--text);-webkit-tap-highlight-color:transparent;}}
+#themeToggle:hover{{border-color:var(--accent);transform:scale(1.08);box-shadow:0 0 0 3px var(--accent-glow)}}
+
+/* ══ CARD ══ */
+.main-card{{position:relative;z-index:10;width:100%;max-width:520px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;box-shadow:var(--shadow);overflow:hidden;animation:cardEnter .9s var(--ease) both;margin-top:clamp(1rem,3vw,2rem);}}
+.main-card::before{{content:'';position:absolute;top:-1px;left:-1px;width:36px;height:36px;border-top:2px solid var(--accent);border-left:2px solid var(--accent);border-radius:20px 0 0 0;pointer-events:none;}}
+.main-card::after{{content:'';position:absolute;bottom:-1px;right:-1px;width:36px;height:36px;border-bottom:2px solid var(--accent);border-right:2px solid var(--accent);border-radius:0 0 20px 0;pointer-events:none;}}
+
+/* ══ CARD TOP BAR ══ */
+.card-top{{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;background:var(--mark-bg);border-bottom:2px solid var(--accent);}}
+.brand-name{{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:1.15rem;color:var(--mark-text);letter-spacing:-.01em}}
+.brand-name em{{font-style:italic;font-weight:300;color:var(--accent)}}
+.live-tag{{display:inline-flex;align-items:center;gap:6px;padding:3px 10px 3px 8px;background:var(--accent);color:#fff;border-radius:4px;font-family:'DM Mono',monospace;font-size:.5rem;letter-spacing:.16em;text-transform:uppercase;}}
+.live-dot{{width:5px;height:5px;background:rgba(255,255,255,.85);border-radius:50%;animation:pulse 1.8s ease-in-out infinite}}
+
+/* ══ CARD HEADER ══ */
+.card-header{{padding:clamp(1.4rem,3vw,2rem) clamp(1.4rem,3vw,2rem) 1rem;border-bottom:1px solid var(--line-color);}}
+.header-eyebrow{{display:inline-flex;align-items:center;gap:7px;padding:4px 12px;border:1px solid var(--border-acc);border-radius:4px;font-family:'DM Mono',monospace;font-size:.54rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);background:var(--accent-glow);margin-bottom:10px;}}
+.eyebrow-dot{{width:4px;height:4px;background:var(--accent);border-radius:50%;animation:pulse 1.8s ease-in-out infinite}}
+.header-title{{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:clamp(1.7rem,4vw,2.4rem);line-height:.92;letter-spacing:-.02em;color:var(--text);margin-bottom:6px;}}
+.header-title em{{font-style:italic;font-weight:300;color:var(--accent)}}
+.header-meta{{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text3);}}
+
+/* ══ ORDER ROWS ══ */
+.orders-list{{padding:clamp(1rem,2.5vw,1.4rem) clamp(1.4rem,3vw,2rem);display:flex;flex-direction:column;gap:8px;}}
+.order-row{{display:flex;align-items:center;gap:12px;padding:13px 16px;border-radius:12px;border:1px solid var(--border);background:var(--surface);text-decoration:none;color:var(--text);transition:border-color .2s,transform .15s,box-shadow .2s;animation:fadeUp .6s var(--ease) both;}}
+.order-row:hover{{border-color:var(--border-acc);transform:translateX(4px);box-shadow:var(--shadow-sm)}}
+.order-row-icon{{width:36px;height:36px;border-radius:9px;background:var(--accent-glow);border:1px solid var(--border-acc);display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0;}}
+.order-row-body{{flex:1;min-width:0}}
+.order-row-id{{font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.1em;color:var(--accent);margin-bottom:2px;}}
+.order-row-meta{{font-size:.8rem;color:var(--text3);font-weight:300;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}}
+.order-row-status{{flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:4px;}}
+.status-pill{{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-family:'DM Mono',monospace;font-size:.48rem;letter-spacing:.12em;text-transform:uppercase;font-weight:500;border:1px solid;white-space:nowrap;}}
+.order-row-arrow{{font-size:.8rem;color:var(--text3);opacity:.5;transition:opacity .2s,transform .2s;}}
+.order-row:hover .order-row-arrow{{opacity:1;transform:translateX(3px)}}
+
+/* ══ EMPTY STATE ══ */
+.empty-state{{padding:clamp(1.4rem,3vw,2rem);text-align:center;}}
+.empty-icon{{font-size:2rem;margin-bottom:12px;opacity:.5}}
+.empty-title{{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:700;color:var(--text);margin-bottom:6px;}}
+.empty-sub{{font-size:.84rem;color:var(--text3);font-weight:300;line-height:1.7;}}
+
+/* ══ CARD FOOTER ══ */
+.card-footer{{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-top:1px solid var(--line-color);}}
+.footer-label{{font-family:'DM Mono',monospace;font-size:.5rem;letter-spacing:.16em;text-transform:uppercase;color:var(--text3)}}
+.home-link{{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:8px;background:var(--accent);color:#fff;font-family:'DM Mono',monospace;font-size:.54rem;letter-spacing:.16em;text-transform:uppercase;text-decoration:none;transition:opacity .2s,transform .15s;box-shadow:var(--shadow-btn);}}
+.home-link:hover{{opacity:.85;transform:translateY(-1px)}}
+
+/* ══ WASH SPINNER ══ */
+.wash-anim{{position:relative;width:26px;height:26px;flex-shrink:0}}
+.wash-ring{{position:absolute;inset:0;border-radius:50%;border:1px solid var(--border)}}
+.wash-arc{{position:absolute;inset:0;border-radius:50%;border:1.5px solid transparent;border-top-color:var(--accent);border-right-color:var(--accent);animation:spin 2.2s linear infinite}}
+.wash-arc2{{position:absolute;inset:5px;border-radius:50%;border:1px solid transparent;border-bottom-color:var(--accent2);animation:spin 3.5s linear infinite reverse;opacity:.55}}
+.wash-dot{{position:absolute;width:3px;height:3px;background:var(--accent);border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%)}}
+
+@keyframes cardEnter{{from{{opacity:0;transform:translateY(20px) scale(.97)}}to{{opacity:1;transform:translateY(0) scale(1)}}}}
+@keyframes fadeUp{{from{{opacity:0;transform:translateY(10px)}}to{{opacity:1;transform:translateY(0)}}}}
+@keyframes orbDrift{{0%{{transform:translate(0,0) scale(1)}}100%{{transform:translate(28px,-20px) scale(1.06)}}}}
+@keyframes pulse{{0%,100%{{opacity:1;transform:scale(1)}}50%{{opacity:.3;transform:scale(.6)}}}}
+@keyframes spin{{to{{transform:rotate(360deg)}}}}
+</style>
 </head>
 <body>
-<div class="card">
-  <div style="font-size:1.1rem;font-weight:700;color:#C44F1F;margin-bottom:6px">🧺 Laundry Lounge</div>
-  <div style="font-size:1.1rem;font-weight:600;margin-bottom:4px">Orders for "{name_clean}"</div>
-  <div style="font-size:.82rem;color:#888;margin-bottom:20px">{len(orders)} order(s) found — click to track</div>
-  {rows_html}
-  <div style="text-align:center;margin-top:16px;font-size:.78rem;color:#aaa">
-    <a href="/" style="color:#C44F1F;text-decoration:none">← Return Home</a>
+
+<div class="amb-orb o1"></div>
+<div class="amb-orb o2"></div>
+<div class="deco-word w1">FRESH</div>
+<div class="deco-word w2">Clean</div>
+
+<button id="themeToggle" onclick="toggleTheme()" aria-label="Toggle theme">☾</button>
+
+<div class="main-card">
+  <div class="card-top">
+    <span class="brand-name">Laundry <em>Lounge</em></span>
+    <div class="live-tag"><div class="live-dot"></div>Service Lookup</div>
+  </div>
+
+  <div class="card-header">
+    <div class="header-eyebrow"><div class="eyebrow-dot"></div>Customer Laundry</div>
+    <h1 class="header-title">Results for <em>"{name_clean}"</em></h1>
+    <p class="header-meta">{len(orders)} order{'s' if len(orders) != 1 else ''} found &nbsp;·&nbsp; Click any row to track</p>
+  </div>
+
+  {'<div class="orders-list">' + rows_html + '</div>' if orders else '''
+  <div class="empty-state">
+    <div class="empty-icon">🧺</div>
+    <div class="empty-title">No laundry service found</div>
+    <p class="empty-sub">We couldn\'t find any service under this name.<br>Check the spelling or ask a staff member for help.</p>
+  </div>
+  '''}
+
+  <div class="card-footer">
+    <div style="display:flex;align-items:center;gap:8px">
+      <div class="wash-anim">
+        <div class="wash-ring"></div>
+        <div class="wash-arc"></div>
+        <div class="wash-arc2"></div>
+        <div class="wash-dot"></div>
+      </div>
+      <span class="footer-label">Sta. Rosa · Nueva Ecija · Est. 2026</span>
+    </div>
+    <a href="/" class="home-link">← Home</a>
   </div>
 </div>
+
+<script>
+function toggleTheme(){{
+  const html=document.documentElement,isDark=html.dataset.theme==='dark';
+  html.dataset.theme=isDark?'light':'dark';
+  document.getElementById('themeToggle').textContent=isDark?'☾':'☀';
+  localStorage.setItem('ll-theme',html.dataset.theme);
+}}
+(function(){{
+  const s=localStorage.getItem('ll-theme');
+  if(s){{document.documentElement.dataset.theme=s;const b=document.getElementById('themeToggle');if(b)b.textContent=s==='dark'?'☾':'☀';}}
+}})();
+</script>
 </body>
 </html>"""
 
