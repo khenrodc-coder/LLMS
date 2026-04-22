@@ -1669,7 +1669,7 @@ body::before{{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;op
   <div class="card-header">
     <div class="header-eyebrow"><div class="eyebrow-dot"></div>Customer Laundry</div>
     <h1 class="header-title">Results for <em>"{name_clean}"</em></h1>
-    <p class="header-meta">{len(orders)} order{'s' if len(orders) != 1 else ''} found &nbsp;·&nbsp; Click any row to track</p>
+    <p class="header-meta">{len(orders)} Service{'s' if len(orders) != 1 else ''} found &nbsp;·&nbsp; Click any row to track</p>
   </div>
 
   {'<div class="orders-list">' + rows_html + '</div>' if orders else '''
